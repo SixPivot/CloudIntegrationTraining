@@ -7,7 +7,8 @@ pool:
   name: Azure Pipelines
 variables:
   # subscriptionId: ''
-  azureResourceManagerConnection: ''
+  - name: azureResourceManagerConnection
+    value: 'test'
   # resourceGroupName: ''
   # location: ''
 
@@ -25,7 +26,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Azure CLI '
       inputs:
-        azureSubscription: ${{ azureResourceManagerConnection }}
+        azureSubscription: ${{ variables.azureResourceManagerConnection }}
         scriptType: ps
         scriptLocation: inlineScript
         inlineScript: 'az bicep build --file appconfiguration.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
@@ -41,7 +42,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Azure CLI '
       inputs:
-        azureSubscription: ${{ azureResourceManagerConnection }}
+        azureSubscription: ${{ variables.azureResourceManagerConnection }}
         scriptType: ps
         scriptLocation: inlineScript
         inlineScript: 'az bicep build --file keyvault.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
@@ -57,7 +58,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Azure CLI '
       inputs:
-        azureSubscription: ${{ azureResourceManagerConnection }}
+        azureSubscription: ${{ variables.azureResourceManagerConnection }}
         scriptType: ps
         scriptLocation: inlineScript
         inlineScript: 'az bicep build --file loganalyticsworkspace.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
