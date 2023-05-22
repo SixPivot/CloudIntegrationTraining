@@ -8,7 +8,7 @@ pool:
 variables:
   # subscriptionId: ''
   - name: azureResourceManagerConnection
-    value: 'CloudIntegrationTraining'
+    value: 'CloudIntegrationTraining1'
   # resourceGroupName: ''
   # location: ''
 
