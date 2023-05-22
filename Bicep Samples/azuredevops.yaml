@@ -5,12 +5,9 @@ trigger:
     - main
 pool:
   name: Azure Pipelines
+
 variables:
-  # subscriptionId: ''
-  # - name: azureResourceManagerConnection
-  #   value: 'CloudIntegrationTraining'
-  # resourceGroupName: ''
-  # location: ''
+  azureResourceManagerConnection: ${{ azureResourceManagerConnection }}
 
 stages:
 - stage: Build 
