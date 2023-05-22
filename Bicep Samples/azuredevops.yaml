@@ -1,0 +1,80 @@
+name: $(Build.DefinitionName)_1.0.$(year:yy)$(DayOfYear)$(Rev:.r)
+trigger:
+  branches:
+    include:
+    - main
+pool:
+  name: Azure Pipelines
+parameters:
+# - name: subscriptionId
+#   type: string
+- name: azureResourceManagerConnection
+  type: string
+# - name: resourceGroupName
+#   type: string
+# - name: location
+#   type: string
+
+stages:
+- stage: Build 
+  jobs:
+  - job: Build 
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - script: md AzureDeployFiles
+      displayName: create output directory
+      workingDirectory: $(System.DefaultWorkingDirectory)
+
+    - task: AzureCLI@2
+      displayName: 'Azure CLI '
+      inputs:
+        azureSubscription: ${{ azureResourceManagerConnection }}
+        scriptType: ps
+        scriptLocation: inlineScript
+        inlineScript: 'az bicep build --file appconfiguration.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        Contents: appconfiguration.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: true
+
+    - task: AzureCLI@2
+      displayName: 'Azure CLI '
+      inputs:
+        azureSubscription: ${{ azureResourceManagerConnection }}
+        scriptType: ps
+        scriptLocation: inlineScript
+        inlineScript: 'az bicep build --file keyvault.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        Contents: keyvault.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: false
+
+    - task: AzureCLI@2
+      displayName: 'Azure CLI '
+      inputs:
+        azureSubscription: ${{ azureResourceManagerConnection }}
+        scriptType: ps
+        scriptLocation: inlineScript
+        inlineScript: 'az bicep build --file loganalyticsworkspace.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        Contents: loganalyticsworkspace.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: false
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: bicep samples'
+      inputs:
+        ArtifactName: bicepsamples
