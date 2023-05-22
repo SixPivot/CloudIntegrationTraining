@@ -16,7 +16,7 @@ jobs:
 
       # build Bicep file
     - name: Azure CLI script file
-      uses: azure/actions/CLI@v1
+      uses: azure/CLI@v1
       with:
         azcliversion: 2.30.0
         inlineScript: 'az bicep build --file "Bicep Samples/appconfiguration.bicep" --outdir /AzureDeployFiles'
