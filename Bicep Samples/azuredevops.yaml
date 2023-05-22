@@ -3,6 +3,8 @@ trigger:
   branches:
     include:
     - main
+    exclude:
+    - .github\workflows\workflow.yaml
 pool:
   name: Azure Pipelines
 
