@@ -29,7 +29,7 @@ stages:
         azureSubscription: '$(azureResourceManagerConnection)'
         scriptType: ps
         scriptLocation: inlineScript
-        inlineScript: 'az bicep build --file appconfiguration.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        inlineScript: 'az bicep build --file "Bicep Samples/appconfiguration.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
 
     - task: CopyFiles@2
       displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
@@ -45,7 +45,7 @@ stages:
         azureSubscription: '$(azureResourceManagerConnection)'
         scriptType: ps
         scriptLocation: inlineScript
-        inlineScript: 'az bicep build --file keyvault.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        inlineScript: 'az bicep build --file "Bicep Samples/keyvault.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
 
     - task: CopyFiles@2
       displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
@@ -61,7 +61,7 @@ stages:
         azureSubscription: '$(azureResourceManagerConnection)'
         scriptType: ps
         scriptLocation: inlineScript
-        inlineScript: 'az bicep build --file loganalyticsworkspace.bicep --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        inlineScript: 'az bicep build --file "Bicep Samples/loganalyticsworkspace.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
 
     - task: CopyFiles@2
       displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
