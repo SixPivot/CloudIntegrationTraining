@@ -8,7 +8,7 @@ pool:
 variables:
   # subscriptionId: ''
   - name: azureResourceManagerConnection
-    value: 'test'
+    value: '$(azureResourceManagerConnection)'
   # resourceGroupName: ''
   # location: ''
 
