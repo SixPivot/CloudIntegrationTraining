@@ -7,7 +7,7 @@ pool:
   name: Azure Pipelines
 
 variables:
-  azureResourceManagerConnection: ${{ azureResourceManagerConnection }}
+  azureResourceManagerConnection: '${{ azureResourceManagerConnection }}'
 
 stages:
 - stage: Build 
