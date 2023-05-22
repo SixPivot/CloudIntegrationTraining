@@ -7,8 +7,8 @@ pool:
   name: Azure Pipelines
 variables:
   # subscriptionId: ''
-  - name: azureResourceManagerConnection
-    value: 'CloudIntegrationTraining1'
+  # - name: azureResourceManagerConnection
+  #   value: 'CloudIntegrationTraining'
   # resourceGroupName: ''
   # location: ''
 
