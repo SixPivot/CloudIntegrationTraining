@@ -1,0 +1,22 @@
+on: [push]
+name: Build
+# az ad sp create-for-rbac --name ghaCloudIntegrationTraining --role contributor --scopes /subscriptions/xxx/resourceGroups/CloudIntegrationTraining --sdk-auth
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout code
+    - uses: actions/checkout@main
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # build Bicep file
+    - name: Azure CLI script file
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.30.0
+        inlineScript: 'az bicep build --file "Bicep Samples/appconfiguration.bicep" --outdir /AzureDeployFiles'
