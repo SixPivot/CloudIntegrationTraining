@@ -1,9 +1,9 @@
 on: [push]
-name: Build
+name: Build Bicep Files
 # az ad sp create-for-rbac --name ghaCloudIntegrationTraining --role contributor --scopes /subscriptions/xxx/resourceGroups/CloudIntegrationTraining --sdk-auth
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
     steps:
 
       # Checkout code
