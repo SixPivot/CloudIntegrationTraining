@@ -5,15 +5,11 @@ trigger:
     - main
 pool:
   name: Azure Pipelines
-parameters:
-# - name: subscriptionId
-#   type: string
-- name: azureResourceManagerConnection
-  type: string
-# - name: resourceGroupName
-#   type: string
-# - name: location
-#   type: string
+variables:
+  # subscriptionId: ''
+  azureResourceManagerConnection: ''
+  # resourceGroupName: ''
+  # location: ''
 
 stages:
 - stage: Build 
