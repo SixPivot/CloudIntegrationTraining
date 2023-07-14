@@ -21,7 +21,9 @@ param keyvault_name string = '$(keyvault_name)'
 // Variables
 //****************************************************************
 
+
 var loganalyticsWorkspace_name = 'log-${toLower(BaseName)}-${toLower(EnvironmentName)}'
+var actionGroupName = 'ag-${toLower(BaseName)}-${toLower(EnvironmentName)}'
 var appInsights_name = 'appi-${toLower(BaseName)}-${toLower(EnvironmentName)}'
 
 //****************************************************************
@@ -48,6 +50,22 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
     }
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
+  }
+}
+
+resource actionGroup 'Microsoft.Insights/actionGroups@2019-06-01' = {
+  name: actionGroupName
+  location: 'Global'
+  properties: {
+    enabled: true
+    groupShortName: actionGroupName
+    emailReceivers: [
+      {
+        emailAddress: 'bill@biztalkbill.com'
+        name: 'Bill Chesnut'
+        useCommonAlertSchema: true
+      }
+    ]
   }
 }
 
@@ -152,3 +170,21 @@ module nestedTemplateAppConfigAppInsightsConnectionString './nestedTemplateAppCo
     variables_contentType: 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8'
   }
 }
+
+output loganalyticsWorkspace_name string = loganalyticsWorkspace.name
+output loganalyticsWorkspace_id string = loganalyticsWorkspace.id
+output loganalyticsWorkspace_location string = loganalyticsWorkspace.location
+output loganalyticsWorkspace_customerId string = loganalyticsWorkspace.properties.customerId
+output loganalyticsWorkspace_resourcegroup string = resourceGroup().name
+
+output appinsights_name string = appinsights.name
+output appinsights_id string = appinsights.id
+output appinsights_location string = appinsights.location
+output appinsights_kind string = appinsights.kind
+output appinsights_AppId string = appinsights.properties.AppId
+output appinsights_ApplicationId string = appinsights.properties.ApplicationId
+output appinsights_ConnectionString string = appinsights.properties.ConnectionString
+output appinsights_HockeyAppId string = appinsights.properties.HockeyAppId
+output appinsights_HockeyAppToken string = appinsights.properties.HockeyAppToken
+output appinsights_InstrumentationKey string = appinsights.properties.InstrumentationKey
+output appinsights_WorkspaceResourceId string = appinsights.properties.WorkspaceResourceId

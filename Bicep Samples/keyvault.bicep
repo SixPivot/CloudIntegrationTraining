@@ -15,6 +15,7 @@ param ApplicationTag string = 'CloudIntegrationTraining'
 // existing resources
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
+param loganalyticsWorkspace_name string = '$(loganalyticsWorkspace_name)'
 
 // service principals and groups
 param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)'
@@ -47,6 +48,14 @@ var keyvaultadministrator = subscriptionResourceId('Microsoft.Authorization/role
 var keyvaultsecretuser = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
 
 //****************************************************************
+// Existing Azure Resources
+//****************************************************************
+
+resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
+  name: loganalyticsWorkspace_name
+}
+
+//****************************************************************
 // Azure Key Vault
 //****************************************************************
 
@@ -72,6 +81,34 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: true
     enableSoftDelete: true
+  }
+}
+
+resource keyvaultAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: keyvault
+  name: 'AuditSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        categoryGroup: 'Audit'
+        enabled: true
+      }
+    ]
+  }
+}
+
+resource keyvaultDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: keyvault
+  name: 'DiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
   }
 }
 
@@ -130,3 +167,8 @@ module nestedTemplateAppConfigkeyvaultresourcegroup './nestedTemplateAppConfigKe
     variables_value: resourceGroup().name
   }
 }
+
+output keyvault_name string = keyvault.name
+output keyvault_id string = keyvault.id
+output keyvault_location string = keyvault.location
+output keyvault_resourcegroup string = resourceGroup().name

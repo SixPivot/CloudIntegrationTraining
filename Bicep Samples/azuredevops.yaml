@@ -70,6 +70,22 @@ stages:
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         CleanTargetFolder: false
 
+    - task: AzureCLI@2
+      displayName: 'Azure CLI '
+      inputs:
+        azureSubscription: '$(azureResourceManagerConnection)'
+        scriptType: ps
+        scriptLocation: inlineScript
+        inlineScript: 'az bicep build --file "Bicep Samples/apimanagement.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        Contents: apimanagement.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: false
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: bicep samples'
       inputs:

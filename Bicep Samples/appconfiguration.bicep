@@ -18,6 +18,8 @@ param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)
 param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
+// existing azure resouces
+param loganalyticsWorkspace_name string = '$(loganalyticsWorkspace_name)'
 
 @allowed([
   'Free'
@@ -40,6 +42,14 @@ var appconfigdataowner = subscriptionResourceId('Microsoft.Authorization/roleDef
 var appconfigdatareader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
 
 //****************************************************************
+// Existing Azure Resources
+//****************************************************************
+
+resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
+  name: loganalyticsWorkspace_name
+}
+
+//****************************************************************
 // Azure App Config
 //****************************************************************
 
@@ -58,6 +68,40 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' =
   }
   identity: {
     type: 'SystemAssigned'
+  }
+}
+
+resource appconfigAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: appconfig
+  name: 'AuditSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        categoryGroup: 'Audit'
+        enabled: true
+      }
+    ]
+  }
+}
+
+resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: appconfig
+  name: 'DiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        category: 'HttpRequest'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
   }
 }
 
@@ -92,4 +136,10 @@ resource appconfigRoleAssignmentAppConfigReaderGroupId 'Microsoft.Authorization/
 }
 
 output appconfig_name string = appconfig.name
+output appconfig_id string = appconfig.id
+output appconfig_principalId string = appconfig.identity.principalId
+output appconfig_tenantId string = appconfig.identity.tenantId
+output appconfig_identityType string = appconfig.identity.type
+output appconfig_location string = appconfig.location
+output appconfig_endpoint string = appconfig.properties.endpoint
 output appconfig_resourcegroup string = resourceGroup().name
