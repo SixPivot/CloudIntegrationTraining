@@ -1,0 +1,2 @@
+az login
+az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv

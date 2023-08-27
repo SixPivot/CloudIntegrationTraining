@@ -47,8 +47,41 @@ var apimanagement_name = 'apim-${toLower(BaseName)}-${toLower(EnvironmentName)}'
 //****************************************************************
 
 // az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv
-var keyvaultadministrator = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')
-var keyvaultsecretuser = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+
+// 14b46e9e-c2b7-41b4-b07b-48a6ebf60603    BuiltInRole     Key Vault Crypto Officer
+// f25e0fa2-a7c8-4377-a976-54943a77a395    BuiltInRole     Key Vault Contributor
+// 00482a5a-887f-4fb3-b363-3b7fe8e74483    BuiltInRole     Key Vault Administrator
+// 12338af0-0e69-4776-bea7-57ae8d297424    BuiltInRole     Key Vault Crypto User
+// b86a8fe4-44ce-4948-aee5-eccb2c155cd7    BuiltInRole     Key Vault Secrets Officer
+// 4633458b-17de-408a-b874-0445c86b69e6    BuiltInRole     Key Vault Secrets User
+// a4417e6f-fecd-4de8-b567-7b0420556985    BuiltInRole     Key Vault Certificates Officer
+// 21090545-7ca7-4776-b22c-e363652d74d2    BuiltInRole     Key Vault Reader
+// e147488a-f6f5-4113-8e2d-b22465e65bf6    BuiltInRole     Key Vault Crypto Service Encryption User
+
+var KeyVaultCryptoOfficer = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')
+var KeyVaultContributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')
+var KeyVaultAdministrator = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')
+var KeyVaultCryptoUser = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')
+var KeyVaultSecretsOfficer = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
+var KeyVaultSecretsUser = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+var KeyVaultCertificatesOfficer = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4417e6f-fecd-4de8-b567-7b0420556985')
+var KeyVaultReader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')
+var KeyVaultCryptoServiceEncryptionUser = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')
+
+// 312a565d-c81f-4fd8-895a-4e21e48d571c    BuiltInRole     API Management Service Contributor
+// e022efe7-f5ba-4159-bbe4-b44f577e9b61    BuiltInRole     API Management Service Operator Role
+// 71522526-b88f-4d52-b57f-d31fc3546d0d    BuiltInRole     API Management Service Reader Role
+// c031e6a8-4391-4de0-8d69-4706a7ed3729    BuiltInRole     API Management Developer Portal Content Editor
+// 9565a273-41b9-4368-97d2-aeb0c976a9b3    BuiltInRole     API Management Service Workspace API Developer
+// d59a3e9c-6d52-4a5a-aeed-6bf3cf0e31da    BuiltInRole     API Management Service Workspace API Product Manager
+
+var APIManagementServiceContributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '312a565d-c81f-4fd8-895a-4e21e48d571c')
+var APIManagementServiceOperatorRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e022efe7-f5ba-4159-bbe4-b44f577e9b61')
+var APIManagementServiceReaderRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')
+var APIManagementDeveloperPortalContentEditor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c031e6a8-4391-4de0-8d69-4706a7ed3729')
+var APIManagementServiceWorkspaceAPIDeveloper = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9565a273-41b9-4368-97d2-aeb0c976a9b3')
+var APIManagementServiceWorkspaceAPIProductManager = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd59a3e9c-6d52-4a5a-aeed-6bf3cf0e31da')
+
 
 //****************************************************************
 // Existing Azure Resources
@@ -153,9 +186,9 @@ resource apimAppInsights 'Microsoft.ApiManagement/service/diagnostics@2022-09-01
 
 resource keyvaultRoleAssignmentAPIM 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyvault
-  name: guid(keyvault.id, apimanagement.name, keyvaultsecretuser)
+  name: guid(keyvault.id, apimanagement.name, KeyVaultAdministrator)
   properties: {
-    roleDefinitionId: keyvaultsecretuser
+    roleDefinitionId: KeyVaultAdministrator
     principalId: apimanagement.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -166,46 +199,35 @@ resource keyvaultRoleAssignmentAPIM 'Microsoft.Authorization/roleAssignments@202
 //****************************************************************
 
 module nestedTemplateAppConfigapimanagementname './nestedTemplateAppConfigKeyValue.bicep' = {
-  name: 'apimanagement-name'
+  name: 'apimanagement_name'
   scope: resourceGroup(appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: 'apimanagement-name'
+    variables_key: 'apimanagement_name'
     variables_value: apimanagement.name
   }
 }
 
 module nestedTemplateAppConfigapimanagementegroup './nestedTemplateAppConfigKeyValue.bicep' = {
-  name: 'apimanagement-resourcegroup'
+  name: 'apimanagement_resourcegroup'
   scope: resourceGroup(appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: 'apimanagement-resourcegroup'
+    variables_key: 'apimanagement_resourcegroup'
     variables_value: resourceGroup().name
   }
 }
 
-//****************************************************************
-// Azure API Management Workspace
-//****************************************************************
-
-resource apimanagementWorkspaceTeam1 'Microsoft.ApiManagement/service/workspaces@2023-03-01-preview' = {
-  name: 'team1'
-  parent: apimanagement
-  properties: {
-    description: 'Team1 Workspace'
-    displayName: 'Team1'
-  }
-}
-
-resource apimanagementWorkspaceTeam2 'Microsoft.ApiManagement/service/workspaces@2023-03-01-preview' = {
-  name: 'team2'
-  parent: apimanagement
-  properties: {
-    description: 'Team2 Workspace'
-    displayName: 'Team2'
+module nestedTemplateAppConfigapimanagementprincipalid './nestedTemplateAppConfigKeyValue.bicep' = {
+  name: 'apimanagement_principalid'
+  scope: resourceGroup(appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'apimanagement_principalid'
+    variables_value: apimanagement.identity.principalId
   }
 }
 
@@ -213,7 +235,3 @@ output apimanagement_name string = apimanagement.name
 output apimanagement_id string = apimanagement.id
 output apimanagement_location string = apimanagement.location
 output apimanagement_principalId string = apimanagement.identity.principalId
-output apimanagement_workspace_team1_name string = apimanagementWorkspaceTeam1.name
-output apimanagement_workspace_team1_id string = apimanagementWorkspaceTeam1.id
-output apimanagement_workspace_team2_name string = apimanagementWorkspaceTeam2.name
-output apimanagement_workspace_team2_id string = apimanagementWorkspaceTeam2.id

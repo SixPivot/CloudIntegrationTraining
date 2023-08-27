@@ -5,6 +5,8 @@ trigger:
     - main
     exclude:
     - .github\workflows\workflow.yaml
+    - roles.azcli
+    - roles.txt
 pool:
   name: Azure Pipelines
 

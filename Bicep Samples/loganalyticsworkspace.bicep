@@ -21,10 +21,21 @@ param keyvault_name string = '$(keyvault_name)'
 // Variables
 //****************************************************************
 
-
 var loganalyticsWorkspace_name = 'log-${toLower(BaseName)}-${toLower(EnvironmentName)}'
 var actionGroupName = 'ag-${toLower(BaseName)}-${toLower(EnvironmentName)}'
 var appInsights_name = 'appi-${toLower(BaseName)}-${toLower(EnvironmentName)}'
+
+//****************************************************************
+// Role Definitions
+//****************************************************************
+
+// az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv
+
+// 73c42c96-874c-492b-b04d-ab87d138a893    BuiltInRole     Log Analytics Reader
+// 92aaf0da-9dab-42b6-94a3-d43ce8d16293    BuiltInRole     Log Analytics Contributor
+
+var LogAnalyticsReader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')
+var LogAnalyticsContributor = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')
 
 //****************************************************************
 // Azure Log Anaytics Workspace

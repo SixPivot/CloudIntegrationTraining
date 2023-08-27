@@ -1,0 +1,5 @@
+<fragment>
+    <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
+    <set-header name="Authorization" exists-action="delete" />
+    <authentication-managed-identity resource="#{APIM_ApplicationId}#" ignore-error="false" />
+</fragment>

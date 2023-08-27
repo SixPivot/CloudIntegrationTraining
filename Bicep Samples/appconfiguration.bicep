@@ -38,8 +38,12 @@ var appconfig_name = 'appcs-${toLower(BaseName)}-${toLower(EnvironmentName)}'
 //****************************************************************
 
 // az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv
-var appconfigdataowner = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b')
-var appconfigdatareader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
+
+// 5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b    BuiltInRole     App Configuration Data Owner
+// 516239f1-63e1-4d78-a4de-a74fb236a071    BuiltInRole     App Configuration Data Reader
+
+var AppConfigurationDataOwner = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b')
+var AppConfigurationDataReader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
 
 //****************************************************************
 // Existing Azure Resources
@@ -107,9 +111,9 @@ resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@202
 
 resource appconfigRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: appconfig
-  name: guid(appconfig.id, AzureDevOpsServiceConnectionId, appconfigdataowner)
+  name: guid(appconfig.id, AzureDevOpsServiceConnectionId, AppConfigurationDataOwner)
   properties: {
-    roleDefinitionId: appconfigdataowner
+    roleDefinitionId: AppConfigurationDataOwner
     principalId: AzureDevOpsServiceConnectionId
     principalType: 'ServicePrincipal'
   }
@@ -117,9 +121,9 @@ resource appconfigRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Author
 
 resource appconfigRoleAssignmentAppConfigAdministratorsGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: appconfig
-  name: guid(appconfig.id, AppConfigAdministratorsGroupId, appconfigdataowner)
+  name: guid(appconfig.id, AppConfigAdministratorsGroupId, AppConfigurationDataOwner)
   properties: {
-    roleDefinitionId: appconfigdataowner
+    roleDefinitionId: AppConfigurationDataOwner
     principalId: AppConfigAdministratorsGroupId
     principalType: 'Group'
   }
@@ -127,9 +131,9 @@ resource appconfigRoleAssignmentAppConfigAdministratorsGroupId 'Microsoft.Author
 
 resource appconfigRoleAssignmentAppConfigReaderGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: appconfig
-  name: guid(appconfig.id, AppConfigReaderGroupId, appconfigdatareader)
+  name: guid(appconfig.id, AppConfigReaderGroupId, AppConfigurationDataReader)
   properties: {
-    roleDefinitionId: appconfigdatareader
+    roleDefinitionId: AppConfigurationDataReader
     principalId: AppConfigReaderGroupId
     principalType: 'Group'
   }
