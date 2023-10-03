@@ -1,0 +1,94 @@
+{
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
+        "Compose": {
+            "inputs": {
+                "AppConfigURL": "@parameters('AppConfigURL')",
+                "Key": "testvalue1",
+                "Value": "@body('Get_App_Config_Value')"
+            },
+            "runAfter": {
+                "Get_App_Config_Value": [
+                    "Succeeded"
+                ]
+            },
+            "type": "Compose"
+        },
+        "Get_App_Config_Value": {
+            "inputs": {
+                "authentication": {
+                    "audience": "@{parameters('AppConfigURL')}",
+                    "type": "ManagedServiceIdentity"
+                },
+                "method": "GET",
+                "queries": {
+                    "api-version": "1.0",
+                    "label": "@{parameters('AppConfigEnvironment')}"
+                },
+                "uri": "@{parameters('AppConfigURL')}/kv/testvalue1"
+            },
+            "runAfter": {},
+            "type": "Http"
+        },
+        "Response": {
+            "inputs": {
+                "body": "@body('Get_App_Config_Value')['value']",
+                "statusCode": 200
+            },
+            "kind": "Http",
+            "runAfter": {
+                "Send_Data": [
+                    "Succeeded"
+                ]
+            },
+            "type": "Response"
+        },
+        "Send_Data": {
+            "inputs": {
+                "body": "@{outputs('Compose')}",
+                "headers": {
+                    "Log-Type": "logiccondemo1appconfigtalkdemo"
+                },
+                "host": {
+                    "connection": {
+                        "name": "@parameters('$connections')['azureloganalyticsdatacollector']['connectionId']"
+                    }
+                },
+                "method": "post",
+                "path": "/api/logs"
+            },
+            "runAfter": {
+                "Compose": [
+                    "Succeeded"
+                ]
+            },
+            "type": "ApiConnection"
+        }
+    },
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
+    "parameters": {
+        "$connections": {
+            "defaultValue": {},
+            "type": "Object"
+        },
+        "AppConfigEnvironment": {
+            "defaultValue": "Test",
+            "type": "String"
+        },
+        "AppConfigURL": {
+            "defaultValue": "[concat('https://test.azconfig.io')]",
+            "type": "String"
+        }
+    },
+    "triggers": {
+        "manual": {
+            "inputs": {
+                "schema": {}
+            },
+            "kind": "Http",
+            "operationOptions": "SuppressWorkflowHeadersOnResponse",
+            "type": "Request"
+        }
+    }
+}

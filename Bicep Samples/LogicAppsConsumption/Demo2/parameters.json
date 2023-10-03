@@ -1,0 +1,10 @@
+{
+    "AppConfigURL": {
+      "type": "String",
+      "value": "#{appconfig_endpoint}#"
+    },
+    "AppConfigEnvironment": {
+      "type": "String",
+      "value": "#{environment_name}#"
+    }
+}

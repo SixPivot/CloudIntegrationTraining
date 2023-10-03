@@ -1,0 +1,130 @@
+{
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
+        "Get_App_Config_Key_Vault_Reference": {
+            "inputs": {
+                "authentication": {
+                    "audience": "@parameters('AppConfigURL')",
+                    "type": "ManagedServiceIdentity"
+                },
+                "method": "GET",
+                "queries": {
+                    "api-version": "1.0",
+                    "label": "@parameters('AppConfigEnvironment')"
+                },
+                "uri": "@{parameters('AppConfigURL')}/kv/testvalue2"
+            },
+            "runAfter": {
+                "Initialize_variable": [
+                    "Succeeded"
+                ]
+            },
+            "type": "Http"
+        },
+        "Get_Reference_from_Key_Vault": {
+            "inputs": {
+                "authentication": {
+                    "audience": "https://vault.azure.net",
+                    "type": "ManagedServiceIdentity"
+                },
+                "method": "GET",
+                "queries": {
+                    "api-version": "2016-10-01"
+                },
+                "uri": "@body('Parse_JSON')?['uri']"
+            },
+            "runAfter": {
+                "Parse_JSON": [
+                    "Succeeded"
+                ]
+            },
+            "type": "Http"
+        },
+        "Initialize_variable": {
+            "inputs": {
+                "variables": [
+                    {
+                        "name": "AppConfigValue",
+                        "type": "string"
+                    }
+                ]
+            },
+            "runAfter": {},
+            "type": "InitializeVariable"
+        },
+        "Parse_JSON": {
+            "inputs": {
+                "content": "@body('Get_App_Config_Key_Vault_Reference')['value']",
+                "schema": {
+                    "properties": {
+                        "content_type": {},
+                        "etag": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "label": {
+                            "type": "string"
+                        },
+                        "last_modified": {
+                            "type": "string"
+                        },
+                        "locked": {
+                            "type": "boolean"
+                        },
+                        "tags": {
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "runAfter": {
+                "Get_App_Config_Key_Vault_Reference": [
+                    "Succeeded"
+                ]
+            },
+            "type": "ParseJson"
+        },
+        "Response": {
+            "inputs": {
+                "body": "@body('Get_Reference_from_Key_Vault')['value']",
+                "statusCode": 200
+            },
+            "kind": "Http",
+            "runAfter": {
+                "Get_Reference_from_Key_Vault": [
+                    "Succeeded"
+                ]
+            },
+            "type": "Response"
+        }
+    },
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
+    "parameters": {
+        "AppConfigEnvironment": {
+            "defaultValue": "Test",
+            "type": "String"
+        },
+        "AppConfigURL": {
+            "defaultValue": "[concat('https://test.azconfig.io')]",
+            "type": "String"
+        }
+    },
+    "triggers": {
+        "manual": {
+            "inputs": {
+                "schema": {}
+            },
+            "kind": "Http",
+            "operationOptions": "SuppressWorkflowHeadersOnResponse",
+            "type": "Request"
+        }
+    }
+}

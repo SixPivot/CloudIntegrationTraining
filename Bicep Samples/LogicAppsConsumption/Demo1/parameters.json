@@ -1,0 +1,19 @@
+{
+    "$connections": {
+      "value": {
+          "azureloganalyticsdatacollector": {
+              "connectionId": "/subscriptions/#{subscriptionid}#/resourceGroups/#{resourcegroupName}#/providers/Microsoft.Web/connections/loganalytics",
+              "connectionName": "loganalytics",
+              "id": "/subscriptions/#{subscriptionid}#/providers/Microsoft.Web/locations/#{applocation}#/managedApis/azureloganalyticsdatacollector"
+          }
+      }
+    },
+    "AppConfigURL": {
+      "type": "String",
+      "value": "#{appconfig_endpoint}#"
+    },
+    "AppConfigEnvironment": {
+      "type": "String",
+      "value": "#{environment_name}#"
+    }
+}
