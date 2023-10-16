@@ -78,13 +78,13 @@ stages:
         azureSubscription: '$(azureResourceManagerConnection)'
         scriptType: ps
         scriptLocation: inlineScript
-        inlineScript: 'az bicep build --file "Bicep Samples/apimanagement.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        inlineScript: 'az bicep build --file "Bicep Samples/apimanagementbase.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
 
     - task: CopyFiles@2
       displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-        Contents: apimanagement.json
+        Contents: apimanagementbase.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         CleanTargetFolder: false
 
