@@ -235,3 +235,4 @@ output apimanagement_name string = apimanagement.name
 output apimanagement_id string = apimanagement.id
 output apimanagement_location string = apimanagement.location
 output apimanagement_principalId string = apimanagement.identity.principalId
+output apimanagementLogging_name string = apiManagementLogging.name
