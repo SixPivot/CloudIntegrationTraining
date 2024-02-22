@@ -29,3 +29,10 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: 'az bicep build --file "Bicep Samples/keyvault.bicep"'
+
+      # build Bicep file
+    - name: Azure CLI script file
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.30.0
+        inlineScript: 'az bicep build --file "Bicep Samples/apimanagemenbase.bicep"'
