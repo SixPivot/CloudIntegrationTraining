@@ -1,12 +1,16 @@
 param AppLocation string = ''
 param virtualNetworkName string = ''
 param subnetName string = ''
-param storage object
+param storage_name string = ''
 param storageType string = ''
 
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
+
+resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+  name: storage_name
+}
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
