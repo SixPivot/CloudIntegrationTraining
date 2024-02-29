@@ -54,7 +54,7 @@ stages:
         SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
         Contents: environment.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
-        CleanTargetFolder: true
+        CleanTargetFolder: false
 
     # - task: AzureCLI@2
     #   displayName: 'Azure CLI '
