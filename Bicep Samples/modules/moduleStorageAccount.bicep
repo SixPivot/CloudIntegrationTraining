@@ -237,13 +237,14 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing 
 
 var privateEndPointName = 'pep-${(storage.name)}'
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2020-07-01' = if(enablePrivateLink) {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = if(enablePrivateLink) {
   name: privateEndPointName
   location: AppLocation
   properties: {
     subnet: {
       id: subnet.id
     }
+    customNetworkInterfaceName: '${privateEndPointName}-nic'
     privateLinkServiceConnections: [
       {
         name: privateEndPointName
@@ -252,6 +253,41 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2020-07-01' = if(en
           groupIds: [
             'blob'
           ]
+        }
+      }
+    ]
+  }
+}
+
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.blob.${environment().suffixes.storage}'
+  location: 'global'
+  dependsOn: [
+    virtualNetwork
+  ]
+}
+
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateDnsZones
+  name: '${privateDnsZones.name}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetwork.id
+    }
+  }
+}
+
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
+  parent: privateEndpoint
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: privateDnsZones.name
+        properties: {
+          privateDnsZoneId: privateDnsZones.id
         }
       }
     ]
