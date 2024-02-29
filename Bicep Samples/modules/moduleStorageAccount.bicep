@@ -222,77 +222,41 @@ resource storageQueueDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@
   }
 }
 
+var storagePrivateLinks = [
+  {
+    storageType: 'blob'
+  }
+  {
+    storageType: 'table'
+  }
+  {
+    storageType: 'queue'
+  }
+  {
+    storageType: 'file'
+  }
+  {
+    storageType: 'web'
+  }
+  {
+    storageType: 'dfs'
+  }
+]
+
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = if(enablePrivateLink) {
-  name: virtualNetworkName
-}
-
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = if(enablePrivateLink) {
-  name: subnetName
-  parent: virtualNetwork
-}
-
-var privateEndPointName = 'pep-${(storage.name)}'
-
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = if(enablePrivateLink) {
-  name: privateEndPointName
-  location: AppLocation
-  properties: {
-    subnet: {
-      id: subnet.id
-    }
-    customNetworkInterfaceName: '${privateEndPointName}-nic'
-    privateLinkServiceConnections: [
-      {
-        name: privateEndPointName
-        properties: {
-          privateLinkServiceId: storage.id
-          groupIds: [
-            'blob'
-          ]
-        }
-      }
-    ]
+module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep' = [for (link, index) in storagePrivateLinks: if (enablePrivateLink) {
+  name: 'moduleStorageAccountPrivateLink-${link}'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+    storage: storage
+    storageType: link.storageType
   }
-}
-
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.blob.${environment().suffixes.storage}'
-  location: 'global'
-  dependsOn: [
-    virtualNetwork
-  ]
-}
-
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsZones
-  name: '${privateDnsZones.name}-link'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
-
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
-  parent: privateEndpoint
-  name: 'default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: privateDnsZones.name
-        properties: {
-          privateDnsZoneId: privateDnsZones.id
-        }
-      }
-    ]
-  }
-}
+}]
 
 //****************************************************************
 // Add Storage Account details to App Configuration
