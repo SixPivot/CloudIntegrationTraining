@@ -248,7 +248,7 @@ var storagePrivateLinks = [
 //****************************************************************
 
 module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep' = [for (link, index) in storagePrivateLinks: if (enablePrivateLink) {
-  name: 'moduleStorageAccountPrivateLink-${link}'
+  name: 'moduleStorageAccountPrivateLink-${link.storageType}'
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
