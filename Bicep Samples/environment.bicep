@@ -24,6 +24,8 @@ param Workload string = '$(Workload)'
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
+param virtualNetworkName string = ''
+param subnetName string = ''
 
 //****************************************************************
 // Variables
@@ -239,6 +241,9 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     StorageSKUName: StorageSKUName
     enableAppConfig: false
     enableDiagnostic: false
+    enablePrivateLink: true
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
   }
 }
 

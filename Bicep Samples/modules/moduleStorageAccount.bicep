@@ -10,12 +10,17 @@ param AzureRegion string = ''
 param Instance int = 1
 param enableAppConfig bool = false
 param enableDiagnostic bool = false
+param enablePrivateLink bool = false
+param virtualNetworkName string = ''
+param subnetName string = ''
 
 // tags
 param tags object = {}
 
 // storage account settings
 param StorageSKUName string = ''
+param enableHNS bool = false
+param enablePublicNetworkAccess string = 'Enabled'
 
 // existing resources
 param appconfig_name string = ''
@@ -61,6 +66,9 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {
     supportsHttpsTrafficOnly: true
     defaultToOAuthAuthentication: true
+    minimumTlsVersion: 'TLS1_2'
+    isHnsEnabled: enableHNS
+    publicNetworkAccess: enablePublicNetworkAccess
   }
 }
 
@@ -209,6 +217,42 @@ resource storageQueueDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@
       {
         category: 'Transaction'
         enabled: true
+      }
+    ]
+  }
+}
+
+//****************************************************************
+// Add Private Link for Storage Account 
+//****************************************************************
+
+resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = if(enablePrivateLink) {
+  name: virtualNetworkName
+}
+
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = if(enablePrivateLink) {
+  name: subnetName
+  parent: virtualNetwork
+}
+
+var privateEndPointName = 'pep-${(storage.name)}'
+
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2020-07-01' = if(enablePrivateLink) {
+  name: privateEndPointName
+  location: AppLocation
+  properties: {
+    subnet: {
+      id: subnet.id
+    }
+    privateLinkServiceConnections: [
+      {
+        name: privateEndPointName
+        properties: {
+          privateLinkServiceId: storage.id
+          groupIds: [
+            'blob'
+          ]
+        }
       }
     ]
   }
