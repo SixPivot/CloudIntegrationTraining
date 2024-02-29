@@ -163,6 +163,20 @@ resource keyvaultRoleAssignmentKeyVaultReaderGroupId 'Microsoft.Authorization/ro
 }
 
 //****************************************************************
+// Add Private Link for Storage Account 
+//****************************************************************
+
+module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleKeyVaultPrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+    keyvault_name: keyvault.name
+  }
+}
+
+//****************************************************************
 // Add Key Vault name and resource group to App Configuration
 //****************************************************************
 
