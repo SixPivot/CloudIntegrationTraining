@@ -17,8 +17,9 @@ param CostCentre string = '$(CostCentre)'
 param Workload string = '$(Workload)'
 
 // service principals and groups
-// param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)'
-// param KeyVaultAdministratorsGroupId string = '$(KeyVaultAdministratorsGroupId)'
+param AzureDevOpsServiceConnectionId string = ''
+param KeyVaultAdministratorsGroupId string = ''
+param KeyVaultReaderGroupId string = ''
 
 // existing resources
 param appconfig_name string = '$(appconfig_name)'
@@ -72,31 +73,35 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 //   }
 // }
 
-// module moduleKeyVault './modules/moduleKeyVault.bicep' = {
-//   name: 'moduleKeyVault'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
-//     KeyVaultAdministratorsGroupId: KeyVaultAdministratorsGroupId
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
-//   }
-// }
+module moduleKeyVault './modules/moduleKeyVault.bicep' = {
+  name: 'moduleKeyVault'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
+    KeyVaultAdministratorsGroupId: KeyVaultAdministratorsGroupId
+    KeyVaultReaderGroupId: KeyVaultReaderGroupId
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
+    // loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    enableAppConfig: false
+    enableDiagnostic: false
+    enablePrivateLink: true
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+  }
+}
 
 // module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = {
 //   name: 'moduleApplicationInsights'
