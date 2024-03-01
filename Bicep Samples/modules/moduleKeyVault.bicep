@@ -132,7 +132,7 @@ resource keyvaultDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021
   }
 }
 
-resource keyvaultRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (AzureDevOpsServiceConnectionId != '') {
+resource keyvaultRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(AzureDevOpsServiceConnectionId)) {
   scope: keyvault
   name: guid(keyvault.id, AzureDevOpsServiceConnectionId, KeyVaultAdministrator)
   properties: {
@@ -142,7 +142,7 @@ resource keyvaultRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Authori
   }
 }
 
-resource keyvaultRoleAssignmentKeyVaultAdministratorsGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (KeyVaultAdministratorsGroupId != '') {
+resource keyvaultRoleAssignmentKeyVaultAdministratorsGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(KeyVaultAdministratorsGroupId)) {
   scope: keyvault
   name: guid(keyvault.id, KeyVaultAdministratorsGroupId, KeyVaultAdministrator)
   properties: {
@@ -152,7 +152,7 @@ resource keyvaultRoleAssignmentKeyVaultAdministratorsGroupId 'Microsoft.Authoriz
   }
 }
 
-resource keyvaultRoleAssignmentKeyVaultReaderGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (KeyVaultReaderGroupId != '') {
+resource keyvaultRoleAssignmentKeyVaultReaderGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(KeyVaultAdministratorsGroupId)) {
   scope: keyvault
   name: guid(keyvault.id, KeyVaultReaderGroupId, KeyVaultSecretsUser)
   properties: {

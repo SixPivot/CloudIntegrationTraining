@@ -13,7 +13,7 @@ param tags object = {}
 // service principals and groups
 param AzureDevOpsServiceConnectionId string = ''
 param AppConfigAdministratorsGroupId string = ''
-//param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
+param AppConfigReaderGroupId string = ''
 
 @allowed([
   'Free'
@@ -40,7 +40,7 @@ var loganalyticsWorkspace_name = 'log-${toLower(BaseName)}-${toLower(Environment
 // 516239f1-63e1-4d78-a4de-a74fb236a071    BuiltInRole     App Configuration Data Reader
 
 var AppConfigurationDataOwner = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b')
-//var AppConfigurationDataReader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
+var AppConfigurationDataReader = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')
 
 //****************************************************************
 // Azure Log Anaytics Workspace
@@ -128,25 +128,25 @@ resource appconfigRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Author
   }
 }
 
-// resource appconfigRoleAssignmentAppConfigAdministratorsGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (AppConfigAdministratorsGroupId != '$(AppConfigAdministratorsGroupId)') {
-//   scope: appconfig
-//   name: guid(appconfig.id, AppConfigAdministratorsGroupId, AppConfigurationDataOwner)
-//   properties: {
-//     roleDefinitionId: AppConfigurationDataOwner
-//     principalId: AppConfigAdministratorsGroupId
-//     principalType: 'Group'
-//   }
-// }
+resource appconfigRoleAssignmentAppConfigAdministratorsGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(AppConfigAdministratorsGroupId)) {
+  scope: appconfig
+  name: guid(appconfig.id, AppConfigAdministratorsGroupId, AppConfigurationDataOwner)
+  properties: {
+    roleDefinitionId: AppConfigurationDataOwner
+    principalId: AppConfigAdministratorsGroupId
+    principalType: 'Group'
+  }
+}
 
-// resource appconfigRoleAssignmentAppConfigReaderGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   scope: appconfig
-//   name: guid(appconfig.id, AppConfigReaderGroupId, AppConfigurationDataReader)
-//   properties: {
-//     roleDefinitionId: AppConfigurationDataReader
-//     principalId: AppConfigReaderGroupId
-//     principalType: 'Group'
-//   }
-// }
+resource appconfigRoleAssignmentAppConfigReaderGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(AppConfigReaderGroupId)) {
+  scope: appconfig
+  name: guid(appconfig.id, AppConfigReaderGroupId, AppConfigurationDataReader)
+  properties: {
+    roleDefinitionId: AppConfigurationDataReader
+    principalId: AppConfigReaderGroupId
+    principalType: 'Group'
+  }
+}
 
 output appconfig_name string = appconfig.name
 output appconfig_id string = appconfig.id
