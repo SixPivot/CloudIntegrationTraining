@@ -32,7 +32,7 @@ param loganalyticsWorkspace_name string = ''
 // Variables
 //****************************************************************
 
-var storage_app_name = !empty(AppName) ? '${AppName}' : ''
+var storage_app_name = !empty(AppShortName) ? '${AppShortName}' : ''
 var storage_appkey_name = !empty(AppName) ? '${AppName}_' : ''
 var InstanceString = padLeft(Instance,3,'0')
 var storage_name = 'stwf${toLower(BaseShortName)}${toLower(storage_app_name)}${toLower(EnvironmentName)}${toLower(AzureRegion)}${InstanceString}'
