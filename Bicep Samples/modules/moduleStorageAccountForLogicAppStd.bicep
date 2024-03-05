@@ -35,7 +35,7 @@ param loganalyticsWorkspace_name string = ''
 var storage_app_name = !empty(AppName) ? '${AppName}' : ''
 var storage_appkey_name = !empty(AppName) ? '${AppName}_' : ''
 var InstanceString = padLeft(Instance,3,'0')
-var storage_name = 'st${toLower(BaseShortName)}${toLower(storage_app_name)}${toLower(EnvironmentName)}${toLower(AzureRegion)}${InstanceString}'
+var storage_name = 'stwf${toLower(BaseShortName)}${toLower(storage_app_name)}${toLower(EnvironmentName)}${toLower(AzureRegion)}${InstanceString}'
 
 //****************************************************************
 // Role Definitions
@@ -86,39 +86,39 @@ resource storageDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-
   }
 }
 
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
-  parent: storage
-  name: 'default'
-  properties:{}
-}
+// resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+//   parent: storage
+//   name: 'default'
+//   properties:{}
+// }
 
-resource storageBlobDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
-  scope: blobService
-  name: 'BlobDiagnosticSettings'
-  properties: {
-    workspaceId: loganalyticsWorkspace.id
-    logs:[
-      {
-        category: 'StorageRead'
-        enabled: true
-      }
-      {
-        category: 'StorageWrite'
-        enabled: true
-      }
-      {
-        category: 'StorageDelete'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'Transaction'
-        enabled: true
-      }
-    ]
-  }
-}
+// resource storageBlobDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
+//   scope: blobService
+//   name: 'BlobDiagnosticSettings'
+//   properties: {
+//     workspaceId: loganalyticsWorkspace.id
+//     logs:[
+//       {
+//         category: 'StorageRead'
+//         enabled: true
+//       }
+//       {
+//         category: 'StorageWrite'
+//         enabled: true
+//       }
+//       {
+//         category: 'StorageDelete'
+//         enabled: true
+//       }
+//     ]
+//     metrics: [
+//       {
+//         category: 'Transaction'
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
 
 resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01' = {
   parent: storage
@@ -154,39 +154,39 @@ resource storageFileDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2
   }
 }
 
-resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2022-09-01' = {
-  parent: storage
-  name: 'default'
-  properties:{}
-}
+// resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2022-09-01' = {
+//   parent: storage
+//   name: 'default'
+//   properties:{}
+// }
 
-resource storageTableDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
-  scope: tableService
-  name: 'TableDiagnosticSettings'
-  properties: {
-    workspaceId: loganalyticsWorkspace.id
-    logs:[
-      {
-        category: 'StorageRead'
-        enabled: true
-      }
-      {
-        category: 'StorageWrite'
-        enabled: true
-      }
-      {
-        category: 'StorageDelete'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'Transaction'
-        enabled: true
-      }
-    ]
-  }
-}
+// resource storageTableDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
+//   scope: tableService
+//   name: 'TableDiagnosticSettings'
+//   properties: {
+//     workspaceId: loganalyticsWorkspace.id
+//     logs:[
+//       {
+//         category: 'StorageRead'
+//         enabled: true
+//       }
+//       {
+//         category: 'StorageWrite'
+//         enabled: true
+//       }
+//       {
+//         category: 'StorageDelete'
+//         enabled: true
+//       }
+//     ]
+//     metrics: [
+//       {
+//         category: 'Transaction'
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
 
 resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2022-09-01' = {
   parent: storage
@@ -194,52 +194,37 @@ resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2022-09-0
   properties:{}
 }
 
-resource storageQueueDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
-  scope: queueService
-  name: 'QueueDiagnosticSettings'
-  properties: {
-    workspaceId: loganalyticsWorkspace.id
-    logs:[
-      {
-        category: 'StorageRead'
-        enabled: true
-      }
-      {
-        category: 'StorageWrite'
-        enabled: true
-      }
-      {
-        category: 'StorageDelete'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'Transaction'
-        enabled: true
-      }
-    ]
-  }
-}
+// resource storageQueueDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
+//   scope: queueService
+//   name: 'QueueDiagnosticSettings'
+//   properties: {
+//     workspaceId: loganalyticsWorkspace.id
+//     logs:[
+//       {
+//         category: 'StorageRead'
+//         enabled: true
+//       }
+//       {
+//         category: 'StorageWrite'
+//         enabled: true
+//       }
+//       {
+//         category: 'StorageDelete'
+//         enabled: true
+//       }
+//     ]
+//     metrics: [
+//       {
+//         category: 'Transaction'
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
 
 var storagePrivateLinks = [
   {
-    storageType: 'blob'
-  }
-  {
-    storageType: 'table'
-  }
-  {
-    storageType: 'queue'
-  }
-  {
     storageType: 'file'
-  }
-  {
-    storageType: 'web'
-  }
-  {
-    storageType: 'dfs'
   }
 ]
 

@@ -6,6 +6,11 @@ param EnvironmentShortName string = ''
 param AppLocation string = ''
 param AzureRegion string = ''
 param Instance int = 1
+param enableAppConfig bool = false
+param enableDiagnostic bool = false
+param enablePrivateLink bool = false
+param virtualNetworkName string = ''
+param subnetName string = ''
 
 // tags
 param tags object = {}
@@ -55,7 +60,7 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
   }
 }
 
-module moduleAppConfigKeyValueloganalyticsWorkspacename './moduleAppConfigKeyValue.bicep' = {
+module moduleAppConfigKeyValueloganalyticsWorkspacename './moduleAppConfigKeyValue.bicep' = if(enableAppConfig) {
   name: 'loganalyticsworkspace_name'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
@@ -66,7 +71,7 @@ module moduleAppConfigKeyValueloganalyticsWorkspacename './moduleAppConfigKeyVal
   }
 }
 
-module moduleAppConfigKeyValueloganalyticsWorkspaceresourcegroup './moduleAppConfigKeyValue.bicep' = {
+module moduleAppConfigKeyValueloganalyticsWorkspaceresourcegroup './moduleAppConfigKeyValue.bicep' = if(enableAppConfig) {
   name: 'loganalyticsworkspace_resourcegroup'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {

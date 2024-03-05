@@ -10,6 +10,7 @@ param AppLocation string = resourceGroup().location
 ])
 param AzureRegion string = 'ause'
 param Instance int = 1
+var WorkflowHostingPlanSKUName = 'WS1'
 
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
@@ -199,30 +200,88 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
 //   }
 // }
 
-// module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
-//   name: 'moduleWorkflowHostingPlan'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     WorkflowHostingPlanSKUName: WorkflowHostingPlanSKUName
-//   }
-// }
+module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
+  name: 'moduleWorkflowHostingPlan'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    appconfig_name: appconfig_name
+    appconfig_resourcegroup: appconfig_resourcegroup
+    appconfig_subscriptionId: appconfig_subscriptionId
+    WorkflowHostingPlanSKUName: WorkflowHostingPlanSKUName
+  }
+}
+
+module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogicAppStd.bicep' = {
+  name: 'moduleStorageAccountForLogicAppStd'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    //appconfig_name: appconfig_name
+    //appconfig_resourcegroup: appconfig_resourcegroup
+    //appconfig_subscriptionId: appconfig_subscriptionId
+    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    StorageSKUName: StorageSKUName
+    enableAppConfig: false
+    enableDiagnostic: false
+    enablePrivateLink: true
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+    AppName: 'logicappstd'
+    AppShortName: 'las'
+  }
+}
+module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
+  name: 'moduleLogicAppStandard'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    appconfig_name: appconfig_name
+    appconfig_resourcegroup: appconfig_resourcegroup
+    appconfig_subscriptionId: appconfig_subscriptionId
+    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    keyvault_name: moduleKeyVault.outputs.keyvault_name
+    //applicationinsights_name: moduleApplicationInsights.outputs.applicationinsights_name
+    workflowhostingplan_name: moduleWorkflowHostingPlan.outputs.workflowhostingplan_name
+    workflowhostingplan_resourcegroup: moduleWorkflowHostingPlan.outputs.workflowhostingplan_resourcegroup
+    workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflow_hostingplan_subscriptionId
+    enableAppConfig: false
+    enableDiagnostic: false
+    enablePrivateLink: false
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+  }
+} 
 
 module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccount'
