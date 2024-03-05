@@ -86,39 +86,39 @@ resource storageDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-
   }
 }
 
-// resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
-//   parent: storage
-//   name: 'default'
-//   properties:{}
-// }
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+  parent: storage
+  name: 'default'
+  properties:{}
+}
 
-// resource storageBlobDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
-//   scope: blobService
-//   name: 'BlobDiagnosticSettings'
-//   properties: {
-//     workspaceId: loganalyticsWorkspace.id
-//     logs:[
-//       {
-//         category: 'StorageRead'
-//         enabled: true
-//       }
-//       {
-//         category: 'StorageWrite'
-//         enabled: true
-//       }
-//       {
-//         category: 'StorageDelete'
-//         enabled: true
-//       }
-//     ]
-//     metrics: [
-//       {
-//         category: 'Transaction'
-//         enabled: true
-//       }
-//     ]
-//   }
-// }
+resource storageBlobDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
+  scope: blobService
+  name: 'BlobDiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs:[
+      {
+        category: 'StorageRead'
+        enabled: true
+      }
+      {
+        category: 'StorageWrite'
+        enabled: true
+      }
+      {
+        category: 'StorageDelete'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'Transaction'
+        enabled: true
+      }
+    ]
+  }
+}
 
 resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01' = {
   parent: storage

@@ -94,9 +94,12 @@ resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01'
 // storage account fileshare 
 //****************************************************************
 
-resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = {
+resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
   name: toLower(logicapp_name)
   parent: fileService
+  properties: {
+    enabledProtocols: 'SMB'
+  }
 }
 
 //****************************************************************
