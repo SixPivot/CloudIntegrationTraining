@@ -272,6 +272,9 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     //applicationinsights_name: moduleApplicationInsights.outputs.applicationinsights_name
+    storage_name: moduleStorageAccountForLogicAppStd.outputs.storage_name
+    storage_resourcegroup: moduleStorageAccountForLogicAppStd.outputs.storage_resourcegroup
+    storage_subscriptionId: moduleStorageAccountForLogicAppStd.outputs.storage_subscriptionId
     workflowhostingplan_name: moduleWorkflowHostingPlan.outputs.workflowhostingplan_name
     workflowhostingplan_resourcegroup: moduleWorkflowHostingPlan.outputs.workflowhostingplan_resourcegroup
     workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflow_hostingplan_subscriptionId
