@@ -27,7 +27,8 @@ param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
 param virtualNetworkName string = ''
-param subnetName string = ''
+param privatelinkSubnetName string = ''
+param vnetintegrationSubnetName string = ''
 
 //****************************************************************
 // Variables
@@ -100,7 +101,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    privatelinkSubnetName: privatelinkSubnetName
   }
 }
 
@@ -248,7 +249,7 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    privatelinkSubnetName: privatelinkSubnetName
   }
 }
 
@@ -276,7 +277,7 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    privatelinkSubnetName: privatelinkSubnetName
     AppName: 'logicappstd'
     AppShortName: 'las'
   }
@@ -314,8 +315,10 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     enableAppConfig: false
     enableDiagnostic: false
     enablePrivateLink: false
+    enableVNETIntegration: true
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    privatelinkSubnetName: privatelinkSubnetName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
   }
 } 
 

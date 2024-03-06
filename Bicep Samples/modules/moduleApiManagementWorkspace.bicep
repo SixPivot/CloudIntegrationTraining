@@ -11,7 +11,7 @@ param enableAppConfig bool = false
 param enableDiagnostic bool = false
 param enablePrivateLink bool = false
 param virtualNetworkName string = ''
-param subnetName string = ''
+param privatelinkSubnetName string = ''
 
 // existing resources
 param appconfig_name string = ''

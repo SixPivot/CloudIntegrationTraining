@@ -11,8 +11,10 @@ param Instance int = 1
 param enableAppConfig bool = false
 param enableDiagnostic bool = false
 param enablePrivateLink bool = false
+param enableVNETIntegration bool = false
 param virtualNetworkName string = ''
-param subnetName string = ''
+param privatelinkSubnetName string = ''
+param vnetintegrationSubnetName string = ''
 
 // tags
 param tags object = {}
@@ -192,6 +194,40 @@ module moduleLogicAppStandardCustomConfigAppConfig './moduleLogicAppStandardCust
   dependsOn: [
     LogicAppStdAppConfigSettings
   ] 
+}
+
+//****************************************************************
+// Add Private Link for Logic App Std 
+//****************************************************************
+
+module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'modulePrivateLinkLogicAppStd'
+  params: {
+    AppLocation: logicapp_name
+    logicappstd_name: logicapp_name
+    virtualNetworkName: virtualNetworkName
+    privatelinkSubnetName: privatelinkSubnetName
+  }
+  dependsOn: [
+    LogicAppStdApp
+  ]
+} 
+
+//****************************************************************
+// Add VNET Integration for Logic App Std 
+//****************************************************************
+
+module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleVNETIntegrationLogicAppStd'
+  params: {
+    AppLocation: logicapp_name
+    logicappstd_name: logicapp_name
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
+  }
+  dependsOn: [
+    LogicAppStdApp
+  ]
 }
 
 //****************************************************************

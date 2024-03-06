@@ -1,6 +1,6 @@
 param AppLocation string = ''
 param virtualNetworkName string = ''
-param subnetName string = ''
+param privatelinkSubnetName string = ''
 param keyvault_name string = ''
 
 //****************************************************************
@@ -16,7 +16,7 @@ resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing 
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
-  name: subnetName
+  name: privatelinkSubnetName
   parent: virtualNetwork
 }
 

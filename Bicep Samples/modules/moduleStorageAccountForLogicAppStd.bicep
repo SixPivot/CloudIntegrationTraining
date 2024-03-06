@@ -12,7 +12,7 @@ param enableAppConfig bool = false
 param enableDiagnostic bool = false
 param enablePrivateLink bool = false
 param virtualNetworkName string = ''
-param subnetName string = ''
+param privatelinkSubnetName string = ''
 
 // tags
 param tags object = {}
@@ -242,7 +242,7 @@ module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep'
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    privatelinkSubnetName: privatelinkSubnetName
     storage_name: storage.name
     storageType: link.storageType
     dnsExists: link.dnsExists

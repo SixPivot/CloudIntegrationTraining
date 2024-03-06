@@ -10,7 +10,7 @@ param enableAppConfig bool = false
 param enableDiagnostic bool = false
 param enablePrivateLink bool = false
 param virtualNetworkName string = ''
-param subnetName string = ''
+param privatelinkSubnetName string = ''
 
 // tags
 param tags object = {}
@@ -171,7 +171,7 @@ module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enabl
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
+    privatelinkSubnetName: privatelinkSubnetName
     keyvault_name: keyvault.name
   }
 }
