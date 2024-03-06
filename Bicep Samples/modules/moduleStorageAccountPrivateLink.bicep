@@ -3,6 +3,7 @@ param virtualNetworkName string = ''
 param subnetName string = ''
 param storage_name string = ''
 param storageType string = ''
+param dnsExists bool = false
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -45,12 +46,16 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists) {
   name: 'privatelink.${storageType}.${environment().suffixes.storage}'
   location: 'global'
+  tags: {
+    isResourceDeployed: 'true'
+  }
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (!dnsExists) {
   parent: privateDnsZones
   name: '${privateDnsZones.name}-link'
   location: 'global'

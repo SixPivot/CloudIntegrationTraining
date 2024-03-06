@@ -222,30 +222,52 @@ resource storageQueueDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@
   }
 }
 
-var storagePrivateLinks = [
-  {
-    storageType: 'blob'
-  }
-  {
-    storageType: 'table'
-  }
-  {
-    storageType: 'queue'
-  }
-  {
-    storageType: 'file'
-  }
-  {
-    storageType: 'web'
-  }
-  {
-    storageType: 'dfs'
-  }
-]
-
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
+
+// resource privateDnsZonesblobExists 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+//   name: 'privatelink.blob.${environment().suffixes.storage}'
+// }
+
+// var blobDNSExists = contains(privateDnsZonesblobExists.tags, 'isResourceDeployed') && privateDnsZonesblobExists.tags['isResourceDeployed'] == 'true'
+
+// resource privateDnsZonesfileExists 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+//   name: 'privatelink.blob.${environment().suffixes.storage}'
+// }
+
+// var fileDNSExists = contains(privateDnsZonesfileExists.tags, 'isResourceDeployed') && privateDnsZonesfileExists.tags['isResourceDeployed'] == 'true'
+
+
+var storagePrivateLinks = [
+  {
+    storageType: 'blob'
+    dnsExists: false
+  }
+  {
+    storageType: 'table'
+    dnsExists: false
+  }
+  {
+    storageType: 'queue'
+    dnsExists: false
+  }
+  {
+    storageType: 'file'
+    dnsExists: false
+  }
+  {
+    storageType: 'web'
+    dnsExists: false
+  }
+  {
+    storageType: 'dfs'
+    dnsExists: false
+  }
+]
+
+
+
 
 module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep' = [for (link, index) in storagePrivateLinks: if (enablePrivateLink) {
   name: 'moduleStorageAccountPrivateLink-${link.storageType}'

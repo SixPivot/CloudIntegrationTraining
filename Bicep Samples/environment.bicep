@@ -222,6 +222,34 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
   }
 }
 
+module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
+  name: 'moduleStorageAccount'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    //appconfig_name: appconfig_name
+    //appconfig_resourcegroup: appconfig_resourcegroup
+    //appconfig_subscriptionId: appconfig_subscriptionId
+    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    StorageSKUName: StorageSKUName
+    enableAppConfig: false
+    enableDiagnostic: false
+    enablePrivateLink: true
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+  }
+}
+
 module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogicAppStd.bicep' = {
   name: 'moduleStorageAccountForLogicAppStd'
   params: {
@@ -286,33 +314,6 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
   }
 } 
 
-module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
-  name: 'moduleStorageAccount'
-  params: {
-    BaseName: BaseName
-    BaseShortName: BaseShortName
-    EnvironmentName: EnvironmentName
-    EnvironmentShortName: EnvironmentShortName
-    AppLocation: AppLocation
-    AzureRegion: AzureRegion
-    Instance: Instance
-    tags: {
-      BusinessOwner: BusinessOwner
-      CostCentre: CostCentre
-      Workload: Workload
-    }
-    //appconfig_name: appconfig_name
-    //appconfig_resourcegroup: appconfig_resourcegroup
-    //appconfig_subscriptionId: appconfig_subscriptionId
-    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
-    StorageSKUName: StorageSKUName
-    enableAppConfig: false
-    enableDiagnostic: false
-    enablePrivateLink: true
-    virtualNetworkName: virtualNetworkName
-    subnetName: subnetName
-  }
-}
 
 // module moduleSQLServer './modules/moduleSQLServer.bicep' = {
 //   name: 'moduleSQLServer'

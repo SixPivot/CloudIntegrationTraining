@@ -224,7 +224,12 @@ resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2022-09-0
 
 var storagePrivateLinks = [
   {
+    storageType: 'blob'
+    dnsExists: true
+  }
+  {
     storageType: 'file'
+    dnsExists: true
   }
 ]
 
