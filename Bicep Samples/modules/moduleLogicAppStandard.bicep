@@ -92,6 +92,15 @@ resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01'
   name: 'default'
 }
 
+resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = if (enableVNETIntegration) {
+  name: virtualNetworkName
+}
+
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = if (enableVNETIntegration) {
+  name: vnetintegrationSubnetName
+  parent: virtualNetwork
+}
+
 //****************************************************************
 // storage account fileshare 
 //****************************************************************
@@ -118,6 +127,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
   }
   properties: {
     serverFarmId: workflowHostingPlan.id
+    virtualNetworkSubnetId: enableVNETIntegration ? subnet.id : ''
     httpsOnly: true
     siteConfig: {
       netFrameworkVersion: 'v4.0'
