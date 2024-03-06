@@ -227,10 +227,10 @@ var storagePrivateLinks = [
     storageType: 'blob'
     dnsExists: true
   }
-  // {
-  //   storageType: 'file'
-  //   dnsExists: true
-  // }
+  {
+    storageType: 'file'
+    dnsExists: true
+  }
 ]
 
 //****************************************************************

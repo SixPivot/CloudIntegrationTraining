@@ -215,10 +215,12 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
-    appconfig_name: appconfig_name
-    appconfig_resourcegroup: appconfig_resourcegroup
-    appconfig_subscriptionId: appconfig_subscriptionId
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
     WorkflowHostingPlanSKUName: WorkflowHostingPlanSKUName
+    enableAppConfig: false
+    enableDiagnostic: false
   }
 }
 
@@ -297,9 +299,9 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
-    appconfig_name: appconfig_name
-    appconfig_resourcegroup: appconfig_resourcegroup
-    appconfig_subscriptionId: appconfig_subscriptionId
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
     //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     //applicationinsights_name: moduleApplicationInsights.outputs.applicationinsights_name
