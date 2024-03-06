@@ -169,8 +169,8 @@ module moduleLogicAppStandardCustomConfig './moduleLogicAppStandardCustomConfig.
     logicapp_name: logicapp_name
     currentAppSettings: list(resourceId('Microsoft.Web/sites/config', logicapp_name, 'appsettings'), '2022-03-01').properties
     newAppSettings: {
-      APPINSIGHTS_INSTRUMENTATIONKEY: appinsights.properties.InstrumentationKey
-      APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights.properties.ConnectionString
+      APPINSIGHTS_INSTRUMENTATIONKEY: enableDiagnostic ? appinsights.properties.InstrumentationKey : ''
+      APPLICATIONINSIGHTS_CONNECTION_STRING: enableDiagnostic ? appinsights.properties.ConnectionString : ''
       ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
     }
   }
@@ -185,7 +185,7 @@ module moduleLogicAppStandardCustomConfigAppConfig './moduleLogicAppStandardCust
     logicapp_name: logicapp_name
     currentAppSettings: list(resourceId('Microsoft.Web/sites/config', logicapp_name, 'appsettings'), '2022-03-01').properties
     newAppSettings: {
-      AppConfigurationEndpoint: appconfig.properties.endpoint
+      AppConfigurationEndpoint: enableAppConfig ? appconfig.properties.endpoint : ''
       AppConfigurationEnvironment: toLower(EnvironmentName)
     }
   }
