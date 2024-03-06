@@ -46,18 +46,19 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
+var privateDnsZones_name = 'privatelink.${storageType}.${environment().suffixes.storage}'
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists) {
-  name: 'privatelink.${storageType}.${environment().suffixes.storage}'
+  name: privateDnsZones_name
   location: 'global'
   tags: {
     isResourceDeployed: 'true'
   }
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (!dnsExists) {
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZones
-  name: '${privateDnsZones.name}-link'
+  name: '${privateDnsZones_name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -73,11 +74,14 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: privateDnsZones.name
+        name: privateDnsZones_name
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }
       }
     ]
   }
+  dependsOn: [
+    privateDnsZoneLink
+  ]
 }
