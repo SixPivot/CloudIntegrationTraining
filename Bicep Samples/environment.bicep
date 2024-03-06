@@ -278,6 +278,9 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     AppName: 'logicappstd'
     AppShortName: 'las'
   }
+  dependsOn: [
+    moduleStorageAccount
+  ]
 }
 module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
   name: 'moduleLogicAppStandard'
