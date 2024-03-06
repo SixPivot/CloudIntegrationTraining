@@ -11,6 +11,8 @@ param AppLocation string = resourceGroup().location
 param AzureRegion string = 'ause'
 param Instance int = 1
 var WorkflowHostingPlanSKUName = 'WS1'
+var FunctionAppHostingPlanSKUName = 'EP1'
+var FunctionAppHostingPlanTierName = 'Dynamic'
 
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
@@ -175,31 +177,30 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
 //   }
 // }
 
-// module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bicep' = {
-//   name: 'moduleFunctionAppHostingPlan'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
-//     FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
-//   }
-// }
+module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bicep' = {
+  name: 'moduleFunctionAppHostingPlan'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
+    FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
+    FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
+    enableAppConfig: false
+    enableDiagnostic: false
+  }
+}
 
 module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
   name: 'moduleWorkflowHostingPlan'
