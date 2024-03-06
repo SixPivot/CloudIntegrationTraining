@@ -245,6 +245,7 @@ module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep'
     subnetName: subnetName
     storage_name: storage.name
     storageType: link.storageType
+    dnsExists: link.dnsExists
   }
 }]
 
