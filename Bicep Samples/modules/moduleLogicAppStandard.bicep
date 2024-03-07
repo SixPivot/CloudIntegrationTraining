@@ -127,7 +127,6 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
   }
   properties: {
     serverFarmId: workflowHostingPlan.id
-    virtualNetworkSubnetId: enableVNETIntegration ? subnet.id : ''
     httpsOnly: true
     siteConfig: {
       netFrameworkVersion: 'v4.0'
@@ -135,22 +134,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
       ftpsState: 'Disabled'
       use32BitWorkerProcess: false
       appSettings: []
-      ipSecurityRestrictions: [
-        // {
-        //   ipAddress: '${apimanagement_publicIPAddress}/32'
-        //   action: 'Allow'
-        //   priority: 100
-        //   name: 'APIM'
-        //   description: 'APIM'
-        // }
-        {
-          ipAddress: '180.150.54.1/32'
-          action: 'Allow'
-          priority: 200
-          name: 'Bill Home'
-          description: 'Bill Home'
-        }
-      ]
+      ipSecurityRestrictions: []
       ipSecurityRestrictionsDefaultAction: 'Deny'
       scmIpSecurityRestrictionsDefaultAction: 'Allow'
       scmIpSecurityRestrictionsUseMain: false
@@ -227,27 +211,18 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
 // Add VNET Integration for Logic App Std 
 //****************************************************************
 
-resource virtualnetworkConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-01-01' = {
-  name: subnet.name
-  parent: LogicAppStdApp
-  properties: {
-    vnetResourceId: virtualNetwork.id
-    isSwift: true
+module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleVNETIntegrationLogicAppStd'
+  params: {
+    AppLocation: logicapp_name
+    logicappstd_name: logicapp_name
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
   }
-} 
-
-// module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
-//   name: 'moduleVNETIntegrationLogicAppStd'
-//   params: {
-//     AppLocation: logicapp_name
-//     logicappstd_name: logicapp_name
-//     virtualNetworkName: virtualNetworkName
-//     vnetintegrationSubnetName: vnetintegrationSubnetName
-//   }
-//   dependsOn: [
-//     LogicAppStdApp
-//   ]
-// }
+  dependsOn: [
+    LogicAppStdApp
+  ]
+}
 
 //****************************************************************
 // Add Logic App Std reader role to App Configuration
