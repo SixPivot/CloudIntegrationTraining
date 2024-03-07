@@ -199,7 +199,7 @@ module moduleLogicAppStandardCustomConfigAppConfig './moduleLogicAppStandardCust
 module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' = if (enablePrivateLink) {
   name: 'modulePrivateLinkLogicAppStd'
   params: {
-    AppLocation: logicapp_name
+    AppLocation: AppLocation
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
     privatelinkSubnetName: privatelinkSubnetName
