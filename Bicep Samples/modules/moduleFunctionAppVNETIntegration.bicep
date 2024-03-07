@@ -1,13 +1,13 @@
 param virtualNetworkName string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
-param logicappstd_name string = ''
+param functionapp_name string = ''
 
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
-resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
-  name: logicappstd_name
+resource FunctionApp 'Microsoft.Web/sites@2022-09-01' existing = {
+  name: functionapp_name
 }
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
@@ -31,7 +31,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
 }
 
 resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
-  parent: LogicAppStdApp
+  parent: FunctionApp
   name: 'virtualNetwork'
   properties: {
     //subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName)

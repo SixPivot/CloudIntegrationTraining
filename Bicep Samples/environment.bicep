@@ -31,7 +31,9 @@ param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
 param virtualNetworkName string = ''
 param privatelinkSubnetName string = ''
 param logicAppStdSubnetName string = ''
-param logicAppStdSubnetAddressPrefix string = ''  
+param logicAppStdSubnetAddressPrefix string = '' 
+param functionAppStdSubnetName string = ''
+param functionAppStdSubnetAddressPrefix string = '' 
 
 //****************************************************************
 // Variables
@@ -178,55 +180,6 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
 //   }
 // }
 
-module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bicep' = {
-  name: 'moduleFunctionAppHostingPlan'
-  params: {
-    BaseName: BaseName
-    BaseShortName: BaseShortName
-    EnvironmentName: EnvironmentName
-    EnvironmentShortName: EnvironmentShortName
-    AppLocation: AppLocation
-    AzureRegion: AzureRegion
-    Instance: Instance
-    tags: {
-      BusinessOwner: BusinessOwner
-      CostCentre: CostCentre
-      Workload: Workload
-    }
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
-    FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
-    FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
-    enableAppConfig: false
-    enableDiagnostic: false
-  }
-}
-
-module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
-  name: 'moduleWorkflowHostingPlan'
-  params: {
-    BaseName: BaseName
-    BaseShortName: BaseShortName
-    EnvironmentName: EnvironmentName
-    EnvironmentShortName: EnvironmentShortName
-    AppLocation: AppLocation
-    AzureRegion: AzureRegion
-    Instance: Instance
-    tags: {
-      BusinessOwner: BusinessOwner
-      CostCentre: CostCentre
-      Workload: Workload
-    }
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
-    WorkflowHostingPlanSKUName: WorkflowHostingPlanSKUName
-    enableAppConfig: false
-    enableDiagnostic: false
-  }
-}
-
 module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccount'
   params: {
@@ -252,6 +205,125 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
     privatelinkSubnetName: privatelinkSubnetName
+  }
+}
+
+module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bicep' = {
+  name: 'moduleFunctionAppHostingPlan'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
+    FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
+    FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
+    enableAppConfig: false
+    enableDiagnostic: false
+  }
+}
+
+module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunctionApp.bicep' = {
+  name: 'moduleStorageAccountForFunctionApp'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    //appconfig_name: appconfig_name
+    //appconfig_resourcegroup: appconfig_resourcegroup
+    //appconfig_subscriptionId: appconfig_subscriptionId
+    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    StorageSKUName: StorageSKUName
+    enableAppConfig: false
+    enableDiagnostic: false
+    enablePrivateLink: true
+    virtualNetworkName: virtualNetworkName
+    privatelinkSubnetName: privatelinkSubnetName
+    AppName: 'functionapp'
+    AppShortName: 'fn'
+  }
+  dependsOn: [
+    moduleStorageAccount
+  ]
+}
+
+module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
+  name: 'moduleFunctionApp'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
+    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    keyvault_name: moduleKeyVault.outputs.keyvault_name
+    //applicationinsights_name: moduleApplicationInsights.outputs.applicationinsights_name
+    storage_name: moduleStorageAccountForFunctionApp.outputs.storage_name
+    storage_resourcegroup: moduleStorageAccountForFunctionApp.outputs.storage_resourcegroup
+    storage_subscriptionId: moduleStorageAccountForFunctionApp.outputs.storage_subscriptionId
+    functionapphostingplan_name: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_name
+    functionapphostingplan_resourcegroup: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_resourcegroup
+    functionapphostingplan_subscriptionId: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_subscriptionId
+    enableAppConfig: false
+    enableDiagnostic: false
+    enablePrivateLink: true
+    enableVNETIntegration: true
+    virtualNetworkName: virtualNetworkName
+    privatelinkSubnetName: privatelinkSubnetName
+    vnetintegrationSubnetName: functionAppStdSubnetName
+    vnetintegrationSubnetAddressPrefix: functionAppStdSubnetAddressPrefix
+  }
+} 
+module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
+  name: 'moduleWorkflowHostingPlan'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    // appconfig_name: appconfig_name
+    // appconfig_resourcegroup: appconfig_resourcegroup
+    // appconfig_subscriptionId: appconfig_subscriptionId
+    WorkflowHostingPlanSKUName: WorkflowHostingPlanSKUName
+    enableAppConfig: false
+    enableDiagnostic: false
   }
 }
 
@@ -287,6 +359,7 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     moduleStorageAccount
   ]
 }
+
 module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
   name: 'moduleLogicAppStandard'
   params: {

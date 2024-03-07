@@ -80,3 +80,4 @@ module moduleAppConfigKeyValuefunctionHostingPlanResourcegroup './moduleAppConfi
 
 output functionapphostingplan_name string = functionAppHostingPlan.name
 output functionapphostingplan_resourcegroup string = resourceGroup().name
+output functionapphostingplan_subscriptionId string = subscription().subscriptionId

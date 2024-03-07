@@ -11,8 +11,11 @@ param Instance int = 1
 param enableAppConfig bool = false
 param enableDiagnostic bool = false
 param enablePrivateLink bool = false
+param enableVNETIntegration bool = false
 param virtualNetworkName string = ''
 param privatelinkSubnetName string = ''
+param vnetintegrationSubnetName string = ''
+param vnetintegrationSubnetAddressPrefix string = ''
 
 // tags
 param tags object = {}
@@ -29,8 +32,10 @@ param applicationinsights_name string = ''
 param applicationinsights_resourcegroup string = ''
 param functionapphostingplan_name string = ''
 param functionapphostingplan_resourcegroup string = ''
+param functionapphostingplan_subscriptionId string = ''
 param storage_name string = ''
 param storage_resourcegroup string = ''
+param storage_subscriptionId string = ''
 param apimanagement_publicIPAddress string = ''
 
 param functionappWorkerRuntime string = 'dotnet-isolated'
@@ -183,6 +188,41 @@ module moduleFunctionAppCustomConfigAppConfig './moduleFunctionAppCustomConfig.b
     functionAppConfigSettings
   ] 
 }
+
+//****************************************************************
+// Add Private Link for Function App 
+//****************************************************************
+
+module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'modulePrivateLinkLogicAppStd'
+  params: {
+    AppLocation: AppLocation
+    logicappstd_name: functionapp_name
+    virtualNetworkName: virtualNetworkName
+    privatelinkSubnetName: privatelinkSubnetName
+  }
+  dependsOn: [
+    functionApp
+  ]
+} 
+
+//****************************************************************
+// Add VNET Integration for Function App
+//****************************************************************
+
+module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleVNETIntegrationLogicAppStd'
+  params: {
+    logicappstd_name: functionapp_name
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+  }
+  dependsOn: [
+    functionApp
+  ]
+}
+
 
 //****************************************************************
 // Add Function App Std reader role to App Configuration

@@ -216,7 +216,6 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
 module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
   name: 'moduleVNETIntegrationLogicAppStd'
   params: {
-    AppLocation: logicapp_name
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
     vnetintegrationSubnetName: vnetintegrationSubnetName
