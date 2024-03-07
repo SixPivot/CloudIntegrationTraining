@@ -316,7 +316,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     enableAppConfig: false
     enableDiagnostic: false
     enablePrivateLink: false
-    enableVNETIntegration: false
+    enableVNETIntegration: true
     virtualNetworkName: virtualNetworkName
     privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: vnetintegrationSubnetName
