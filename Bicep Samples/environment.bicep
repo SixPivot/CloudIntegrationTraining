@@ -30,7 +30,8 @@ param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
 param virtualNetworkName string = ''
 param privatelinkSubnetName string = ''
-param vnetintegrationSubnetName string = ''
+param logicAppStdSubnetName string = ''
+param logicAppStdSubnetAddressPrefix string = ''  
 
 //****************************************************************
 // Variables
@@ -319,7 +320,9 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     enableVNETIntegration: true
     virtualNetworkName: virtualNetworkName
     privatelinkSubnetName: privatelinkSubnetName
-    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetName: logicAppStdSubnetName
+    vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
+    //vnetintegrationSubnetAddressPrefix: '172.20.1.0/24'
   }
 } 
 

@@ -15,6 +15,7 @@ param enableVNETIntegration bool = false
 param virtualNetworkName string = ''
 param privatelinkSubnetName string = ''
 param vnetintegrationSubnetName string = ''
+param vnetintegrationSubnetAddressPrefix string = ''
 
 // tags
 param tags object = {}
@@ -219,6 +220,7 @@ module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
     vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
   }
   dependsOn: [
     LogicAppStdApp

@@ -1,6 +1,7 @@
 param AppLocation string = ''
 param virtualNetworkName string = ''
 param vnetintegrationSubnetName string = ''
+param vnetintegrationSubnetAddressPrefix string = '172.20.1.0/24'
 param logicappstd_name string = ''
 
 //****************************************************************
@@ -14,16 +15,28 @@ resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing 
   name: virtualNetworkName
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
   name: vnetintegrationSubnetName
   parent: virtualNetwork
+  properties: {
+    addressPrefix: vnetintegrationSubnetAddressPrefix
+    delegations: [
+      {
+        name: 'delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverFarms'
+        }
+      }
+    ]
+  }
 }
 
 resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: LogicAppStdApp
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName)
+    //subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName)
+    subnetResourceId: subnet.id
     swiftSupported: true
   }
 }
