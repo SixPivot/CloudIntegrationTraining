@@ -23,7 +23,7 @@ resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: LogicAppStdApp
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: subnet.id
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName)
     swiftSupported: true
   }
 }
