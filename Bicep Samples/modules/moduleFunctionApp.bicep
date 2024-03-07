@@ -165,8 +165,8 @@ module moduleFunctionAppCustomConfigAppInsights './moduleFunctionAppCustomConfig
     functionapp_name: functionapp_name
     currentAppSettings: list(resourceId('Microsoft.Web/sites/config', functionapp_name, 'appsettings'), '2022-03-01').properties
     newAppSettings: {
-      APPINSIGHTS_INSTRUMENTATIONKEY: appinsights.properties.InstrumentationKey
-      APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights.properties.ConnectionString
+      APPINSIGHTS_INSTRUMENTATIONKEY: enableDiagnostic ? appinsights.properties.InstrumentationKey : ''
+      APPLICATIONINSIGHTS_CONNECTION_STRING: enableDiagnostic ? appinsights.properties.ConnectionString : ''
     }
   }
   dependsOn: [
@@ -180,8 +180,8 @@ module moduleFunctionAppCustomConfigAppConfig './moduleFunctionAppCustomConfig.b
     functionapp_name: functionapp_name
     currentAppSettings: list(resourceId('Microsoft.Web/sites/config', functionapp_name, 'appsettings'), '2022-03-01').properties
     newAppSettings: {
-      AppConfigurationEndpoint: appconfig.properties.endpoint
-      AppConfigurationEnvironment: toLower(EnvironmentName)
+      AppConfigurationEndpoint: enableAppConfig ? appconfig.properties.endpoint : ''
+      AppConfigurationEnvironment: enableAppConfig ? toLower(EnvironmentName) : ''
     }
   }
   dependsOn: [
