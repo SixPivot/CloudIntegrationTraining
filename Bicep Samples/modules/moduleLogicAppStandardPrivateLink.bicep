@@ -35,7 +35,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
         properties: {
           privateLinkServiceId: LogicAppStdApp.id
           groupIds: [
-            'vault'
+            'sites'
           ]
         }
       }
@@ -44,7 +44,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 }
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.vaultcore.azure.net'
+  name: 'privatelink.azurewebsites.net'
   location: 'global'
 }
 

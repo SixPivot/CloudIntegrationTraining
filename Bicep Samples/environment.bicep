@@ -316,7 +316,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflow_hostingplan_subscriptionId
     enableAppConfig: false
     enableDiagnostic: false
-    enablePrivateLink: false
+    enablePrivateLink: true
     enableVNETIntegration: true
     virtualNetworkName: virtualNetworkName
     privatelinkSubnetName: privatelinkSubnetName
