@@ -29,10 +29,10 @@ resource virtualnetworkConnection 'Microsoft.Web/sites/virtualNetworkConnections
 } 
 
 module moduleLogicAppStandardCustomProperties './moduleLogicAppStandardCustomProperties.bicep' = {
-  name: 'moduleLogicAppStandardCustomConfigAppConfig'
+  name: 'moduleLogicAppStandardCustomProperties'
   params:{
     logicapp_name: logicappstd_name
-    currentProperties: list(resourceId('Microsoft.Web/sites', logicappstd_name), '2022-03-01').properties
+    currentProperties: LogicAppStdApp.properties
     newProperties: {
       virtualNetworkSubnetId: subnet.id
     }
