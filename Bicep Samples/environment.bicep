@@ -357,6 +357,7 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
   }
   dependsOn: [
     moduleStorageAccount
+    moduleStorageAccountForFunctionApp
   ]
 }
 
