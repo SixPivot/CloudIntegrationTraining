@@ -127,6 +127,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
   }
   properties: {
     serverFarmId: workflowHostingPlan.id
+    publicNetworkAccess: 'enabled'
     httpsOnly: true
     siteConfig: {
       netFrameworkVersion: 'v4.0'

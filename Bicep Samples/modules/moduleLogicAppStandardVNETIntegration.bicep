@@ -32,7 +32,7 @@ module moduleLogicAppStandardCustomProperties './moduleLogicAppStandardCustomPro
   name: 'moduleLogicAppStandardCustomConfigAppConfig'
   params:{
     logicapp_name: logicappstd_name
-    currentProperties: list(resourceId('Microsoft.Web/sites', logicappstd_name, 'properties'), '2022-03-01').properties
+    currentProperties: list(resourceId('Microsoft.Web/sites', logicappstd_name), '2022-03-01').properties
     newProperties: {
       virtualNetworkSubnetId: subnet.id
     }
