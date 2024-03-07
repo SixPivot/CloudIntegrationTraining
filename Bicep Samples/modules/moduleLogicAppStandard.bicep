@@ -227,18 +227,27 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
 // Add VNET Integration for Logic App Std 
 //****************************************************************
 
-module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
-  name: 'moduleVNETIntegrationLogicAppStd'
-  params: {
-    AppLocation: logicapp_name
-    logicappstd_name: logicapp_name
-    virtualNetworkName: virtualNetworkName
-    vnetintegrationSubnetName: vnetintegrationSubnetName
+resource virtualnetworkConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-01-01' = {
+  name: subnet.name
+  parent: LogicAppStdApp
+  properties: {
+    vnetResourceId: virtualNetwork.id
+    isSwift: true
   }
-  dependsOn: [
-    LogicAppStdApp
-  ]
-}
+} 
+
+// module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
+//   name: 'moduleVNETIntegrationLogicAppStd'
+//   params: {
+//     AppLocation: logicapp_name
+//     logicappstd_name: logicapp_name
+//     virtualNetworkName: virtualNetworkName
+//     vnetintegrationSubnetName: vnetintegrationSubnetName
+//   }
+//   dependsOn: [
+//     LogicAppStdApp
+//   ]
+// }
 
 //****************************************************************
 // Add Logic App Std reader role to App Configuration
