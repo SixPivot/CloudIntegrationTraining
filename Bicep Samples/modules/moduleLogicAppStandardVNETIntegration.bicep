@@ -19,25 +19,34 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing 
   parent: virtualNetwork
 }
 
-resource virtualnetworkConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-01-01' = {
-  name: subnet.name
+resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: LogicAppStdApp
+  name: 'virtualNetwork'
   properties: {
-    vnetResourceId: virtualNetwork.id
-    isSwift: true
+    subnetResourceId: subnet.id
+    swiftSupported: true
   }
-} 
-
-module moduleLogicAppStandardCustomProperties './moduleLogicAppStandardCustomProperties.bicep' = {
-  name: 'moduleLogicAppStandardCustomProperties'
-  params:{
-    logicapp_name: logicappstd_name
-    currentProperties: LogicAppStdApp.properties
-    newProperties: {
-      virtualNetworkSubnetId: subnet.id
-    }
-  }
-  dependsOn: [
-    virtualnetworkConnection
-  ] 
 }
+
+// resource virtualnetworkConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-01-01' = {
+//   name: subnet.name
+//   parent: LogicAppStdApp
+//   properties: {
+//     vnetResourceId: virtualNetwork.id
+//     isSwift: true
+//   }
+// } 
+
+// module moduleLogicAppStandardCustomProperties './moduleLogicAppStandardCustomProperties.bicep' = {
+//   name: 'moduleLogicAppStandardCustomProperties'
+//   params:{
+//     logicapp_name: logicappstd_name
+//     currentProperties: LogicAppStdApp.properties
+//     newProperties: {
+//       virtualNetworkSubnetId: subnet.id
+//     }
+//   }
+//   dependsOn: [
+//     virtualnetworkConnection
+//   ] 
+// }
