@@ -13,6 +13,7 @@ param enableDiagnostic bool = false
 param enablePrivateLink bool = false
 param enableVNETIntegration bool = false
 param virtualNetworkName string = ''
+param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
@@ -218,6 +219,7 @@ module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration
   params: {
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: vnetintegrationSubnetName
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
   }

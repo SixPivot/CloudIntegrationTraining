@@ -1,4 +1,5 @@
 param virtualNetworkName string = ''
+param virtualNetworkResourceGroup string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
 param logicappstd_name string = ''
@@ -12,23 +13,29 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
   name: vnetintegrationSubnetName
   parent: virtualNetwork
-  properties: {
-    addressPrefix: vnetintegrationSubnetAddressPrefix
-    delegations: [
-      {
-        name: 'delegation'
-        properties: {
-          serviceName: 'Microsoft.Web/serverFarms'
-        }
-      }
-    ]
-  }
 }
+
+// resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
+//   name: vnetintegrationSubnetName
+//   parent: virtualNetwork
+//   properties: {
+//     addressPrefix: vnetintegrationSubnetAddressPrefix
+//     delegations: [
+//       {
+//         name: 'delegation'
+//         properties: {
+//           serviceName: 'Microsoft.Web/serverFarms'
+//         }
+//       }
+//     ]
+//   }
+// }
 
 resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: LogicAppStdApp
