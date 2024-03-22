@@ -127,20 +127,20 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       use32BitWorkerProcess: false
       appSettings: []
       ipSecurityRestrictions: [
-        {
-          ipAddress: '${apimanagement_publicIPAddress}/32'
-          action: 'Allow'
-          priority: 100
-          name: 'APIM'
-          description: 'APIM'
-        }
-        {
-          ipAddress: '180.150.54.1/32'
-          action: 'Allow'
-          priority: 200
-          name: 'Bill Home'
-          description: 'Bill Home'
-        }
+        // {
+        //   ipAddress: '${apimanagement_publicIPAddress}/32'
+        //   action: 'Allow'
+        //   priority: 100
+        //   name: 'APIM'
+        //   description: 'APIM'
+        // }
+        // {
+        //   ipAddress: '180.150.54.1/32'
+        //   action: 'Allow'
+        //   priority: 200
+        //   name: 'Bill Home'
+        //   description: 'Bill Home'
+        // }
       ]
       ipSecurityRestrictionsDefaultAction: 'Deny'
       scmIpSecurityRestrictionsDefaultAction: 'Allow'

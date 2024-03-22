@@ -299,7 +299,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     functionapphostingplan_name: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_name
     functionapphostingplan_resourcegroup: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_resourcegroup
     functionapphostingplan_subscriptionId: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_subscriptionId
-    enableAppConfig: false
+    //apimanagement_publicIPAddress: 
     enableDiagnostic: false
     enablePrivateLink: true
     enableVNETIntegration: true
