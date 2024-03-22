@@ -1,6 +1,6 @@
 // environment parameters
-param BaseName string = 'enterpriseapps'
-param BaseShortName string = 'ea'
+param BaseName string = 'integration'
+param BaseShortName string = 'int'
 param EnvironmentName string = 'dev'
 param EnvironmentShortName string = 'dev'
 param AppLocation string = resourceGroup().location
@@ -30,8 +30,10 @@ param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
 param virtualNetworkName string = ''
 param privatelinkSubnetName string = ''
+param createLogicAppStdSubnet bool
 param logicAppStdSubnetName string = ''
 param logicAppStdSubnetAddressPrefix string = '' 
+param createFunctionAppSubnet bool
 param functionAppStdSubnetName string = ''
 param functionAppStdSubnetAddressPrefix string = '' 
 
@@ -301,6 +303,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: functionAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: functionAppStdSubnetAddressPrefix
+    createSubnet: createFunctionAppSubnet
   }
 } 
 module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
@@ -396,6 +399,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
+    createSubnet: createLogicAppStdSubnet
     //vnetintegrationSubnetAddressPrefix: '172.20.1.0/24'
   }
 } 

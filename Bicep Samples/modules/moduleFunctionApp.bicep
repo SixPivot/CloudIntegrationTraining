@@ -13,9 +13,11 @@ param enableDiagnostic bool = false
 param enablePrivateLink bool = false
 param enableVNETIntegration bool = false
 param virtualNetworkName string = ''
+param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
+param createSubnet bool 
 
 // tags
 param tags object = {}
@@ -210,13 +212,15 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
 // Add VNET Integration for Function App
 //****************************************************************
 
-module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
+module moduleFunctionAppVNETIntegration './moduleFunctionAppVNETIntegration.bicep' = if (enableVNETIntegration) {
   name: 'moduleVNETIntegrationLogicAppStd'
   params: {
-    logicappstd_name: functionapp_name
+    functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: vnetintegrationSubnetName
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    createSubnet: createSubnet
   }
   dependsOn: [
     functionApp

@@ -17,6 +17,7 @@ param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
+param createSubnet bool 
 
 // tags
 param tags object = {}
@@ -222,6 +223,7 @@ module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: vnetintegrationSubnetName
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    createSubnet: createSubnet
   }
   dependsOn: [
     LogicAppStdApp

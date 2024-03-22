@@ -1,7 +1,9 @@
-param virtualNetworkName string = ''
-param vnetintegrationSubnetName string = ''
-param vnetintegrationSubnetAddressPrefix string = ''
-param functionapp_name string = ''
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param vnetintegrationSubnetName string 
+param vnetintegrationSubnetAddressPrefix string 
+param functionapp_name string 
+param createSubnet bool 
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -10,23 +12,15 @@ resource FunctionApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functionapp_name
 }
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
-  name: virtualNetworkName
-}
-
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
-  name: vnetintegrationSubnetName
-  parent: virtualNetwork
-  properties: {
-    addressPrefix: vnetintegrationSubnetAddressPrefix
-    delegations: [
-      {
-        name: 'delegation'
-        properties: {
-          serviceName: 'Microsoft.Web/serverFarms'
-        }
-      }
-    ]
+module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
+  name: 'moduleCreateSubnet'
+  scope: resourceGroup(virtualNetworkResourceGroup)
+  params: {
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
+    createSubnet: createSubnet
   }
 }
 
@@ -34,8 +28,7 @@ resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: FunctionApp
   name: 'virtualNetwork'
   properties: {
-    //subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName)
-    subnetResourceId: subnet.id
+    subnetResourceId: moduleCreateSubnet.outputs.subnet_id
     swiftSupported: true
   }
 }
