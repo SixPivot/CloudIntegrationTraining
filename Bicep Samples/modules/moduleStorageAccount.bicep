@@ -8,8 +8,8 @@ param EnvironmentShortName string = ''
 param AppLocation string = ''
 param AzureRegion string = ''
 param Instance int = 1
-param enableAppConfig bool = false
-param enableDiagnostic bool = false
+param enableAppConfig bool
+param enableDiagnostic bool
 param enablePrivateLink bool = false
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''

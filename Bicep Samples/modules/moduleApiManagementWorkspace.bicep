@@ -7,8 +7,8 @@ param AppLocation string = ''
 param AzureRegion string = 'ause'
 param Instance int = 1
 param apimanagementworkspace_name string = ''
-param enableAppConfig bool = false
-param enableDiagnostic bool = false
+param enableAppConfig bool 
+param enableDiagnostic bool 
 param enablePrivateLink bool = false
 param virtualNetworkName string = ''
 param privatelinkSubnetName string = ''

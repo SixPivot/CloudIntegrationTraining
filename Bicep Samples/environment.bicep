@@ -10,9 +10,13 @@ param AppLocation string = resourceGroup().location
 ])
 param AzureRegion string = 'ause'
 param Instance int = 1
-var WorkflowHostingPlanSKUName = 'WS1'
-var FunctionAppHostingPlanSKUName = 'EP1'
-var FunctionAppHostingPlanTierName = 'Dynamic'
+param WorkflowHostingPlanSKUName string = 'WS1'
+param FunctionAppHostingPlanSKUName string = 'EP1'
+param FunctionAppHostingPlanTierName string = 'Dynamic'
+
+param SQLDatabaseSKUName string = 'Standard'
+param SQLDatabaseCapacity int = toLower(EnvironmentName) == 'prod' ? 50 : 20
+param SQLDatabaseTierName string = 'Standard'
 
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
@@ -25,9 +29,13 @@ param KeyVaultAdministratorsGroupId string = ''
 param KeyVaultReaderGroupId string = ''
 
 // existing resources
+param enableAppConfig bool = false
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
+param enableDiagnostic bool = false
+param enablePrivateLink bool = true
+param enableVNETIntegration bool = true
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
@@ -47,41 +55,34 @@ param functionAppSubnetAddressPrefix string = ''
 // var ApiManagementPublisherName = 'wilsongroupau'
 // var ApiManagementPublisherEmail = 'trevor.booth@wilsongroupau.com'
 
-// var FunctionAppHostingPlanSKUName = toLower(EnvironmentName) == 'prod' ? 'EP1' : 'Y1'
-// var FunctionAppHostingPlanTierName = 'Dynamic'
-
-// var WorkflowHostingPlanSKUName = 'WS1'
-
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
-
-// var SQLDatabaseSKUName = 'Standard'
-// var SQLDatabaseCapacity = toLower(EnvironmentName) == 'prod' ? 50 : 20
-// var SQLDatabaseTierName = 'Standard'
 
 //****************************************************************
 // Create Resources
 //****************************************************************
 
-// module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
-//   name: 'moduleLogAnalyticsWorkspace'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     tags: {
-//       BusinessOwner: BusinessOwner
-//       CostCentre: CostCentre
-//       Workload: Workload
-//     }
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//   }
-// }
+module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (enableDiagnostic) {
+  name: 'moduleLogAnalyticsWorkspace'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+  }
+}
 
 module moduleKeyVault './modules/moduleKeyVault.bicep' = {
   name: 'moduleKeyVault'
@@ -101,44 +102,43 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
     KeyVaultAdministratorsGroupId: KeyVaultAdministratorsGroupId
     KeyVaultReaderGroupId: KeyVaultReaderGroupId
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
-    // loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
-    enableAppConfig: false
-    enableDiagnostic: false
-    enablePrivateLink: true
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
   }
 }
 
-// module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = {
-//   name: 'moduleApplicationInsights'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
-//     keyvault_name: moduleKeyVault.outputs.keyvault_name
-//   }
-// }
+module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = if (enableDiagnostic) {
+  name: 'moduleApplicationInsights'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    keyvault_name: moduleKeyVault.outputs.keyvault_name
+  }
+}
 
 // var policyString = loadTextContent('./base/APIMpolicies/Correlation.xml')
 
@@ -177,10 +177,12 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
 //     Owner: Owner
 //     ServiceClass: ServiceClass
 //     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+//     enableAppConfig: enableAppConfig
+//     appconfig_name: enableAppConfig ? appconfig_name : ''
+//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+//     enableDiagnostic: enableDiagnostic
+//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
 //   }
 // }
 
@@ -199,14 +201,14 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
-    //appconfig_name: appconfig_name
-    //appconfig_resourcegroup: appconfig_resourcegroup
-    //appconfig_subscriptionId: appconfig_subscriptionId
-    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     StorageSKUName: StorageSKUName
-    enableAppConfig: false
-    enableDiagnostic: false
-    enablePrivateLink: true
+    enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
@@ -228,13 +230,14 @@ module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bice
       CostCentre: CostCentre
       Workload: Workload
     }
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
     FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
-    enableAppConfig: false
-    enableDiagnostic: false
   }
 }
 
@@ -253,14 +256,14 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunc
       CostCentre: CostCentre
       Workload: Workload
     }
-    //appconfig_name: appconfig_name
-    //appconfig_resourcegroup: appconfig_resourcegroup
-    //appconfig_subscriptionId: appconfig_subscriptionId
-    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     StorageSKUName: StorageSKUName
-    enableAppConfig: false
-    enableDiagnostic: false
-    enablePrivateLink: true
+    enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
@@ -287,12 +290,14 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
-    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
-    //applicationinsights_name: moduleApplicationInsights.outputs.applicationinsights_name
     storage_name: moduleStorageAccountForFunctionApp.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForFunctionApp.outputs.storage_resourcegroup
     storage_subscriptionId: moduleStorageAccountForFunctionApp.outputs.storage_subscriptionId
@@ -300,9 +305,8 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     functionapphostingplan_resourcegroup: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_resourcegroup
     functionapphostingplan_subscriptionId: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_subscriptionId
     //apimanagement_publicIPAddress: 
-    enableDiagnostic: false
-    enablePrivateLink: true
-    enableVNETIntegration: true
+    enablePrivateLink: enablePrivateLink
+    enableVNETIntegration: enableVNETIntegration
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
@@ -327,12 +331,13 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
     WorkflowHostingPlanSKUName: WorkflowHostingPlanSKUName
-    enableAppConfig: false
-    enableDiagnostic: false
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
   }
 }
 
@@ -351,14 +356,14 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
       CostCentre: CostCentre
       Workload: Workload
     }
-    //appconfig_name: appconfig_name
-    //appconfig_resourcegroup: appconfig_resourcegroup
-    //appconfig_subscriptionId: appconfig_subscriptionId
-    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     StorageSKUName: StorageSKUName
-    enableAppConfig: false
-    enableDiagnostic: false
-    enablePrivateLink: true
+    enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
@@ -386,22 +391,22 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
-    // appconfig_name: appconfig_name
-    // appconfig_resourcegroup: appconfig_resourcegroup
-    // appconfig_subscriptionId: appconfig_subscriptionId
-    //loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
-    //applicationinsights_name: moduleApplicationInsights.outputs.applicationinsights_name
     storage_name: moduleStorageAccountForLogicAppStd.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForLogicAppStd.outputs.storage_resourcegroup
     storage_subscriptionId: moduleStorageAccountForLogicAppStd.outputs.storage_subscriptionId
     workflowhostingplan_name: moduleWorkflowHostingPlan.outputs.workflowhostingplan_name
     workflowhostingplan_resourcegroup: moduleWorkflowHostingPlan.outputs.workflowhostingplan_resourcegroup
     workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflow_hostingplan_subscriptionId
-    enableAppConfig: false
-    enableDiagnostic: false
-    enablePrivateLink: true
-    enableVNETIntegration: true
+    enablePrivateLink: enablePrivateLink
+    enableVNETIntegration: enableVNETIntegration
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
@@ -430,9 +435,12 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
 //     Owner: Owner
 //     ServiceClass: ServiceClass
 //     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
+//     enableAppConfig: enableAppConfig
+//     appconfig_name: enableAppConfig ? appconfig_name : ''
+//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+//     enableDiagnostic: enableDiagnostic
+//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
 //   }
 // }
 
@@ -454,9 +462,12 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
 //     Owner: Owner
 //     ServiceClass: ServiceClass
 //     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
+//     enableAppConfig: enableAppConfig
+//     appconfig_name: enableAppConfig ? appconfig_name : ''
+//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+//     enableDiagnostic: enableDiagnostic
+//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
 //     SQLDatabaseSKUName: SQLDatabaseSKUName
 //     SQLDatabaseCapacity: int(SQLDatabaseCapacity)
 //     SQLDatabaseTierName: SQLDatabaseTierName
@@ -482,10 +493,12 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
 //     Owner: Owner
 //     ServiceClass: ServiceClass
 //     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+//     enableAppConfig: enableAppConfig
+//     appconfig_name: enableAppConfig ? appconfig_name : ''
+//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+//     enableDiagnostic: enableDiagnostic
+//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
 //   }
 // }
 
@@ -508,9 +521,11 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
 //     Owner: Owner
 //     ServiceClass: ServiceClass
 //     Workload: Workload
-//     appconfig_name: appconfig_name
-//     appconfig_resourcegroup: appconfig_resourcegroup
-//     appconfig_subscriptionId: appconfig_subscriptionId
-//     loganalyticsWorkspace_name: moduleLogAnalytics.outputs.loganalyticsWorkspace_name
+//     enableAppConfig: enableAppConfig
+//     appconfig_name: enableAppConfig ? appconfig_name : ''
+//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+//     enableDiagnostic: enableDiagnostic
+//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
 //   }
 // }

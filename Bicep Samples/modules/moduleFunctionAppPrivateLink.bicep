@@ -6,6 +6,7 @@ param functionapp_name string = ''
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
+
 resource FunctionApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functionapp_name
 }

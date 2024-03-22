@@ -8,8 +8,8 @@ param EnvironmentShortName string = ''
 param AppLocation string = ''
 param AzureRegion string = 'ause'
 param Instance int = 1
-param enableAppConfig bool = false
-param enableDiagnostic bool = false
+param enableAppConfig bool 
+param enableDiagnostic bool 
 param enablePrivateLink bool = false
 param enableVNETIntegration bool = false
 param virtualNetworkName string = ''
@@ -181,11 +181,11 @@ module moduleFunctionAppCustomConfigAppConfig './moduleFunctionAppCustomConfig.b
 // Add Private Link for Function App 
 //****************************************************************
 
-module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' = if (enablePrivateLink) {
-  name: 'modulePrivateLinkLogicAppStd'
+module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleFunctionAppPrivateLink'
   params: {
     AppLocation: AppLocation
-    logicappstd_name: functionapp_name
+    functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
     privatelinkSubnetName: privatelinkSubnetName
   }
