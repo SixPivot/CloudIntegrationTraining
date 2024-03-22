@@ -130,6 +130,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       ipSecurityRestrictionsDefaultAction: 'Deny'
       scmIpSecurityRestrictionsDefaultAction: 'Allow'
       scmIpSecurityRestrictionsUseMain: false
+      publicNetworkAccess: 'Enabled'
     }
   }
 }

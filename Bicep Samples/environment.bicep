@@ -307,7 +307,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: functionAppSubnetName
-    vnetintegrationSubnetAddressPrefix: functionAppSubnetName
+    vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
     createSubnet: createFunctionAppSubnet
   }
 } 
