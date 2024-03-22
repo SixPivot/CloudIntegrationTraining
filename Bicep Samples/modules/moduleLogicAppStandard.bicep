@@ -215,15 +215,28 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
 // Add VNET Integration for Logic App Std 
 //****************************************************************
 
+module moduleCreateSubnet './moduleCreateSubnet.bicep' = if (createSubnet) {
+  name: 'moduleCreateSubnet'
+  scope: resourceGroup(virtualNetworkResourceGroup)
+  params: {
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
+    createSubnet: createSubnet
+  }
+}
+
 module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
   name: 'moduleVNETIntegrationLogicAppStd'
   params: {
     logicappstd_name: logicapp_name
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetName: vnetintegrationSubnetName
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    createSubnet: createSubnet
+    virtualNetworkSubnetId: moduleCreateSubnet.outputs.subnet_id
+    // virtualNetworkName: virtualNetworkName
+    // virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    // vnetintegrationSubnetName: vnetintegrationSubnetName
+    // vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    // createSubnet: createSubnet
   }
   dependsOn: [
     LogicAppStdApp
