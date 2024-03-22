@@ -213,7 +213,7 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
 //****************************************************************
 
 module moduleFunctionAppVNETIntegration './moduleFunctionAppVNETIntegration.bicep' = if (enableVNETIntegration) {
-  name: 'moduleVNETIntegrationLogicAppStd'
+  name: 'moduleFunctionAppVNETIntegration'
   params: {
     functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
