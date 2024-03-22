@@ -29,13 +29,14 @@ param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
 param virtualNetworkName string = ''
+param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
 param createLogicAppStdSubnet bool
 param logicAppStdSubnetName string = ''
 param logicAppStdSubnetAddressPrefix string = '' 
 param createFunctionAppSubnet bool
-param functionAppStdSubnetName string = ''
-param functionAppStdSubnetAddressPrefix string = '' 
+param functionAppSubnetName string = ''
+param functionAppSubnetAddressPrefix string = '' 
 
 //****************************************************************
 // Variables
@@ -108,6 +109,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
   }
 }
@@ -206,6 +208,7 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
   }
 }
@@ -259,6 +262,7 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunc
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     AppName: 'functionapp'
     AppShortName: 'fn'
@@ -300,9 +304,10 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     enablePrivateLink: true
     enableVNETIntegration: true
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
-    vnetintegrationSubnetName: functionAppStdSubnetName
-    vnetintegrationSubnetAddressPrefix: functionAppStdSubnetAddressPrefix
+    vnetintegrationSubnetName: functionAppSubnetName
+    vnetintegrationSubnetAddressPrefix: functionAppSubnetName
     createSubnet: createFunctionAppSubnet
   }
 } 
@@ -354,6 +359,7 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     enableDiagnostic: false
     enablePrivateLink: true
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     AppName: 'logicappstd'
     AppShortName: 'las'
@@ -396,6 +402,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     enablePrivateLink: true
     enableVNETIntegration: true
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
