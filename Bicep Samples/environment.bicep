@@ -311,6 +311,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     createSubnet: createFunctionAppSubnet
   }
 } 
+
 module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
   name: 'moduleWorkflowHostingPlan'
   params: {
@@ -407,7 +408,6 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
     createSubnet: createLogicAppStdSubnet
-    //vnetintegrationSubnetAddressPrefix: '172.20.1.0/24'
   }
 } 
 
