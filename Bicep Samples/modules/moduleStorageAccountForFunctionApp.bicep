@@ -10,7 +10,7 @@ param AzureRegion string = ''
 param Instance int = 1
 param enableAppConfig bool
 param enableDiagnostic bool 
-param enablePrivateLink bool = false
+param enablePrivateLink bool 
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''

@@ -81,6 +81,7 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
+    enablePrivateLink: enablePrivateLink
   }
 }
 
@@ -137,6 +138,7 @@ module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = i
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
+    enablePrivateLink: enablePrivateLink
   }
 }
 
@@ -238,6 +240,7 @@ module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bice
     //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
     FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
+    enablePrivateLink: enablePrivateLink
   }
 }
 
@@ -339,6 +342,7 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    enablePrivateLink: enablePrivateLink
   }
 }
 
