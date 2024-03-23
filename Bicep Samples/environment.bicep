@@ -297,6 +297,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
+    applicationinsights_resourcegroup: enableDiagnostic ? moduleApplicationInsights.outputs.applicationinsights_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     storage_name: moduleStorageAccountForFunctionApp.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForFunctionApp.outputs.storage_resourcegroup
@@ -398,6 +399,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
+    applicationinsights_resourcegroup: enableDiagnostic ? moduleApplicationInsights.outputs.applicationinsights_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     storage_name: moduleStorageAccountForLogicAppStd.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForLogicAppStd.outputs.storage_resourcegroup
@@ -414,6 +416,9 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
     createSubnet: createLogicAppStdSubnet
   }
+  dependsOn: [
+    moduleFunctionApp
+  ]
 } 
 
 

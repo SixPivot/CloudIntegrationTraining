@@ -128,6 +128,7 @@ module moduleAppConfigKeyValueAppInsightsConnectionString './moduleAppConfigKeyV
 }
 
 output appinsights_name string = appinsights.name
+output applicationinsights_resourcegroup string = resourceGroup().name
 output appinsights_id string = appinsights.id
 output appinsights_location string = appinsights.location
 output appinsights_kind string = appinsights.kind
