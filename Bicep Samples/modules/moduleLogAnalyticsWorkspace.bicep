@@ -89,7 +89,7 @@ module moduleAppConfigKeyValueloganalyticsWorkspaceresourcegroup './moduleAppCon
 
 resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-preview' = if(enablePrivateLink) {
   name: privateLinkScope_name
-  location: 'gobal'
+  location: 'global'
   properties: {
     accessModeSettings: {
       exclusions: [
