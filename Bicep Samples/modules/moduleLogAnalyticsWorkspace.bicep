@@ -1,21 +1,21 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
-param AzureRegion string = ''
-param Instance int = 1
-param enableAppConfig bool 
-param enableDiagnostic bool 
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string
+param EnvironmentShortName string 
+param AppLocation string 
+param AzureRegion string 
+param Instance int
 param enablePrivateLink bool 
-param virtualNetworkName string = ''
-param privatelinkSubnetName string = ''
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
 
 // tags
 param tags object = {}
 
 // existing resources
+param enableAppConfig bool
 param appconfig_name string = ''
 param appconfig_resourcegroup string = ''
 param appconfig_subscriptionId string = ''
@@ -57,7 +57,8 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
       dailyQuotaGb: 1
     }
     publicNetworkAccessForIngestion: enablePrivateLink ? 'Disabled' : 'Enabled'
-    publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
+    //publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled' // for testing
   }
 }
 
@@ -102,6 +103,18 @@ resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-previ
       ingestionAccessMode: 'PrivateOnly'
       queryAccessMode: 'PrivateOnly'
     }
+  }
+}
+
+module moduleLogAnalyticsPrivateLink './moduleLogAnalyticsPrivateLink.bicep' = if(enablePrivateLink) {
+  name: 'LogAnalyticsPrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup 
+    privatelinkSubnetName: privatelinkSubnetName 
+    loganalyticsWorkspace_name: loganalyticsWorkspace.name
+    loganalyticsPrivateLinkScopeId: privateLinkScope.id
   }
 }
 

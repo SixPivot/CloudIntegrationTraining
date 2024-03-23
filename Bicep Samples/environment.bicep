@@ -80,8 +80,10 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     appconfig_name: enableAppConfig ? appconfig_name : ''
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
-    enableDiagnostic: enableDiagnostic
     enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: privatelinkSubnetName
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
   }
 }
 
