@@ -26,6 +26,7 @@ param appconfig_subscriptionId string = ''
 
 var InstanceString = padLeft(Instance,3,'0')
 var loganalyticsWorkspace_name = 'log-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
+var privateLinkScope_name = 'pls-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 
 //****************************************************************
 // Role Definitions
@@ -55,8 +56,8 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
     workspaceCapping: {
       dailyQuotaGb: 1
     }
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
+    publicNetworkAccessForIngestion: enablePrivateLink ? 'Disabled' : 'Enabled'
+    publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
   }
 }
 
@@ -79,6 +80,28 @@ module moduleAppConfigKeyValueloganalyticsWorkspaceresourcegroup './moduleAppCon
     variables_environment: EnvironmentName
     variables_key: 'loganalyticsworkspace_resourcegroup'
     variables_value: resourceGroup().name
+  }
+}
+
+//****************************************************************
+// Azure Log Anaytics Private Link Scopes
+//****************************************************************
+
+resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-preview' = if(enablePrivateLink) {
+  name: privateLinkScope_name
+  location: AppLocation
+  properties: {
+    accessModeSettings: {
+      exclusions: [
+        // {
+        //   ingestionAccessMode: 'string'
+        //   privateEndpointConnectionName: 'string'
+        //   queryAccessMode: 'string'
+        // }
+      ]
+      ingestionAccessMode: 'PrivateOnly'
+      queryAccessMode: 'PrivateOnly'
+    }
   }
 }
 
