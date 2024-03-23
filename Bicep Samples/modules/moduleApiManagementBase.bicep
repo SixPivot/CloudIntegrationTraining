@@ -10,6 +10,7 @@ param enableAppConfig bool
 param enableDiagnostic bool 
 param enablePrivateLink bool 
 param virtualNetworkName string = ''
+param virtualNetworkResourceGroup string = '' 
 param privatelinkSubnetName string = ''
 
 // tags

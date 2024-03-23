@@ -109,6 +109,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
@@ -137,8 +138,12 @@ module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = i
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
+    keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
   }
 }
 

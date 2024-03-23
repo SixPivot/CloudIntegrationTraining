@@ -1,26 +1,30 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
-param AzureRegion string = 'ause'
-param Instance int = 1
-param enableAppConfig bool 
-param enableDiagnostic bool 
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
+param AzureRegion string 
+param Instance int 
+
+
 param enablePrivateLink bool 
-param virtualNetworkName string = ''
-param privatelinkSubnetName string = ''
+param virtualNetworkName string 
+param privatelinkSubnetName string 
 
 // tags
 param tags object = {}
 
 // existing resources
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
-param loganalyticsWorkspace_name string = ''
-param keyvault_name string = ''
+param enableAppConfig bool 
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string
+param enableDiagnostic bool  
+param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string 
+param keyvault_name string 
+param keyvault_resourcegroup string   
 
 //****************************************************************
 // Variables
@@ -41,10 +45,6 @@ var appInsights_name = 'appi-${toLower(BaseName)}-${toLower(EnvironmentName)}-${
 
 resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = if (enableDiagnostic) {
   name: loganalyticsWorkspace_name
-}
-
-resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
-  name: keyvault_name
 }
 
 //****************************************************************
@@ -85,12 +85,14 @@ module moduleAppConfigKeyValueapplicationinsightsresourcegroup './moduleAppConfi
   }
 }
 
-resource keyvaultSecretAppInsightsInstrumentationKey 'Microsoft.KeyVault/vaults/secrets@2023-02-01' = {
-  name: 'appinsights-instrumentationKey'
-  parent: keyvault
-  tags: tags
-  properties:{
-    value: appinsights.properties.InstrumentationKey
+module moduleKeyVaultSecretAppInsightsInstrumentationKey './moduleKeyVaultSecret.bicep' = {
+  name: 'keyvaultSecretAppinsightsInstrumentationKey'
+  scope: resourceGroup(keyvault_resourcegroup)
+  params: {
+    keyvault_name: keyvault_name
+    tags: tags
+    secretName: 'appinsights-instrumentationKey'
+    secretValue: appinsights.properties.InstrumentationKey
   }
 }
 
@@ -101,17 +103,19 @@ module moduleAppConfigKeyValueAppInsightsInstrumentationKey './moduleAppConfigKe
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
     variables_key: 'appInsights_InstrumentationKey'
-    variables_value: '{"uri":"${keyvaultSecretAppInsightsInstrumentationKey.properties.secretUri}"}'
+    variables_value: '{"uri":"${moduleKeyVaultSecretAppInsightsInstrumentationKey.outputs.secretUri}"}'
     variables_contentType: 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8'
   }
 }
 
-resource keyvaultSecretAppInsightsConnectionString 'Microsoft.KeyVault/vaults/secrets@2023-02-01' = {
-  name: 'applicationinsights-connectionstring'
-  parent: keyvault
-  tags: tags
-  properties:{
-    value: appinsights.properties.ConnectionString
+module moduleKeyVaultSecretAppInsightsConnectionString './moduleKeyVaultSecret.bicep' = {
+  name: 'keyvaultSecretAppinsightsConnectionString'
+  scope: resourceGroup(keyvault_resourcegroup)
+  params: {
+    keyvault_name: keyvault_name
+    tags: tags
+    secretName: 'applicationinsights-connectionstring'
+    secretValue: appinsights.properties.ConnectionString
   }
 }
 
@@ -122,7 +126,7 @@ module moduleAppConfigKeyValueAppInsightsConnectionString './moduleAppConfigKeyV
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
     variables_key: 'applicationinsights_connectionstring'
-    variables_value: '{"uri":"${keyvaultSecretAppInsightsConnectionString.properties.secretUri}"}'
+    variables_value: '{"uri":"${moduleKeyVaultSecretAppInsightsConnectionString.outputs.secretUri}"}'
     variables_contentType: 'application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8'
   }
 }
