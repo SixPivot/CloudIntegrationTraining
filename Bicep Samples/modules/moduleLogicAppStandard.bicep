@@ -18,8 +18,8 @@ param privatelinkSubnetName string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
 param createSubnet bool 
-param networksecuritygroup object 
-param routetable object 
+param networksecuritygroupName string 
+param routetableName string 
 
 // tags
 param tags object = {}
@@ -239,8 +239,8 @@ module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration
     vnetintegrationSubnetName: LogicAppStdApp.name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     createSubnet: createSubnet
-    networksecuritygroup: networksecuritygroup
-    routetable: routetable
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
   }
   dependsOn: [
     LogicAppStdApp

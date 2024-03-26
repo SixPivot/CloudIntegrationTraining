@@ -3,8 +3,16 @@ param vnetintegrationSubnetName string
 param vnetintegrationSubnetAddressPrefix string 
 param vnetIntegrationServiceName string
 param createSubnet bool
-param networksecuritygroup object 
-param routetable object 
+param networksecuritygroupName string 
+param routetableName string 
+
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing =  {
+  name: networksecuritygroupName
+}
+
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = {
+  name: routetableName
+}
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
@@ -30,8 +38,12 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
     ]
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroup: networksecuritygroup
-    routeTable: routetable
+    networkSecurityGroup: {
+      id: networksecuritygroup.id
+    }
+    routeTable: {
+      id: routetable.id
+    }
   }
 }
 

@@ -4,8 +4,8 @@ param vnetintegrationSubnetName string
 param vnetintegrationSubnetAddressPrefix string 
 param functionapp_name string 
 param createSubnet bool 
-param networksecuritygroup object 
-param routetable object 
+param networksecuritygroupName string 
+param routetableName string 
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -23,8 +23,8 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
-    networksecuritygroup: networksecuritygroup
-    routetable: networksecuritygroup
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
   }
 }
 

@@ -63,18 +63,18 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 // Existing Resouces
 //****************************************************************
 
-resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (empty(networksecuritygroupName)) {
-  name: networksecuritygroupName
-  scope: resourceGroup(virtualNetworkResourceGroup)
-}
+// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (empty(networksecuritygroupName)) {
+//   name: networksecuritygroupName
+//   scope: resourceGroup(virtualNetworkResourceGroup)
+// }
 
-resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (empty(routetableName)){
-  name: routetableName
-  scope: resourceGroup(virtualNetworkResourceGroup)
-}
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (empty(routetableName)){
+//   name: routetableName
+//   scope: resourceGroup(virtualNetworkResourceGroup)
+// }
 
-var networksecuritygroupValue = !empty(networksecuritygroupName) ? { id:'${networksecuritygroup.id}' } : {}
-var routetableValue = !empty(routetableName) ? { id:'${routetable.id}' } : {}
+// var networksecuritygroupValue = !empty(networksecuritygroupName) ? { id:'${networksecuritygroup.id}' } : {}
+// var routetableValue = !empty(routetableName) ? { id:'${routetable.id}' } : {}
 
 //****************************************************************
 // Create Resources
@@ -343,8 +343,8 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     vnetintegrationSubnetName: functionAppSubnetName
     vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
     createSubnet: createFunctionAppSubnet
-    networksecuritygroup: networksecuritygroupValue
-    routetable: routetableValue
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
   }
 } 
 
@@ -447,8 +447,8 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
     createSubnet: createLogicAppStdSubnet
-    networksecuritygroup: networksecuritygroupValue
-    routetable: routetableValue
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
   }
   dependsOn: [
     moduleFunctionApp
