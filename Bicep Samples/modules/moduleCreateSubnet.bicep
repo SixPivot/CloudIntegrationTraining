@@ -4,23 +4,25 @@ param vnetintegrationSubnetAddressPrefix string
 param vnetIntegrationServiceName string
 param createSubnet bool
 param networksecuritygroupName string 
+param networkSecurityGroup object
 param routetableName string 
+param routetable object
 
 // resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
 //   name: networksecuritygroupName
 // }
 
-// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if ( !empty(routetableName)) {
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (!empty(routetableName)) {
 //   name: routetableName
 // }
 
-resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = {
-  name: networksecuritygroupName
-}
+// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = {
+//   name: networksecuritygroupName
+// }
 
-resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing =  {
-  name: routetableName
-}
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing =  {
+//   name: routetableName
+// }
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
@@ -31,7 +33,7 @@ resource subnetExist 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' exis
   parent: virtualNetwork
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (createSubnet) {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (createSubnet)  {
   name: vnetintegrationSubnetName
   parent: virtualNetwork
   properties: {
@@ -46,12 +48,8 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
     ]
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroup: {
-      id: networksecuritygroup.id
-    }
-    routeTable: {
-      id: routetable.id
-    }
+    networkSecurityGroup: networkSecurityGroup
+    routeTable: routetable
   }
 }
 
