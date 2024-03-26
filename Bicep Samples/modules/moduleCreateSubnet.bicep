@@ -6,11 +6,19 @@ param createSubnet bool
 param networksecuritygroupName string 
 param routetableName string 
 
-resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
+// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
+//   name: networksecuritygroupName
+// }
+
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if ( !empty(routetableName)) {
+//   name: routetableName
+// }
+
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = {
   name: networksecuritygroupName
 }
 
-resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if ( !empty(routetableName)) {
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing =  {
   name: routetableName
 }
 
@@ -39,10 +47,10 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
     networkSecurityGroup: {
-      id: !empty(networksecuritygroupName) ? networksecuritygroup.id : null
+      id: networksecuritygroup.id
     }
     routeTable: {
-      id: !empty(routetableName) ? routetable.id : null
+      id: routetable.id
     }
   }
 }
