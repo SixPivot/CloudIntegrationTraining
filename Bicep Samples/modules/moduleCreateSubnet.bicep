@@ -49,4 +49,4 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
 
 output subnet_name string = createSubnet ? subnet.name : subnetExist.name
 output subnet_id string = createSubnet ? subnet.id : subnetExist.id
-output subnet_properties object = list(resourceId('Microsoft.Web/sites/config', vnetintegrationSubnetName), '2022-03-01').properties
+output subnet_properties object = list(resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName), '2022-03-01').properties
