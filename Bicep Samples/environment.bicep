@@ -73,8 +73,8 @@ resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (em
   scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
-var networksecuritygroupValue = empty(networksecuritygroupName) ? { id:'${networksecuritygroup.id}' } : {}
-var routetableValue = empty(routetableName) ? { id:'${routetable.id}' } : {}
+var networksecuritygroupValue = !empty(networksecuritygroupName) ? { id:'${networksecuritygroup.id}' } : {}
+var routetableValue = !empty(routetableName) ? { id:'${routetable.id}' } : {}
 
 //****************************************************************
 // Create Resources
