@@ -4,17 +4,15 @@ param vnetintegrationSubnetAddressPrefix string
 param vnetIntegrationServiceName string
 param createSubnet bool
 param networksecuritygroupName string 
-param networkSecurityGroup object
 param routetableName string 
-param routetable object
 
-// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
-//   name: networksecuritygroupName
-// }
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
+  name: networksecuritygroupName
+}
 
-// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (!empty(routetableName)) {
-//   name: routetableName
-// }
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (!empty(routetableName)) {
+  name: routetableName
+}
 
 // resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = {
 //   name: networksecuritygroupName
@@ -48,8 +46,12 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
     ]
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroup: networkSecurityGroup
-    routeTable: routetable
+    networkSecurityGroup: {
+      id: !empty(networksecuritygroupName) ? networksecuritygroup.id : null
+    }
+    routeTable: {
+      id: !empty(routetableName) ? routetable.id : null
+    }
   }
 }
 

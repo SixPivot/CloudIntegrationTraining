@@ -14,27 +14,27 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: logicappstd_name
 }
 
-resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing =
-  if (!empty(networksecuritygroupName)) {
-    name: networksecuritygroupName
-  }
+// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing =
+//   if (!empty(networksecuritygroupName)) {
+//     name: networksecuritygroupName
+//   }
 
-resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing =
-  if (!empty(routetableName)) {
-    name: routetableName
-  }
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing =
+//   if (!empty(routetableName)) {
+//     name: routetableName
+//   }
 
-var networksecuritygroupObject1 = {
-  id: !empty(networksecuritygroupName) ? networksecuritygroup.id : ''
-}
+// var networksecuritygroupObject1 = {
+//   id: !empty(networksecuritygroupName) ? networksecuritygroup.id : ''
+// }
 
-var networksecuritygroupObject2 = {}
+// var networksecuritygroupObject2 = {}
 
-var routetableObject1 = {
-  id: !empty(routetableName) ? routetable.id : ''
-}
+// var routetableObject1 = {
+//   id: !empty(routetableName) ? routetable.id : ''
+// }
 
-var routetableObject2 = {}
+// var routetableObject2 = {}
 
 module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   name: 'moduleCreateSubnet'
@@ -46,9 +46,9 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
-    networkSecurityGroup: !empty(networksecuritygroupName) ? networksecuritygroupObject1 : networksecuritygroupObject2
+    // networkSecurityGroup: !empty(networksecuritygroupName) ? networksecuritygroupObject1 : networksecuritygroupObject2
     routetableName: routetableName
-    routetable: !empty(routetableName) ? routetableObject1 : routetableObject2
+    //routetable: !empty(routetableName) ? routetableObject1 : routetableObject2
   }
 }
 
