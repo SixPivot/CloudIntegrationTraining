@@ -234,7 +234,7 @@ module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetName: LogicAppStdApp.name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     createSubnet: createSubnet
   }

@@ -204,7 +204,7 @@ module moduleFunctionAppVNETIntegration './moduleFunctionAppVNETIntegration.bice
     functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetName: functionApp.name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     createSubnet: createSubnet
   }
