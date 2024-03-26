@@ -41,19 +41,33 @@ resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (ro
 var newProperties1 = networksecuritygroupName != 'empty' ? { networkSecurityGroup: { id: networksecuritygroup.id } } : ''
 var newProperties2 = routetableName != 'empty' ? { routeTable: { id: routetable.id } } : ''
 
-module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
-  name: 'moduleCreateSubnet'
-  scope: resourceGroup(virtualNetworkResourceGroup)
-  params: {
-    virtualNetworkName: virtualNetworkName
-    vnetintegrationSubnetName: vnetintegrationSubnetName
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
-    createSubnet: createSubnet
-  }
+// module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
+//   name: 'moduleCreateSubnet'
+//   scope: resourceGroup(virtualNetworkResourceGroup)
+//   params: {
+//     virtualNetworkName: virtualNetworkName
+//     vnetintegrationSubnetName: vnetintegrationSubnetName
+//     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+//     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
+//     createSubnet: createSubnet
+//   }
+// }
+
+var currentProperties = {
+    addressPrefix: vnetintegrationSubnetAddressPrefix
+    delegations: [
+      {
+        name: 'delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverFarms'
+        }
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
 }
 
-module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if ((createSubnet) && (networksecuritygroupName != 'empty')) {
+module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if (createSubnet) {
   name: 'moduleUpdateSubnet'
   scope: resourceGroup(virtualNetworkResourceGroup)
   params:{
@@ -61,7 +75,7 @@ module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if ((createSubnet) && (
     vnetintegrationSubnetName: vnetintegrationSubnetName
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
-    currentProperties: moduleCreateSubnet.outputs.subnet_properties
+    currentProperties: currentProperties
     newProperties:{
       networkSecurityGroup:{
         id: networksecuritygroup.id
@@ -74,7 +88,7 @@ resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: FunctionApp
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: moduleCreateSubnet.outputs.subnet_id
+    subnetResourceId: moduleUpdateSubnet.outputs.subnet_id
     swiftSupported: true
   }
 }
