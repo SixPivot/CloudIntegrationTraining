@@ -6,13 +6,13 @@ param createSubnet bool
 param networksecuritygroupName string 
 param routetableName string 
 
-resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
-  name: networksecuritygroupName
-}
+// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
+//   name: networksecuritygroupName
+// }
 
-resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (!empty(routetableName)) {
-  name: routetableName
-}
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (!empty(routetableName)) {
+//   name: routetableName
+// }
 
 // resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = {
 //   name: networksecuritygroupName
@@ -49,29 +49,6 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
   }
 }
 
-resource subnetRouteTable 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if ((createSubnet) && (!empty(routetableName))) {
-  name: vnetintegrationSubnetName
-  parent: virtualNetwork
-  properties: {
-    addressPrefix: vnetintegrationSubnetAddressPrefix
-    delegations: [
-      {
-        name: 'delegation'
-        properties: {
-          serviceName: vnetIntegrationServiceName
-        }
-      }
-    ]
-    privateEndpointNetworkPolicies: 'Disabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-    routeTable: {
-      id: routetable.id
-    }
-  }
-  dependsOn:[
-    subnet
-  ]
-}
-
 output subnet_name string = createSubnet ? subnet.name : subnetExist.name
 output subnet_id string = createSubnet ? subnet.id : subnetExist.id
+output subnet_properties object = list(resourceId('Microsoft.Web/sites/config', vnetintegrationSubnetName), '2022-03-01').properties

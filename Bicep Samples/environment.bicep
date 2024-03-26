@@ -45,8 +45,8 @@ param logicAppStdSubnetAddressPrefix string = ''
 param createFunctionAppSubnet bool
 param functionAppSubnetName string = ''
 param functionAppSubnetAddressPrefix string = '' 
-param networksecuritygroupName string = ''
-param routetableName string = ''
+param networksecuritygroupName string = 'empty'
+param routetableName string = 'empty'
 
 //****************************************************************
 // Variables

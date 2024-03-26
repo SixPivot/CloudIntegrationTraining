@@ -14,6 +14,10 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: logicappstd_name
 }
 
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
+  name: networksecuritygroupName
+}
+
 // resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing =
 //   if (!empty(networksecuritygroupName)) {
 //     name: networksecuritygroupName
@@ -50,6 +54,24 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     routetableName: routetableName
     //routetable: !empty(routetableName) ? routetableObject1 : routetableObject2
   }
+}
+
+module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if(createSubnet) {
+  name: 'moduleUpdateSubnet'
+  scope: resourceGroup(virtualNetworkResourceGroup)
+  params:{
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
+    currentProperties: moduleCreateSubnet.outputs.subnet_properties
+    newProperties:{
+      networkSecurityGroup:{
+        id: networksecuritygroup.id
+      }
+    }
+  }
+
 }
 
 resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {

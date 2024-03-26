@@ -14,13 +14,13 @@ resource FunctionApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: functionapp_name
 }
 
-// resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
-//   name: networksecuritygroupName
-// }
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (networksecuritygroupName != 'empty') {
+  name: networksecuritygroupName
+}
 
-// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (!empty(routetableName)) {
-//   name: routetableName
-// }
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'empty') {
+  name: routetableName
+}
 
 // var networksecuritygroupObject1 ={
 //   networkSecurityGroup : {
@@ -48,13 +48,24 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
-    // networkSecurityGroup: {
-    //   id: !empty(networksecuritygroupName) ? networksecuritygroup.id : null
-    // }
     routetableName: routetableName
-    // routetable: {
-    //   id: !empty(routetableName) ? routetable.id : null
-    // }
+  }
+}
+
+module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if ((createSubnet) && (networksecuritygroupName != 'empty')) {
+  name: 'moduleUpdateSubnet'
+  scope: resourceGroup(virtualNetworkResourceGroup)
+  params:{
+    virtualNetworkName: virtualNetworkName
+    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
+    currentProperties: moduleCreateSubnet.outputs.subnet_properties
+    newProperties:{
+      networkSecurityGroup:{
+        id: networksecuritygroup.id
+      }
+    }
   }
 }
 
