@@ -47,10 +47,10 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
     networkSecurityGroup: {
-      id: !empty(networksecuritygroupName) ? networksecuritygroup.id : null
+      id: !empty(networksecuritygroupName) ? networksecuritygroup.id : ''
     }
     routeTable: {
-      id: !empty(routetableName) ? routetable.id : null
+      id: !empty(routetableName) ? routetable.id : ''
     }
   }
 }
