@@ -18,9 +18,9 @@ resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-0
   name: networksecuritygroupName
 }
 
-// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'empty') {
-//   name: routetableName
-// }
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'empty') {
+  name: routetableName
+}
 
 // var networksecuritygroupObject1 ={
 //   networkSecurityGroup : {
@@ -37,6 +37,9 @@ resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-0
 // }
 
 // var routetableObject2 = {}
+
+var newProperties1 = networksecuritygroupName != 'empty' ? { networkSecurityGroup: { id: networksecuritygroup.id } } : ''
+var newProperties2 = routetableName != 'empty' ? { routeTable: { id: routetable.id } } : ''
 
 module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   name: 'moduleCreateSubnet'
