@@ -46,13 +46,31 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
     ]
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Enabled'
-    networkSecurityGroup: {
-      id: !empty(networksecuritygroupName) ? networksecuritygroup.id : ''
-    }
+  }
+}
+
+resource subnetRouteTable 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if ((createSubnet) && (!empty(routetableName))) {
+  name: vnetintegrationSubnetName
+  parent: virtualNetwork
+  properties: {
+    addressPrefix: vnetintegrationSubnetAddressPrefix
+    delegations: [
+      {
+        name: 'delegation'
+        properties: {
+          serviceName: vnetIntegrationServiceName
+        }
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
     routeTable: {
-      id: !empty(routetableName) ? routetable.id : ''
+      id: routetable.id
     }
   }
+  dependsOn:[
+    subnet
+  ]
 }
 
 output subnet_name string = createSubnet ? subnet.name : subnetExist.name
