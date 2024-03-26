@@ -21,6 +21,8 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
+    networksecuritygroup: {}
+    routetable: {}
   }
 }
 
@@ -32,26 +34,3 @@ resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
     swiftSupported: true
   }
 }
-
-// resource virtualnetworkConnection 'Microsoft.Web/sites/virtualNetworkConnections@2023-01-01' = {
-//   name: subnet.name
-//   parent: LogicAppStdApp
-//   properties: {
-//     vnetResourceId: virtualNetwork.id
-//     isSwift: true
-//   }
-// } 
-
-// module moduleLogicAppStandardCustomProperties './moduleLogicAppStandardCustomProperties.bicep' = {
-//   name: 'moduleLogicAppStandardCustomProperties'
-//   params:{
-//     logicapp_name: logicappstd_name
-//     currentProperties: LogicAppStdApp.properties
-//     newProperties: {
-//       virtualNetworkSubnetId: subnet.id
-//     }
-//   }
-//   dependsOn: [
-//     virtualnetworkConnection
-//   ] 
-// }

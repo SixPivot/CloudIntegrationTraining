@@ -2,7 +2,9 @@ param virtualNetworkName string
 param vnetintegrationSubnetName string 
 param vnetintegrationSubnetAddressPrefix string 
 param vnetIntegrationServiceName string
-param createSubnet bool 
+param createSubnet bool
+param networksecuritygroup object 
+param routetable object 
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
@@ -26,6 +28,8 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = if (cre
         }
       }
     ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
   }
 }
 
