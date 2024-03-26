@@ -49,10 +49,6 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
-    networksecuritygroupName: networksecuritygroupName
-    // networkSecurityGroup: !empty(networksecuritygroupName) ? networksecuritygroupObject1 : networksecuritygroupObject2
-    routetableName: routetableName
-    //routetable: !empty(routetableName) ? routetableObject1 : routetableObject2
   }
 }
 

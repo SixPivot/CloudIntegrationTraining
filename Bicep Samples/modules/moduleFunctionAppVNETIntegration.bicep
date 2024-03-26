@@ -18,9 +18,9 @@ resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-0
   name: networksecuritygroupName
 }
 
-resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'empty') {
-  name: routetableName
-}
+// resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'empty') {
+//   name: routetableName
+// }
 
 // var networksecuritygroupObject1 ={
 //   networkSecurityGroup : {
@@ -47,8 +47,6 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
-    networksecuritygroupName: networksecuritygroupName
-    routetableName: routetableName
   }
 }
 

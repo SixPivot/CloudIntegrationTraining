@@ -3,8 +3,6 @@ param vnetintegrationSubnetName string
 param vnetintegrationSubnetAddressPrefix string 
 param vnetIntegrationServiceName string
 param createSubnet bool
-param networksecuritygroupName string 
-param routetableName string 
 
 // resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
 //   name: networksecuritygroupName
