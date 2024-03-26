@@ -38,8 +38,8 @@ resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (ro
 
 // var routetableObject2 = {}
 
-var newProperties1 = networksecuritygroupName != 'empty' ? { networkSecurityGroup: { id: networksecuritygroup.id } } : ''
-var newProperties2 = routetableName != 'empty' ? { routeTable: { id: routetable.id } } : ''
+var newProperties1 = networksecuritygroupName != 'empty' ? { networkSecurityGroup: { id: networksecuritygroup.id } } : {}
+var newProperties2 = routetableName != 'empty' ? { routeTable: { id: routetable.id } } : {}
 
 // module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
 //   name: 'moduleCreateSubnet'
@@ -76,11 +76,12 @@ module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if (createSubnet) {
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     currentProperties: currentProperties
-    newProperties:{
-      networkSecurityGroup:{
-        id: networksecuritygroup.id
-      }
-    }
+    newProperties: union(newProperties1, newProperties2)
+    // newProperties:{
+    //   networkSecurityGroup:{
+    //     id: networksecuritygroup.id
+    //   }
+    // }
   }
 }
 

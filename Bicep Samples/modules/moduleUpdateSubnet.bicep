@@ -17,4 +17,4 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
 
 output subnet_name string = subnet.name
 output subnet_id string = subnet.id 
-output subnet_properties object = list(resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName), '2023-04-01').properties
+//output subnet_properties object = list(resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, vnetintegrationSubnetName), '2023-04-01').properties

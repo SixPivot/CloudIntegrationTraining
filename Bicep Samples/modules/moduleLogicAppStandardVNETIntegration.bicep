@@ -14,8 +14,12 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: logicappstd_name
 }
 
-resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (!empty(networksecuritygroupName)) {
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (networksecuritygroupName != 'empty') {
   name: networksecuritygroupName
+}
+
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'empty') {
+  name: routetableName
 }
 
 // resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing =
@@ -40,16 +44,33 @@ resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-0
 
 // var routetableObject2 = {}
 
-module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
-  name: 'moduleCreateSubnet'
-  scope: resourceGroup(virtualNetworkResourceGroup)
-  params: {
-    virtualNetworkName: virtualNetworkName
-    vnetintegrationSubnetName: vnetintegrationSubnetName
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
-    createSubnet: createSubnet
-  }
+var newProperties1 = networksecuritygroupName != 'empty' ? { networkSecurityGroup: { id: networksecuritygroup.id } } : {}
+var newProperties2 = routetableName != 'empty' ? { routeTable: { id: routetable.id } } : {}
+
+// module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
+//   name: 'moduleCreateSubnet'
+//   scope: resourceGroup(virtualNetworkResourceGroup)
+//   params: {
+//     virtualNetworkName: virtualNetworkName
+//     vnetintegrationSubnetName: vnetintegrationSubnetName
+//     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+//     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
+//     createSubnet: createSubnet
+//   }
+// }
+
+var currentProperties = {
+  addressPrefix: vnetintegrationSubnetAddressPrefix
+  delegations: [
+    {
+      name: 'delegation'
+      properties: {
+        serviceName: 'Microsoft.Web/serverFarms'
+      }
+    }
+  ]
+  privateEndpointNetworkPolicies: 'Disabled'
+  privateLinkServiceNetworkPolicies: 'Enabled'
 }
 
 module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if(createSubnet) {
@@ -60,12 +81,13 @@ module moduleUpdateSubnet './moduleUpdateSubnet.bicep' = if(createSubnet) {
     vnetintegrationSubnetName: vnetintegrationSubnetName
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
-    currentProperties: moduleCreateSubnet.outputs.subnet_properties
-    newProperties:{
-      networkSecurityGroup:{
-        id: networksecuritygroup.id
-      }
-    }
+    currentProperties: currentProperties
+    newProperties: union(newProperties1, newProperties2)
+    // newProperties:{
+    //   networkSecurityGroup:{
+    //     id: networksecuritygroup.id
+    //   }
+    // }
   }
 
 }
@@ -74,7 +96,7 @@ resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: LogicAppStdApp
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: moduleCreateSubnet.outputs.subnet_id
+    subnetResourceId: moduleUpdateSubnet.outputs.subnet_id
     swiftSupported: true
   }
 }
