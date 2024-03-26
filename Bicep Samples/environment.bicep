@@ -45,6 +45,8 @@ param logicAppStdSubnetAddressPrefix string = ''
 param createFunctionAppSubnet bool
 param functionAppSubnetName string = ''
 param functionAppSubnetAddressPrefix string = '' 
+param networksecuritygroupName string = ''
+param routetableName string = ''
 
 //****************************************************************
 // Variables
@@ -56,6 +58,23 @@ param functionAppSubnetAddressPrefix string = ''
 // var ApiManagementPublisherEmail = 'trevor.booth@wilsongroupau.com'
 
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
+
+//****************************************************************
+// Existing Resouces
+//****************************************************************
+
+resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (empty(networksecuritygroupName)) {
+  name: networksecuritygroupName
+  scope: resourceGroup(virtualNetworkResourceGroup)
+}
+
+resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (empty(routetableName)){
+  name: routetableName
+  scope: resourceGroup(virtualNetworkResourceGroup)
+}
+
+var networksecuritygroupValue = empty(networksecuritygroupName) ? { id:networksecuritygroup.id } : {}
+var routetableValue = empty(routetableName) ? { id:routetable.id } : {}
 
 //****************************************************************
 // Create Resources
@@ -324,6 +343,8 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     vnetintegrationSubnetName: functionAppSubnetName
     vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
     createSubnet: createFunctionAppSubnet
+    networksecuritygroup: networksecuritygroupValue
+    routetable: routetableValue
   }
 } 
 
@@ -426,6 +447,8 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
     createSubnet: createLogicAppStdSubnet
+    networksecuritygroup: networksecuritygroupValue
+    routetable: routetableValue
   }
   dependsOn: [
     moduleFunctionApp

@@ -18,6 +18,8 @@ param privatelinkSubnetName string = ''
 param vnetintegrationSubnetName string = ''
 param vnetintegrationSubnetAddressPrefix string = ''
 param createSubnet bool 
+param networksecuritygroup object 
+param routetable object 
 
 // tags
 param tags object = {}
@@ -207,6 +209,8 @@ module moduleFunctionAppVNETIntegration './moduleFunctionAppVNETIntegration.bice
     vnetintegrationSubnetName: functionApp.name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     createSubnet: createSubnet
+    networksecuritygroup: networksecuritygroup
+    routetable: routetable
   }
   dependsOn: [
     functionApp

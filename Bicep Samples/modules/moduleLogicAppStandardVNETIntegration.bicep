@@ -4,6 +4,8 @@ param vnetintegrationSubnetName string
 param vnetintegrationSubnetAddressPrefix string 
 param logicappstd_name string 
 param createSubnet bool 
+param networksecuritygroup object 
+param routetable object 
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -21,8 +23,8 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
     vnetIntegrationServiceName: 'Microsoft.Web/serverFarms'
     createSubnet: createSubnet
-    networksecuritygroup: {}
-    routetable: {}
+    networksecuritygroup: networksecuritygroup
+    routetable: routetable
   }
 }
 
