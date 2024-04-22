@@ -175,6 +175,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
+    appInsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     enablePrivateLink: enablePrivateLink
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
