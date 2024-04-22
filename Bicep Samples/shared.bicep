@@ -10,6 +10,7 @@ param AppLocation string = resourceGroup().location
 ])
 param AzureRegion string = 'ause'
 param Instance int = 1
+param publicNetworkAccess string = 'Disabled'
 
 // tags
 param BusinessImpact string = '$(BusinessImpact)'
@@ -47,5 +48,8 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
     }
     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
     AppConfigAdministratorsGroupId:AppConfigAdministratorsGroupId
+    publicNetworkAccessForIngestion: publicNetworkAccess
+    publicNetworkAccessForQuery: publicNetworkAccess
+    publicNetworkAccess: publicNetworkAccess
   }
 }
