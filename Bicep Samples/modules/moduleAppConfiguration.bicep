@@ -6,6 +6,9 @@ param EnvironmentShortName string = ''
 param AppLocation string = ''
 param AzureRegion string = ''
 param Instance int = 1
+param publicNetworkAccessForIngestion string
+param publicNetworkAccessForQuery string
+param publicNetworkAccess string
 
 // tags
 param tags object = {}
@@ -58,8 +61,8 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
     workspaceCapping: {
       dailyQuotaGb: 1
     }
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
+    publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: publicNetworkAccessForQuery
   }
 }
 
@@ -78,7 +81,7 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' =
     type: 'SystemAssigned'
   }
   properties: {
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: publicNetworkAccess
     enablePurgeProtection: true
     softDeleteRetentionInDays: 7
   }

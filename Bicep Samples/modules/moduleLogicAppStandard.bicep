@@ -20,6 +20,7 @@ param vnetintegrationSubnetAddressPrefix string = ''
 param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
+param publicNetworkAccess string
 
 // tags
 param tags object = {}
@@ -141,10 +142,10 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
       use32BitWorkerProcess: false
       appSettings: []
       ipSecurityRestrictions: []
-      ipSecurityRestrictionsDefaultAction: 'Deny'
-      scmIpSecurityRestrictionsDefaultAction: 'Allow'
-      scmIpSecurityRestrictionsUseMain: false
-      publicNetworkAccess: 'Enabled'
+      ipSecurityRestrictionsDefaultAction: publicNetworkAccess == 'Enable' ? 'Allow' : 'Deny'
+      scmIpSecurityRestrictionsDefaultAction: publicNetworkAccess == 'Enable' ? 'Allow' : 'Deny'
+      scmIpSecurityRestrictionsUseMain: true
+      publicNetworkAccess: publicNetworkAccess
     }
   }
 }

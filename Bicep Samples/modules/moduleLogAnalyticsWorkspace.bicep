@@ -10,6 +10,8 @@ param enablePrivateLink bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
+param publicNetworkAccessForIngestion string
+param publicNetworkAccessForQuery string
 
 // tags
 param tags object = {}
@@ -56,9 +58,8 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
     workspaceCapping: {
       dailyQuotaGb: 1
     }
-    publicNetworkAccessForIngestion: enablePrivateLink ? 'Disabled' : 'Enabled'
-    //publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled' // for testing
+    publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: publicNetworkAccessForQuery
   }
 }
 

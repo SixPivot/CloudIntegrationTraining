@@ -21,7 +21,7 @@ param tags object = {}
 // storage account settings
 param StorageSKUName string = ''
 param enableHNS bool = false
-param enablePublicNetworkAccess string = 'Enabled'
+param publicNetworkAccess string
 
 // existing resources
 param appconfig_name string = ''
@@ -69,7 +69,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     defaultToOAuthAuthentication: true
     minimumTlsVersion: 'TLS1_2'
     isHnsEnabled: enableHNS
-    publicNetworkAccess: enablePublicNetworkAccess
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 

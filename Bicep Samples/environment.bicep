@@ -47,6 +47,7 @@ param functionAppSubnetName string = ''
 param functionAppSubnetAddressPrefix string = '' 
 param networksecuritygroupName string = 'none'
 param routetableName string = 'none'
+param publicNetworkAccess string = 'Disabled'
 
 //****************************************************************
 // Variables
@@ -86,6 +87,8 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     privatelinkSubnetName: privatelinkSubnetName
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    publicNetworkAccessForIngestion: publicNetworkAccess
+    publicNetworkAccessForQuery: publicNetworkAccess
   }
 }
 
@@ -118,6 +121,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
@@ -261,6 +265,7 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
@@ -319,6 +324,7 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunc
     privatelinkSubnetName: privatelinkSubnetName
     AppName: 'functionapp'
     AppShortName: 'fn'
+    publicNetworkAccess: publicNetworkAccess
   }
   dependsOn: [
     moduleStorageAccount
@@ -366,6 +372,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     createSubnet: createFunctionAppSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
+    publicNetworkAccess: publicNetworkAccess
   }
 } 
 
@@ -423,6 +430,7 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     privatelinkSubnetName: privatelinkSubnetName
     AppName: 'logicappstd'
     AppShortName: 'las'
+    publicNetworkAccess: publicNetworkAccess
   }
   dependsOn: [
     moduleStorageAccount
@@ -470,6 +478,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     createSubnet: createLogicAppStdSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
+    publicNetworkAccess: publicNetworkAccess
   }
   dependsOn: [
     moduleFunctionApp

@@ -251,6 +251,21 @@ module moduleAppConfigKeyValueapimanagementIPAddress './moduleAppConfigKeyValue.
   }
 }
 
+//****************************************************************
+// Add Private Link for Storage Account 
+//****************************************************************
+
+module moduleApiManagementBasePrivateLink './moduleApiManagementBasePrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleApiManagementBasePrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: privatelinkSubnetName
+    apimanagement_name: apimanagement.name
+  }
+}
+
 output apimanagement_name string = apimanagement.name
 output apimanagement_id string = apimanagement.id
 output apimanagement_location string = apimanagement.location

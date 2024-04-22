@@ -12,6 +12,7 @@ param enablePrivateLink bool
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
+param publicNetworkAccess string 
 
 // tags
 param tags object = {}
@@ -103,7 +104,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     enableSoftDelete: true
     softDeleteRetentionInDays: 90
     enablePurgeProtection: true
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
