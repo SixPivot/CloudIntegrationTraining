@@ -151,6 +151,43 @@ module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = i
   }
 }
 
+module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
+  name: 'moduleApiManagementBase'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
+    keyvault_name: moduleKeyVault.outputs.keyvault_name
+    keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
+    enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
+    KeyVaultAdministratorsGroupId: KeyVaultAdministratorsGroupId
+    KeyVaultReaderGroupId: KeyVaultReaderGroupId
+    ApiManagementSKUName: 'developer'
+    ApiManagementCapacity: 1
+    ApiManagementPublisherName: 'Cloud Integration Training'
+    ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
+  }
+}
+
 // var policyString = loadTextContent('./base/APIMpolicies/Correlation.xml')
 
 // module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {

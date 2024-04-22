@@ -21,7 +21,9 @@ param appconfig_name string = ''
 param appconfig_resourcegroup string = ''
 param appconfig_subscriptionId string = ''
 param loganalyticsWorkspace_name string = ''
+param loganalyticsWorkspace_resourcegroup string = ''
 param keyvault_name string = ''
+param keyvault_resourcegroup string = ''
 param appInsights_name string = ''
 
 // service principals and groups
