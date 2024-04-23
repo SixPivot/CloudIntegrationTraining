@@ -84,9 +84,9 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enablePrivateLink: enablePrivateLink
-    privatelinkSubnetName: privatelinkSubnetName
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
   }
@@ -118,9 +118,9 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     enablePrivateLink: enablePrivateLink
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
   }
 }
@@ -152,6 +152,7 @@ module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = i
     enablePrivateLink: enablePrivateLink
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
   }
 }
 
@@ -183,6 +184,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     enablePrivateLink: enablePrivateLink
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
     KeyVaultAdministratorsGroupId: KeyVaultAdministratorsGroupId
     KeyVaultReaderGroupId: KeyVaultReaderGroupId
@@ -262,9 +264,9 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
   }
 }
@@ -319,9 +321,9 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunc
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     AppName: 'functionapp'
     AppShortName: 'fn'
     publicNetworkAccess: publicNetworkAccess
@@ -363,10 +365,10 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     functionapphostingplan_subscriptionId: moduleFunctionAppHostingPlan.outputs.functionapphostingplan_subscriptionId
     //apimanagement_publicIPAddress: 
     enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: functionAppSubnetName
     vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
     createSubnet: createFunctionAppSubnet
@@ -425,9 +427,9 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     AppName: 'logicappstd'
     AppShortName: 'las'
     publicNetworkAccess: publicNetworkAccess
@@ -469,10 +471,10 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     workflowhostingplan_resourcegroup: moduleWorkflowHostingPlan.outputs.workflowhostingplan_resourcegroup
     workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflow_hostingplan_subscriptionId
     enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
     vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
     createSubnet: createLogicAppStdSubnet

@@ -223,14 +223,41 @@ resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2022-09-0
 //   }
 // }
 
+// var storagePrivateLinks = [
+//   {
+//     storageType: 'blob'
+//     dnsExists: true
+//   }
+//   {
+//     storageType: 'file'
+//     dnsExists: true
+//   }
+// ]
+
 var storagePrivateLinks = [
   {
     storageType: 'blob'
-    dnsExists: true
+    dnsExists: false
+  }
+  {
+    storageType: 'table'
+    dnsExists: false
+  }
+  {
+    storageType: 'queue'
+    dnsExists: false
   }
   {
     storageType: 'file'
-    dnsExists: true
+    dnsExists: false
+  }
+  {
+    storageType: 'web'
+    dnsExists: false
+  }
+  {
+    storageType: 'dfs'
+    dnsExists: false
   }
 ]
 
