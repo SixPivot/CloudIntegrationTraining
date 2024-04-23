@@ -49,7 +49,7 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
   name: loganalyticsWorkspace_name
 }
 
-resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-preview' = if(enablePrivateLink) {
+resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-preview' existing = if(enablePrivateLink) {
   name: loganalyticsWorkspace_privatelinkscope_name
 }
 
