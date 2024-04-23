@@ -134,6 +134,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       scmIpSecurityRestrictionsDefaultAction: publicNetworkAccess == 'Enable' ? 'Allow' : 'Deny'
       scmIpSecurityRestrictionsUseMain: true
       publicNetworkAccess: publicNetworkAccess
+      vnetRouteAllEnabled: publicNetworkAccess == 'Enable' ? false : true
     }
   }
 }
