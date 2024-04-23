@@ -20,12 +20,12 @@ var newProperties2 = routetableName != 'none' ? { routeTable: { id: routetable.i
 var defaultProperties = {
   addressPrefix: vnetintegrationSubnetAddressPrefix
   delegations: [
-    {
-      name: 'delegation'
-      properties: {
-        serviceName: 'Microsoft.ApiManagement/service'
-      }
-    }
+    // {
+    //   name: 'delegation'
+    //   properties: {
+    //     serviceName: 'Microsoft.ApiManagement/service'
+    //   }
+    // }
   ]
   privateEndpointNetworkPolicies: 'Disabled'
   privateLinkServiceNetworkPolicies: 'Enabled'

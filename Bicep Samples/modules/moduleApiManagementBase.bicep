@@ -112,7 +112,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
 //****************************************************************
 var virtualNetworkConfiguration = enableVNETIntegration ? { subnetResourceId: moduleApiManagementVNETIntegration.outputs.apim_subnet_id } : null
 
-resource apimanagement 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
+resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: apimanagement_name
   location: AppLocation
   tags: tags
@@ -146,7 +146,7 @@ resource apiManagementAuditSettings  'Microsoft.Insights/diagnosticSettings@2021
   }
 }
 
-resource apiManagementLogging 'Microsoft.ApiManagement/service/loggers@2021-08-01'= if (enableDiagnostic) {
+resource apiManagementLogging 'Microsoft.ApiManagement/service/loggers@2023-05-01-preview'= if (enableDiagnostic) {
   name:'${appinsights.name}-logger'
   parent: apimanagement
   properties:{
@@ -158,7 +158,7 @@ resource apiManagementLogging 'Microsoft.ApiManagement/service/loggers@2021-08-0
   }
 }
 
-resource apimAppInsights 'Microsoft.ApiManagement/service/diagnostics@2022-09-01-preview' = if (enableDiagnostic) {
+resource apimAppInsights 'Microsoft.ApiManagement/service/diagnostics@2023-05-01-preview' = if (enableDiagnostic) {
   name: 'applicationinsights'
   parent: apimanagement
   properties:{
