@@ -2,14 +2,9 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param vnetintegrationSubnetName string 
 param vnetintegrationSubnetAddressPrefix string 
-param functionapp_name string 
 param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
-
-resource FunctionApp 'Microsoft.Web/sites@2022-09-01' existing = {
-  name: functionapp_name
-}
 
 resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (networksecuritygroupName != 'none') {
   name: networksecuritygroupName
@@ -28,7 +23,7 @@ var defaultProperties = {
     {
       name: 'delegation'
       properties: {
-        serviceName: 'Microsoft.Web/serverFarms'
+        serviceName: 'Microsoft.ApiManagment/service'
       }
     }
   ]
@@ -48,11 +43,4 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   }
 }
 
-resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
-  parent: FunctionApp
-  name: 'virtualNetwork'
-  properties: {
-    subnetResourceId: moduleCreateSubnet.outputs.subnet_id
-    swiftSupported: true
-  }
-}
+output apim_subnet_id string = moduleCreateSubnet.outputs.subnet_id

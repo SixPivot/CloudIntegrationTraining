@@ -7,9 +7,6 @@ param createSubnet bool
 param networksecuritygroupName string
 param routetableName string
 
-//****************************************************************
-// Add Private Link for Storage Account 
-//****************************************************************
 resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
   name: logicappstd_name
 }

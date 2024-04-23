@@ -181,7 +181,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     appInsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
-    enablePrivateLink: enablePrivateLink
+    enablePrivateLink: false
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
@@ -192,6 +192,10 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementCapacity: 1
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
+    enableVNETIntegration: false
+    createSubnet: createFunctionAppSubnet
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
   }
 }
 

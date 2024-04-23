@@ -8,10 +8,15 @@ param AzureRegion string = 'ause'
 param Instance int = 1
 param enableAppConfig bool 
 param enableDiagnostic bool 
-param enablePrivateLink bool 
+param enablePrivateLink bool
+param enableVNETIntegration bool 
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = '' 
 param privatelinkSubnetName string = ''
+param vnetintegrationSubnetAddressPrefix string = ''
+param createSubnet bool 
+param networksecuritygroupName string 
+param routetableName string 
 
 // tags
 param tags object = {}
@@ -36,6 +41,7 @@ param ApiManagementSKUName string = ''
 param ApiManagementCapacity int = 1
 param ApiManagementPublisherName string = ''
 param ApiManagementPublisherEmail string = ''
+param ApiManagementVirtualNetowrkType string = ''
 
 //****************************************************************
 // Variables
@@ -119,7 +125,10 @@ resource apimanagement 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   properties: {
     publisherEmail: ApiManagementPublisherEmail
     publisherName: ApiManagementPublisherName
-    virtualNetworkType: 'None'
+    virtualNetworkType: ApiManagementVirtualNetowrkType
+    virtualNetworkConfiguration:{
+      subnetResourceId: enableVNETIntegration ? moduleApiManagementVNETIntegration.outputs.apim_subnet_id : ''
+    }
     apiVersionConstraint: {}
   }
 }
@@ -263,6 +272,23 @@ module moduleApiManagementBasePrivateLink './moduleApiManagementBasePrivateLink.
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     apimanagement_name: apimanagement.name
+  }
+}
+
+//****************************************************************
+// Add VNET Integration for API Management
+//****************************************************************
+
+module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleApiManagementVNETIntegration'
+  params: {
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    vnetintegrationSubnetName: apimanagement_name
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    createSubnet: createSubnet
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
   }
 }
 
