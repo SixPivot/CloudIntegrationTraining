@@ -10,15 +10,17 @@ param enableAppConfig bool
 param enableDiagnostic bool
 param enablePrivateLink bool 
 param virtualNetworkName string 
+param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
+param publicNetworkAccess string
 
 // tags
 param tags object = {}
 
 // Service Bus Namespace settings
-param ServiceBusSKUName string = 'Standard'
-param ServiceBusCapacity int = 1
-param ServiceBusTierName string = 'Standard'
+// param ServiceBusSKUName string = 'Standard'
+// param ServiceBusCapacity int = 1
+// param ServiceBusTierName string = 'Standard'
 
 // existing resources
 param appconfig_name string 
@@ -60,13 +62,13 @@ resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }
   properties: {
     minimalTlsVersion: '1.2'
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: publicNetworkAccess
     restrictOutboundNetworkAccess: 'Disabled'
     administrators:{
       administratorType: 'ActiveDirectory'
       principalType: 'Group'
-      login: 'trevor.booth@wilsongroupau.com'
-      sid: '1ed092a2-ee71-4e8b-a626-8244daa06189'
+      login: 'bill@biztalkbill.com'
+      sid: 'e84a079c-0ca6-452f-a592-9ee3f8cff4f8'
       tenantId: subscription().tenantId
       azureADOnlyAuthentication: true
     }

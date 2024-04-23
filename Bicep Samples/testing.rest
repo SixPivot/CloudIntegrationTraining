@@ -1,0 +1,11 @@
+GET https://apim-cloudintegrationtraining-dev-ause-001.azure-api.net/echo/resource?param1=sample
+
+###
+
+GET https://20.53.153.159/echo/resource?param1=sample
+
+###
+
+GET https://172.20.4.4/echo/resource?param1=sample
+
+###

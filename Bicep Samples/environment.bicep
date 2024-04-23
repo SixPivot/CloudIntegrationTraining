@@ -200,19 +200,19 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     vnetintegrationSubnetAddressPrefix: apiManagementSubnetAddressPrefix
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
   }
 }
 
-// var policyString = loadTextContent('./base/APIMpolicies/Correlation.xml')
+var policyString = loadTextContent('./policies/Correlation.xml')
 
-// module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {
-//   name: 'moduleApiManagementPolicy'
-//   params: {
-//     apimanagement_name: moduleApiManagmentBase.outputs.apimanagement_name
-//     policyString: policyString
-//   }
-// }
+module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {
+  name: 'moduleApiManagementPolicy'
+  params: {
+    apimanagement_name: moduleApiManagementBase.outputs.apimanagement_name
+    policyString: policyString
+  }
+}
 
 // module moduleApiManagementWorkspacePolicy './modules/moduleApiManagementWorkspacePolicy.bicep' = {
 //   name: 'moduleApiManagementWorkspacePolicy'
@@ -509,33 +509,33 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
   ]
 } 
 
-
-// module moduleSQLServer './modules/moduleSQLServer.bicep' = {
-//   name: 'moduleSQLServer'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     enableAppConfig: enableAppConfig
-//     appconfig_name: enableAppConfig ? appconfig_name : ''
-//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
-//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
-//     enableDiagnostic: enableDiagnostic
-//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-//   }
-// }
+module moduleSQLServer './modules/moduleSQLServer.bicep' = {
+  name: 'moduleSQLServer'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    publicNetworkAccess: publicNetworkAccess
+  }
+}
 
 // module moduleSQLDatabase './modules/moduleSQLDatabase.bicep' = {
 //   name: 'moduleSQLDatabase'
@@ -568,57 +568,62 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
 //   }
 // }
 
-// module moduleDataFactory './modules/moduleDataFactory.bicep' = {
-//   name: 'moduleDataFactory'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     enableAppConfig: enableAppConfig
-//     appconfig_name: enableAppConfig ? appconfig_name : ''
-//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
-//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
-//     enableDiagnostic: enableDiagnostic
-//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-//   }
-// }
+module moduleDataFactory './modules/moduleDataFactory.bicep' = {
+  name: 'moduleDataFactory'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
+    enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+  }
+}
 
-// not required with Logic App Standard
-// module moduleIntegrationAccount './modules/moduleIntegrationAccount.bicep' = {
-//   name: 'moduleIntegrationAccount'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     enableAppConfig: enableAppConfig
-//     appconfig_name: enableAppConfig ? appconfig_name : ''
-//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
-//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
-//     enableDiagnostic: enableDiagnostic
-//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-//   }
-// }
+// not required with Logic App Standard except for AS2, EDIFACT & X12
+module moduleIntegrationAccount './modules/moduleIntegrationAccount.bicep' = {
+  name: 'moduleIntegrationAccount'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    IntegrationAccountSKUName: 'Basic'
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
+    enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+  }
+}
