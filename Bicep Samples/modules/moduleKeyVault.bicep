@@ -1,33 +1,33 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool 
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
-param privatelinkSubnetName string = ''
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
 param publicNetworkAccess string 
 
 // tags
 param tags object = {}
 
 // existing resources
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
-param loganalyticsWorkspace_name string = ''
-param loganalyticsWorkspace_resourcegroup string = ''
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string 
+param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string 
 
 // service principals and groups
-param AzureDevOpsServiceConnectionId string = ''
-param KeyVaultAdministratorsGroupId string = ''
-param KeyVaultReaderGroupId string = ''
+param AzureDevOpsServiceConnectionId string 
+param KeyVaultAdministratorsGroupId string 
+param KeyVaultReaderGroupId string 
 
 @allowed([
   'A'

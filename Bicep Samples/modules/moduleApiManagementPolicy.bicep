@@ -1,6 +1,6 @@
 // parameters
-param apimanagement_name string = ''
-param policyString string = ''
+param apimanagement_name string 
+param policyString string 
 
 //****************************************************************
 // Existing Azure Resources

@@ -1,19 +1,19 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool
 param enableVNETIntegration bool 
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = '' 
-param privatelinkSubnetName string = ''
-param vnetintegrationSubnetAddressPrefix string = ''
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
+param vnetintegrationSubnetAddressPrefix string
 param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
@@ -22,26 +22,26 @@ param routetableName string
 param tags object = {}
 
 // existing resources
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
-param loganalyticsWorkspace_name string = ''
-param loganalyticsWorkspace_resourcegroup string = ''
-param keyvault_name string = ''
-param keyvault_resourcegroup string = ''
-param appInsights_name string = ''
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string 
+param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string 
+param keyvault_name string 
+param keyvault_resourcegroup string 
+param appInsights_name string 
 
 // service principals and groups
-param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)'
-param KeyVaultAdministratorsGroupId string = '$(KeyVaultAdministratorsGroupId)'
-param KeyVaultReaderGroupId string = '$(KeyVaultReaderGroupId)'
+param AzureDevOpsServiceConnectionId string 
+param KeyVaultAdministratorsGroupId string 
+param KeyVaultReaderGroupId string
 
 // API Management settings
-param ApiManagementSKUName string = ''
+param ApiManagementSKUName string 
 param ApiManagementCapacity int = 1
-param ApiManagementPublisherName string = ''
-param ApiManagementPublisherEmail string = ''
-param ApiManagementVirtualNetowrkType string = ''
+param ApiManagementPublisherName string 
+param ApiManagementPublisherEmail string 
+param ApiManagementVirtualNetowrkType string 
 
 //****************************************************************
 // Variables

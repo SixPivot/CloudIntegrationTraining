@@ -1,8 +1,8 @@
-param AppLocation string = ''
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
-param privatelinkSubnetName string = ''
-param keyvault_name string = ''
+param AppLocation string 
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
+param keyvault_name string 
 
 //****************************************************************
 // Add Private Link for Storage Account 

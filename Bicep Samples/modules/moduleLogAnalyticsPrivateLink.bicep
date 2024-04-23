@@ -1,7 +1,7 @@
-param AppLocation string = ''
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
-param privatelinkSubnetName string = ''
+param AppLocation string 
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
 param loganalyticsWorkspace_name string 
 param loganalyticsPrivateLinkScopeId string 
 

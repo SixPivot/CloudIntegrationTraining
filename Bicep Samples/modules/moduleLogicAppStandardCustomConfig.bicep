@@ -1,4 +1,4 @@
-param logicapp_name string = ''
+param logicapp_name string 
 param currentAppSettings object 
 param newAppSettings object
 

@@ -1,7 +1,7 @@
-param keyvault_name string = ''
-param principalid string = ''
-param principaltype string = ''
-param roledefinitionid string = '' 
+param keyvault_name string 
+param principalid string 
+param principaltype string 
+param roledefinitionid string  
 
 resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
   name: keyvault_name

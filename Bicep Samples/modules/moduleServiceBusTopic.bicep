@@ -1,8 +1,8 @@
 // parameters
-param servicebusnamespace_name string = ''
-param topic_name string = ''
-param principalid string = ''
-param principaltype string = ''
+param servicebusnamespace_name string 
+param topic_name string 
+param principalid string 
+param principaltype string 
 param CreateRoleAssignment bool = false
 
 

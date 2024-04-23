@@ -1,7 +1,7 @@
-param appconfig_name string = ''
-param principalid string = ''
-param principaltype string = ''
-param roledefinitionid string = ''
+param appconfig_name string 
+param principalid string 
+param principaltype string 
+param roledefinitionid string 
 
 resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
   name: appconfig_name

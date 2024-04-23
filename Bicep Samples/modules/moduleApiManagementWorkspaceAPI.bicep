@@ -1,8 +1,8 @@
 // existing resources
-param apimanagement_name string = ''
-param apimanagement_workspace_name string = ''
-param apiName string = ''
-param apiPath string = ''
+param apimanagement_name string 
+param apimanagement_workspace_name string 
+param apiName string 
+param apiPath string 
 
 //****************************************************************
 // Existing Azure Resources

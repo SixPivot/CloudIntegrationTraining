@@ -1,10 +1,10 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
-param AzureRegion string = ''
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
+param AzureRegion string 
 param Instance int = 1
 param publicNetworkAccessForIngestion string
 param publicNetworkAccessForQuery string
@@ -14,9 +14,9 @@ param publicNetworkAccess string
 param tags object = {}
 
 // service principals and groups
-param AzureDevOpsServiceConnectionId string = ''
-param AppConfigAdministratorsGroupId string = ''
-param AppConfigReaderGroupId string = ''
+param AzureDevOpsServiceConnectionId string 
+param AppConfigAdministratorsGroupId string 
+param AppConfigReaderGroupId string 
 
 @allowed([
   'Free'

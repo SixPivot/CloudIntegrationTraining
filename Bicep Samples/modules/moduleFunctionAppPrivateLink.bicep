@@ -1,7 +1,7 @@
-param AppLocation string = ''
-param virtualNetworkName string = ''
-param privatelinkSubnetName string = ''
-param functionapp_name string = ''
+param AppLocation string 
+param virtualNetworkName string 
+param privatelinkSubnetName string 
+param functionapp_name string 
 
 //****************************************************************
 // Add Private Link for Storage Account 

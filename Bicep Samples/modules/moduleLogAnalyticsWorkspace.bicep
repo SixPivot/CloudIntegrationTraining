@@ -18,9 +18,9 @@ param tags object = {}
 
 // existing resources
 param enableAppConfig bool
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string 
 
 //****************************************************************
 // Variables

@@ -1,16 +1,17 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool 
-param virtualNetworkName string = ''
-param privatelinkSubnetName string = ''
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
 
 // tags
 param tags object = {}
@@ -21,10 +22,10 @@ param ServiceBusCapacity int = 1
 param ServiceBusTierName string = 'Standard'
 
 // existing resources
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
-param loganalyticsWorkspace_name string = ''
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string 
+param loganalyticsWorkspace_name string 
 
 //****************************************************************
 // Variables
@@ -95,6 +96,21 @@ resource servicebusnamespaceDiagnosticSettings  'Microsoft.Insights/diagnosticSe
         enabled: true
       }
     ]
+  }
+}
+
+//****************************************************************
+// Add Private Link for Storage Account 
+//****************************************************************
+
+module moduleServiceBusNamespacePrivateLink './moduleServiceBusNamespacePrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleServiceBusNamespacePrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: privatelinkSubnetName
+    servicBusNamespace_name: servicebusnamespace.name
   }
 }
 

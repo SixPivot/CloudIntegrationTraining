@@ -1,9 +1,9 @@
 // parameters
-param servicebusnamespace_name string = ''
-param topic_name string = ''
-param principalid string = ''
-param principaltype string = ''
-param roledefinitionid string = '' 
+param servicebusnamespace_name string 
+param topic_name string 
+param principalid string 
+param principaltype string 
+param roledefinitionid string  
 
 
 //****************************************************************

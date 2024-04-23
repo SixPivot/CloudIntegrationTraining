@@ -1,23 +1,23 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
-param apimanagementworkspace_name string = ''
+param apimanagementworkspace_name string 
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool 
-param virtualNetworkName string = ''
-param privatelinkSubnetName string = ''
+param virtualNetworkName string 
+param privatelinkSubnetName string 
 
 // existing resources
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
-param apimanagement_name string = ''
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string 
+param apimanagement_name string 
 
 
 // service principals and groups

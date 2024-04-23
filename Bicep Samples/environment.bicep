@@ -48,6 +48,7 @@ param functionAppSubnetAddressPrefix string = ''
 param networksecuritygroupName string = 'none'
 param routetableName string = 'none'
 param publicNetworkAccess string = 'Disabled'
+param apiManagementSubnetAddressPrefix string = ''
 
 //****************************************************************
 // Variables
@@ -192,8 +193,10 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementCapacity: 1
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
-    enableVNETIntegration: false
+    ApiManagementVirtualNetowrkType: 'internal'
+    enableVNETIntegration: true
     createSubnet: createFunctionAppSubnet
+    vnetintegrationSubnetAddressPrefix: apiManagementSubnetAddressPrefix
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }
@@ -218,32 +221,33 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
 //   }
 // }
 
-// module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
-//   name: 'moduleServiceBusNamespace'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     BusinessImpact: BusinessImpact
-//     BusinessOwner: BusinessOwner
-//     CostCentre: CostCentre
-//     CostOwner: CostOwner
-//     InformationClassification: InformationClassification
-//     Owner: Owner
-//     ServiceClass: ServiceClass
-//     Workload: Workload
-//     enableAppConfig: enableAppConfig
-//     appconfig_name: enableAppConfig ? appconfig_name : ''
-//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
-//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
-//     enableDiagnostic: enableDiagnostic
-//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-//   }
-// }
+module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
+  name: 'moduleServiceBusNamespace'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+  }
+}
 
 module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccount'
@@ -255,6 +259,8 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     AppLocation: AppLocation
     AzureRegion: AzureRegion
     Instance: Instance
+    AppName: ''
+    AppShortName: ''
     tags: {
       BusinessOwner: BusinessOwner
       CostCentre: CostCentre
@@ -298,7 +304,6 @@ module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bice
     //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
     FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
-    enablePrivateLink: enablePrivateLink
   }
 }
 
@@ -342,6 +347,8 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
   params: {
     BaseName: BaseName
     BaseShortName: BaseShortName
+    AppName: ''
+    AppShortName: ''
     EnvironmentName: EnvironmentName
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
@@ -358,9 +365,11 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     applicationinsights_resourcegroup: enableDiagnostic ? moduleApplicationInsights.outputs.applicationinsights_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
+    keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     storage_name: moduleStorageAccountForFunctionApp.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForFunctionApp.outputs.storage_resourcegroup
     storage_subscriptionId: moduleStorageAccountForFunctionApp.outputs.storage_subscriptionId
@@ -404,7 +413,6 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-    enablePrivateLink: enablePrivateLink
   }
 }
 
@@ -449,6 +457,8 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
   params: {
     BaseName: BaseName
     BaseShortName: BaseShortName
+    AppName: ''
+    AppShortName: ''
     EnvironmentName: EnvironmentName
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
@@ -465,9 +475,11 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     applicationinsights_resourcegroup: enableDiagnostic ? moduleApplicationInsights.outputs.applicationinsights_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
+    keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     storage_name: moduleStorageAccountForLogicAppStd.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForLogicAppStd.outputs.storage_resourcegroup
     storage_subscriptionId: moduleStorageAccountForLogicAppStd.outputs.storage_subscriptionId

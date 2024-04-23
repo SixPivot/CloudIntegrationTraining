@@ -1,22 +1,22 @@
 // environment parameters
-param BaseName string = ''
-param BaseShortName string = ''
-param AppName string = ''
-param AppShortName string = ''
-param EnvironmentName string = ''
-param EnvironmentShortName string = ''
-param AppLocation string = ''
+param BaseName string 
+param BaseShortName string 
+param AppName string 
+param AppShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
+param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool 
 param enableVNETIntegration bool 
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
-param privatelinkSubnetName string = ''
-param vnetintegrationSubnetName string = ''
-param vnetintegrationSubnetAddressPrefix string = ''
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
+param vnetintegrationSubnetName string 
+param vnetintegrationSubnetAddressPrefix string 
 param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
@@ -26,22 +26,22 @@ param publicNetworkAccess string
 param tags object = {}
 
 // existing resources
-param appconfig_name string = ''
-param appconfig_resourcegroup string = ''
-param keyvault_name string = ''
-param keyvault_resourcegroup string = ''
-param appconfig_subscriptionId string = ''
-param loganalyticsWorkspace_name string = ''
-param loganalyticsWorkspace_resourcegroup string = ''
-param applicationinsights_name string = ''
-param applicationinsights_resourcegroup string = ''
-param functionapphostingplan_name string = ''
-param functionapphostingplan_resourcegroup string = ''
-param functionapphostingplan_subscriptionId string = ''
-param storage_name string = ''
-param storage_resourcegroup string = ''
-param storage_subscriptionId string = ''
-param apimanagement_publicIPAddress string = ''
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param keyvault_name string 
+param keyvault_resourcegroup string 
+param appconfig_subscriptionId string 
+param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string 
+param applicationinsights_name string 
+param applicationinsights_resourcegroup string 
+param functionapphostingplan_name string 
+param functionapphostingplan_resourcegroup string 
+param functionapphostingplan_subscriptionId string 
+param storage_name string 
+param storage_resourcegroup string 
+param storage_subscriptionId string 
+//param apimanagement_publicIPAddress string 
 
 param functionappWorkerRuntime string = 'dotnet-isolated'
 param functionappExtentionVersion string = '~4'

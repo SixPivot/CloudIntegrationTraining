@@ -1,8 +1,8 @@
-param AppLocation string = ''
-param virtualNetworkName string = ''
-param privatelinkSubnetName string = ''
-param storage_name string = ''
-param storageType string = ''
+param AppLocation string 
+param virtualNetworkName string 
+param privatelinkSubnetName string 
+param storage_name string 
+param storageType string 
 param dnsExists bool = false
 
 //****************************************************************

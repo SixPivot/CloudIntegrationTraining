@@ -1,4 +1,4 @@
-param functionapp_name string = ''
+param functionapp_name string 
 param currentAppSettings object 
 param newAppSettings object
 

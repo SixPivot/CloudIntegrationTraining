@@ -25,6 +25,7 @@ param Workload string = '$(Workload)'
 // service principals and groups
 param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)'
 param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
+param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
 module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
   name: 'moduleAppConfiguration'
@@ -47,7 +48,8 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
       Workload: Workload
     }
     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
-    AppConfigAdministratorsGroupId:AppConfigAdministratorsGroupId
+    AppConfigAdministratorsGroupId: AppConfigAdministratorsGroupId
+    AppConfigReaderGroupId: AppConfigReaderGroupId
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
     publicNetworkAccess: publicNetworkAccess

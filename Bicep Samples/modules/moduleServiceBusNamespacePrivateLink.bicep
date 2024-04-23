@@ -1,17 +1,21 @@
 param AppLocation string 
 param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param logicappstd_name string 
+param servicBusNamespace_name string 
 
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
-resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
-  name: logicappstd_name
+
+resource servicebusnamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+  name: servicBusNamespace_name
+
 }
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
@@ -19,7 +23,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing 
   parent: virtualNetwork
 }
 
-var privateEndPointName = 'pep-${(LogicAppStdApp.name)}'
+var privateEndPointName = 'pep-${(servicebusnamespace.name)}'
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
@@ -33,9 +37,9 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
       {
         name: privateEndPointName
         properties: {
-          privateLinkServiceId: LogicAppStdApp.id
+          privateLinkServiceId: servicebusnamespace.id
           groupIds: [
-            'sites'
+            'vault'
           ]
         }
       }
@@ -44,7 +48,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 }
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.azurewebsites.net'
+  name: 'privatelink.servicebus.azure.net'
   location: 'global'
 }
 
