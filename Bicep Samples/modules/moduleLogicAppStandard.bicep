@@ -134,7 +134,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
   properties: {
     vnetContentShareEnabled: publicNetworkAccess == 'Enable' ? false : true
     serverFarmId: workflowHostingPlan.id
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: publicNetworkAccess
     httpsOnly: true
     siteConfig: {
       netFrameworkVersion: 'v4.0'

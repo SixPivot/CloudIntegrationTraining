@@ -124,6 +124,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   properties: {
     vnetContentShareEnabled: publicNetworkAccess == 'Enable' ? false : true
     serverFarmId: functionappHostingPlan.id
+    publicNetworkAccess: publicNetworkAccess
     httpsOnly: true
     siteConfig: {
       functionsRuntimeScaleMonitoringEnabled: false
@@ -149,9 +150,9 @@ resource functionAppConfigSettings 'Microsoft.Web/sites/config@2022-09-01' = {
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}'
     WEBSITE_CONTENTSHARE: FileServicesFileShare.name
   }
-  dependsOn: [
-    moduleFunctionAppVNETIntegration
-  ]
+  // dependsOn: [
+  //   moduleFunctionAppVNETIntegration
+  // ]
 }
 
 module moduleFunctionAppCustomConfigAppInsights './moduleFunctionAppCustomConfig.bicep' = if (enableDiagnostic) {
