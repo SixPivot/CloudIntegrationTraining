@@ -110,7 +110,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
 //****************************************************************
 // Azure API Management
 //****************************************************************
-var virtualNetworkConfiguration = enableVNETIntegration ? { subnetResourceId: moduleApiManagementVNETIntegration.outputs.apim_subnet_id } : {}
+var virtualNetworkConfiguration = enableVNETIntegration ? { subnetResourceId: moduleApiManagementVNETIntegration.outputs.apim_subnet_id } : null
 
 resource apimanagement 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   name: apimanagement_name

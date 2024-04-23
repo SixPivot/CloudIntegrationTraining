@@ -132,6 +132,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
     type: 'SystemAssigned'
   }
   properties: {
+    vnetContentShareEnabled: publicNetworkAccess == 'Enable' ? false : true
     serverFarmId: workflowHostingPlan.id
     publicNetworkAccess: 'Enabled'
     httpsOnly: true

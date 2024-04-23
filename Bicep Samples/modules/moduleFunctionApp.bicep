@@ -110,7 +110,7 @@ resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/s
 }
 
 //****************************************************************
-// Azure Logic App Std 
+// Azure Function App
 //****************************************************************
 
 resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
