@@ -48,7 +48,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 }
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink-azure-api-net'
+  name: 'privatelink.azure-api.net'
   location: 'global'
 }
 
