@@ -36,15 +36,6 @@ var defaultProperties = {
   privateLinkServiceNetworkPolicies: 'Enabled'
 }
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
-  name: virtualNetworkName
-}
-
-resource subnetExist 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
-  name: vnetintegrationSubnetName
-  parent: virtualNetwork
-}
-
 module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   name: 'moduleCreateSubnet'
   scope: resourceGroup(virtualNetworkResourceGroup)
@@ -53,7 +44,6 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetName: vnetintegrationSubnetName
     defaultProperties: defaultProperties
     optionalProperties: union(newProperties1, newProperties2)
-    subnetExist: subnetExist
   }
 }
 
@@ -61,7 +51,7 @@ resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
   parent: LogicAppStdApp
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: subnetExist != null ? subnetExist.id : moduleCreateSubnet.outputs.subnet_id
+    subnetResourceId: moduleCreateSubnet.outputs.subnet_id
     swiftSupported: true
   }
 }

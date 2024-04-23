@@ -17,9 +17,9 @@ param privatelinkSubnetName string
 param tags object = {}
 
 // Service Bus Namespace settings
-param ServiceBusSKUName string = 'Standard'
-param ServiceBusCapacity int = 1
-param ServiceBusTierName string = 'Standard'
+param ServiceBusSKUName string 
+param ServiceBusCapacity int 
+param ServiceBusTierName string 
 
 // existing resources
 param appconfig_name string 

@@ -236,6 +236,9 @@ module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
       CostCentre: CostCentre
       Workload: Workload
     }
+    ServiceBusSKUName: 'Premium'
+    ServiceBusCapacity: 1
+    ServiceBusTierName: 'Premium'
     enableAppConfig: enableAppConfig
     appconfig_name: enableAppConfig ? appconfig_name : ''
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
