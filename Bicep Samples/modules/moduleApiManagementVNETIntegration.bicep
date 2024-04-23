@@ -27,6 +27,38 @@ var defaultProperties = {
     //   }
     // }
   ]
+  serviceEndpoints: [
+    {
+      service: 'Microsoft.KeyVault'
+      locations: [
+        '*'
+      ]
+    }
+    {
+      service: 'Microsoft.EventHub'
+      locations: [
+        '*'
+      ]
+    }
+    {
+      service: 'Microsoft.Sql'
+      locations: [
+        '*'
+      ]
+    }
+    {
+      service: 'Microsoft.Storage'
+      locations: [
+        '*'
+      ]
+    }
+    {
+      service: 'Microsoft.ServiceBus'
+      locations: [
+        '*'
+      ]
+    }
+  ]
   privateEndpointNetworkPolicies: 'Disabled'
   privateLinkServiceNetworkPolicies: 'Enabled'
 }

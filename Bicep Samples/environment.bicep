@@ -199,7 +199,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     vnetintegrationSubnetAddressPrefix: apiManagementSubnetAddressPrefix
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: 'Enabled'
   }
 }
 
