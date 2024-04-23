@@ -23,7 +23,8 @@ param appconfig_resourcegroup string
 param appconfig_subscriptionId string
 param enableDiagnostic bool  
 param loganalyticsWorkspace_name string 
-param loganalyticsWorkspace_resourcegroup string 
+param loganalyticsWorkspace_resourcegroup string
+param loganalyticsWorkspace_privatelinkscope_name string
 param keyvault_name string 
 param keyvault_resourcegroup string   
 
@@ -48,6 +49,10 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
   name: loganalyticsWorkspace_name
 }
 
+resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-preview' = if(enablePrivateLink) {
+  name: loganalyticsWorkspace_privatelinkscope_name
+}
+
 //****************************************************************
 // Azure Application Insights
 //****************************************************************
@@ -64,6 +69,14 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForIngestion: enablePrivateLink ? 'Disabled' : 'Enabled'
     publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
     IngestionMode: 'LogAnalytics'
+  }
+}
+
+resource privateLinkScopedResource 'Microsoft.Insights/privateLinkScopes/scopedResources@2021-07-01-preview' = if(enablePrivateLink) {
+  name: appinsights.name
+  parent: privateLinkScope
+  properties: {
+    linkedResourceId: appinsights.id
   }
 }
 
