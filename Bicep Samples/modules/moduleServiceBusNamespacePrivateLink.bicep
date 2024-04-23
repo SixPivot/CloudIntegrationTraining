@@ -39,7 +39,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
         properties: {
           privateLinkServiceId: servicebusnamespace.id
           groupIds: [
-            'vault'
+            'namespace'
           ]
         }
       }

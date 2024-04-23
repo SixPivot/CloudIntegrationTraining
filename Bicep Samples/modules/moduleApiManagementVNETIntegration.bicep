@@ -23,7 +23,7 @@ var defaultProperties = {
     {
       name: 'delegation'
       properties: {
-        serviceName: 'Microsoft.ApiManagment/service'
+        serviceName: 'Microsoft.ApiManagement/service'
       }
     }
   ]
