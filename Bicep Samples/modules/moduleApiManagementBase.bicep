@@ -17,6 +17,7 @@ param vnetintegrationSubnetAddressPrefix string
 param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
+param publicNetworkAccess string
 
 // tags
 param tags object = {}
@@ -129,6 +130,7 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     virtualNetworkType: ApiManagementVirtualNetowrkType
     virtualNetworkConfiguration: virtualNetworkConfiguration
     apiVersionConstraint: {}
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 

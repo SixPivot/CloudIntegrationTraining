@@ -124,3 +124,4 @@ output loganalyticsWorkspace_id string = loganalyticsWorkspace.id
 output loganalyticsWorkspace_location string = loganalyticsWorkspace.location
 output loganalyticsWorkspace_customerId string = loganalyticsWorkspace.properties.customerId
 output loganalyticsWorkspace_resourcegroup string = resourceGroup().name
+output loganalyticsWorkspace_privatelinkscope_name string = enablePrivateLink ? privateLinkScope.name : ''

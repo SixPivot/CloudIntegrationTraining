@@ -11,7 +11,8 @@ param enableDiagnostic bool
 param enablePrivateLink bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
-param privatelinkSubnetName string 
+param privatelinkSubnetName string
+param publicNetworkAccess string 
 
 // tags
 param tags object = {}
@@ -67,7 +68,7 @@ resource servicebusnamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
   properties: {
     minimumTlsVersion: '1.2'
     disableLocalAuth: toLower(EnvironmentName) == 'dev' ? false : true
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: publicNetworkAccess
   }  
 }
 

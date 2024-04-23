@@ -61,6 +61,9 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     Application_Type:'other'
     Request_Source: 'rest'
     WorkspaceResourceId: loganalyticsWorkspace.id
+    publicNetworkAccessForIngestion: enablePrivateLink ? 'Disabled' : 'Enabled'
+    publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
+    IngestionMode: 'LogAnalytics'
   }
 }
 

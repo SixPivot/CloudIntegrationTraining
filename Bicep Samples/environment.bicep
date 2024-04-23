@@ -182,7 +182,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     appInsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
-    enablePrivateLink: false
+    enablePrivateLink: true
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
@@ -199,6 +199,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     vnetintegrationSubnetAddressPrefix: apiManagementSubnetAddressPrefix
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
@@ -249,6 +250,7 @@ module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
