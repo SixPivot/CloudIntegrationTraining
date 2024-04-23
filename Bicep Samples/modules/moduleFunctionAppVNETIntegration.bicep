@@ -53,7 +53,6 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
     vnetintegrationSubnetName: vnetintegrationSubnetName
     defaultProperties: defaultProperties
     optionalProperties: union(newProperties1, newProperties2)
-    createSubnet: createSubnet
     subnetExist: subnetExist
   }
 }
