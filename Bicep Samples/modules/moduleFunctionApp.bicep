@@ -122,6 +122,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
     type: 'SystemAssigned'
   }
   properties: {
+    vnetContentShareEnabled: publicNetworkAccess == 'Enable' ? false : true
     serverFarmId: functionappHostingPlan.id
     httpsOnly: true
     siteConfig: {
@@ -134,7 +135,6 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
       scmIpSecurityRestrictionsDefaultAction: publicNetworkAccess == 'Enable' ? 'Allow' : 'Deny'
       scmIpSecurityRestrictionsUseMain: true
       publicNetworkAccess: publicNetworkAccess
-      vnetRouteAllEnabled: publicNetworkAccess == 'Enable' ? false : true
     }
   }
 }
