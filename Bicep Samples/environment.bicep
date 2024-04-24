@@ -1,6 +1,6 @@
 // environment parameters
-param BaseName string = 'integration'
-param BaseShortName string = 'int'
+param BaseName string = 'CloudIntegrationTraining'
+param BaseShortName string = 'cit'
 param EnvironmentName string = 'dev'
 param EnvironmentShortName string = 'dev'
 param AppLocation string = resourceGroup().location
@@ -197,7 +197,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementVirtualNetowrkType: 'internal'
     createSubnet: true
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetAddressPrefix: '172.20.4.0/24'
+    vnetintegrationSubnetAddressPrefix: '172.20.1.32/28'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Enabled'

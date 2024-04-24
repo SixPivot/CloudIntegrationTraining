@@ -1,6 +1,6 @@
 // environment parameters
-param BaseName string = 'enterpriseapps'
-param BaseShortName string = 'ea'
+param BaseName string = 'CloudIntegrationTraining'
+param BaseShortName string = 'cit'
 param EnvironmentName string = 'shared'
 param EnvironmentShortName string = 'shr'
 param AppLocation string = resourceGroup().location
@@ -13,13 +13,8 @@ param Instance int = 1
 param publicNetworkAccess string = 'Disabled'
 
 // tags
-param BusinessImpact string = '$(BusinessImpact)'
 param BusinessOwner string = '$(BusinessOwner)'
 param CostCentre string = '$(CostCentre)'
-param CostOwner string = '$(CostOwner)'
-param InformationClassification string = '$(InformationClassification)'
-param Owner string = '$(Owner)'
-param ServiceClass string = '$(ServiceClass)'
 param Workload string = '$(Workload)'
 
 // service principals and groups
@@ -38,13 +33,8 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
     AzureRegion: AzureRegion
     Instance: Instance
     tags: {
-      BusinessImpact: BusinessImpact
       BusinessOwner: BusinessOwner
       CostCentre: CostCentre
-      CostOwner: CostOwner
-      InformationClassification: InformationClassification
-      Owner: Owner
-      ServiceClass: ServiceClass
       Workload: Workload
     }
     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId

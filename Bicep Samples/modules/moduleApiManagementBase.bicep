@@ -309,7 +309,7 @@ module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    createSubnet: createSubnet
+    //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }
