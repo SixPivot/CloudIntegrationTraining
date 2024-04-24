@@ -3,7 +3,7 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
 param loganalyticsWorkspace_name string 
-param loganalyticsPrivateLinkScopeId string
+param loganalyticsPrivateLinkScopeId string 
 
 
 //****************************************************************
@@ -44,31 +44,23 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
-var privateDnsZonesMonitor_name = 'privatelink.monitor.azure.com'
-
-resource privateDnsZonesMonitor 'Microsoft.Network/privateDnsZones@2020-06-01' =  {
-  name: privateDnsZonesMonitor_name
+resource privateDnsZonesMonitor 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.monitor.azure.com'
   location: 'global'
 }
-
-var privateDnsZonesOms_name = 'privatelink.oms.opinsights.azure.com'
 
 resource privateDnsZonesOms 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZonesOms_name
+  name: 'privatelink.oms.opinsights.azure.com'
   location: 'global'
 }
-
-var privateDnsZonesOds_name = 'privatelink.ods.opinsights.azure.com'
 
 resource privateDnsZonesOds 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZonesOds_name
+  name: 'privatelink.ods.opinsights.azure.com'
   location: 'global'
 }
 
-var privateDnsZonesAgentsvc_name = 'privatelink.agentsvc.azure-automation.net'
-
 resource privateDnsZonesAgentsvc 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZonesAgentsvc_name
+  name: 'privatelink.agentsvc.azure-automation.net'
   location: 'global'
 }
 
@@ -126,27 +118,27 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: privateDnsZonesMonitor_name
+        name: privateDnsZonesMonitor.name
         properties: {
-          privateDnsZoneId: privateDnsZoneLinkMonitor.id
+          privateDnsZoneId: privateDnsZonesMonitor.id
         }
       }
       {
-        name: privateDnsZonesOms_name
+        name: privateDnsZonesOms.name
         properties: {
-          privateDnsZoneId: privateDnsZoneLinkOms.id
+          privateDnsZoneId: privateDnsZonesOms.id
         }
       }
       {
-        name: privateDnsZonesOds_name
+        name: privateDnsZonesOds.name
         properties: {
-          privateDnsZoneId: privateDnsZoneLinkOds.id
+          privateDnsZoneId: privateDnsZonesOds.id
         }
       }
       {
-        name: privateDnsZonesAgentsvc_name
+        name: privateDnsZonesAgentsvc.name
         properties: {
-          privateDnsZoneId: privateDnsZoneLinkAgentsvc.id
+          privateDnsZoneId: privateDnsZonesAgentsvc.id
         }
       }
     ]
