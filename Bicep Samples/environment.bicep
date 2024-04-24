@@ -41,14 +41,14 @@ param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
 param createLogicAppStdSubnet bool
 //param logicAppStdSubnetName string = ''
-param logicAppStdSubnetAddressPrefix string = '' 
+////param logicAppStdSubnetAddressPrefix string = '' 
 param createFunctionAppSubnet bool
 //param functionAppSubnetName string = ''
-param functionAppSubnetAddressPrefix string = '' 
+//param functionAppSubnetAddressPrefix string = '' 
 param networksecuritygroupName string = 'none'
 param routetableName string = 'none'
 param publicNetworkAccess string = 'Disabled'
-param apiManagementSubnetAddressPrefix string = ''
+//param apiManagementSubnetAddressPrefix string = ''
 
 //****************************************************************
 // Variables
@@ -197,7 +197,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementVirtualNetowrkType: 'internal'
     createSubnet: true
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetAddressPrefix: apiManagementSubnetAddressPrefix
+    vnetintegrationSubnetAddressPrefix: '172.20.4.0/24'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Enabled'
@@ -389,7 +389,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
     //vnetintegrationSubnetName: functionAppSubnetName
-    vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
+    vnetintegrationSubnetAddressPrefix: '172.20.1.16/28'
     //createSubnet: createFunctionAppSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
@@ -498,7 +498,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
     //vnetintegrationSubnetName: logicAppStdSubnetName
-    vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
+    vnetintegrationSubnetAddressPrefix: '172.20.1.0/28'
     //createSubnet: createLogicAppStdSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName

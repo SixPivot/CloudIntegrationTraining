@@ -272,6 +272,17 @@ module moduleAppConfigKeyValueapimanagementPrivateIPAddress './moduleAppConfigKe
   }
 }
 
+module moduleAppConfigKeyValueapimanagementHostName './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: 'apimanagement_hostName'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'apimanagement_hostName'
+    variables_value: apimanagement.properties.hostnameConfigurations[0].hostName
+  }
+}
+
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
