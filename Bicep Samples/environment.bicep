@@ -64,16 +64,19 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 //****************************************************************
 // Add Private Link for App Config 
 //****************************************************************
+resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
+  name: appconfig_name
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+}
 
 module moduleAppConfigurationPrivateLink './modules/moduleAppConfigurationPrivateLink.bicep' = if (enablePrivateLink) {
   name: 'moduleAppConfigurationPrivateLink'
-  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
-    appconfig_name: appconfig_name
+    appconfig: appconfig
   }
 }
 
