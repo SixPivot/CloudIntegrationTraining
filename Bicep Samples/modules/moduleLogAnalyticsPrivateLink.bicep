@@ -4,7 +4,6 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param loganalyticsWorkspace_name string 
 param loganalyticsPrivateLinkScopeId string
-param dnsExists bool = false 
 
 
 //****************************************************************
@@ -47,35 +46,35 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 
 var privateDnsZonesMonitor_name = 'privatelink.monitor.azure.com'
 
-resource privateDnsZonesMonitor 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists)  {
+resource privateDnsZonesMonitor 'Microsoft.Network/privateDnsZones@2020-06-01' =  {
   name: privateDnsZonesMonitor_name
   location: 'global'
 }
 
 var privateDnsZonesOms_name = 'privatelink.oms.opinsights.azure.com'
 
-resource privateDnsZonesOms 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists) {
+resource privateDnsZonesOms 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZonesOms_name
   location: 'global'
 }
 
 var privateDnsZonesOds_name = 'privatelink.ods.opinsights.azure.com'
 
-resource privateDnsZonesOds 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists) {
+resource privateDnsZonesOds 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZonesOds_name
   location: 'global'
 }
 
 var privateDnsZonesAgentsvc_name = 'privatelink.agentsvc.azure-automation.net'
 
-resource privateDnsZonesAgentsvc 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists) {
+resource privateDnsZonesAgentsvc 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZonesAgentsvc_name
   location: 'global'
 }
 
 resource privateDnsZoneLinkMonitor 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZonesMonitor
-  name: '${privateDnsZonesMonitor_name}-link'
+  name: '${privateDnsZonesMonitor.name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -87,7 +86,7 @@ resource privateDnsZoneLinkMonitor 'Microsoft.Network/privateDnsZones/virtualNet
 
 resource privateDnsZoneLinkOms 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZonesOms
-  name: '${privateDnsZonesOms_name}-link'
+  name: '${privateDnsZonesOms.name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -99,7 +98,7 @@ resource privateDnsZoneLinkOms 'Microsoft.Network/privateDnsZones/virtualNetwork
 
 resource privateDnsZoneLinkOds 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZonesOds
-  name: '${privateDnsZonesOds_name}-link'
+  name: '${privateDnsZonesOds.name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -111,7 +110,7 @@ resource privateDnsZoneLinkOds 'Microsoft.Network/privateDnsZones/virtualNetwork
 
 resource privateDnsZoneLinkAgentsvc 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZonesAgentsvc
-  name: '${privateDnsZonesAgentsvc_name}-link'
+  name: '${privateDnsZonesAgentsvc.name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -129,25 +128,25 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       {
         name: privateDnsZonesMonitor_name
         properties: {
-          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZone',privateDnsZonesMonitor_name)
+          privateDnsZoneId: privateDnsZoneLinkMonitor.id
         }
       }
       {
         name: privateDnsZonesOms_name
         properties: {
-          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZone',privateDnsZonesOms_name)
+          privateDnsZoneId: privateDnsZoneLinkOms.id
         }
       }
       {
         name: privateDnsZonesOds_name
         properties: {
-          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZone',privateDnsZonesOds_name)
+          privateDnsZoneId: privateDnsZoneLinkOds.id
         }
       }
       {
         name: privateDnsZonesAgentsvc_name
         properties: {
-          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZone',privateDnsZonesAgentsvc_name)
+          privateDnsZoneId: privateDnsZoneLinkAgentsvc.id
         }
       }
     ]

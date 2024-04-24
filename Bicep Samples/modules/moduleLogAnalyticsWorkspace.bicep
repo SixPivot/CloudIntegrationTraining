@@ -12,7 +12,6 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param publicNetworkAccessForIngestion string
 param publicNetworkAccessForQuery string
-param dnsExists bool = false 
 
 // tags
 param tags object = {}
@@ -117,7 +116,6 @@ module moduleLogAnalyticsPrivateLink './moduleLogAnalyticsPrivateLink.bicep' = i
     privatelinkSubnetName: privatelinkSubnetName 
     loganalyticsWorkspace_name: loganalyticsWorkspace.name
     loganalyticsPrivateLinkScopeId: privateLinkScope.id
-    dnsExists: dnsExists
   }
 }
 

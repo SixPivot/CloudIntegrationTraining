@@ -51,7 +51,6 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
-    dnsExists: false
   }
 }
 
