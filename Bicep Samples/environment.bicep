@@ -67,6 +67,7 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 
 module moduleAppConfigurationPrivateLink './modules/moduleAppConfigurationPrivateLink.bicep' = if (enablePrivateLink) {
   name: 'moduleAppConfigurationPrivateLink'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
