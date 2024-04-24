@@ -250,7 +250,7 @@ module moduleAppConfigKeyValueapimanagementprincipalid './moduleAppConfigKeyValu
   }
 }
 
-module moduleAppConfigKeyValueapimanagementIPAddress './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+module moduleAppConfigKeyValueapimanagementPublicIPAddress './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
   name: 'apimanagement_publicIpAddress'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
@@ -258,6 +258,17 @@ module moduleAppConfigKeyValueapimanagementIPAddress './moduleAppConfigKeyValue.
     variables_environment: EnvironmentName
     variables_key: 'apimanagement_publicIpAddress'
     variables_value: apimanagement.properties.publicIPAddresses[0]
+  }
+}
+
+module moduleAppConfigKeyValueapimanagementPrivateIPAddress './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: 'apimanagement_privateIpAddress'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'apimanagement_privateIpAddress'
+    variables_value: apimanagement.properties.privateIPAddresses[0]
   }
 }
 

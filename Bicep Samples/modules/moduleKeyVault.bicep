@@ -167,7 +167,7 @@ resource keyvaultRoleAssignmentKeyVaultReaderGroupId 'Microsoft.Authorization/ro
 }
 
 //****************************************************************
-// Add Private Link for Storage Account 
+// Add Private Link for Key Vault 
 //****************************************************************
 
 module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enablePrivateLink) {

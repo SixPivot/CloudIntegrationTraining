@@ -72,6 +72,34 @@ resource datafactoryDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2
 }
 
 //****************************************************************
+// Add Private Link for Data Factory 
+//****************************************************************
+
+var DataFactoryPrivateLinks = [
+  {
+    type: 'dataFactory'
+    zone: 'datafactory'
+  }
+  {
+    type: 'portal'
+    zone: 'adf'
+  }
+]
+
+module moduleDataFactoryPrivateLink './moduleDataFactoryPrivateLink.bicep' = [for (link, index) in DataFactoryPrivateLinks: if (enablePrivateLink) {
+  name: 'moduleDataFactoryPrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: privatelinkSubnetName
+    datafactory_name: dataFactory.name
+    type: link.type
+    zone: link.zone
+  }
+}]
+
+//****************************************************************
 // Add Service Bus Namespace details to App Configuration
 //****************************************************************
 
