@@ -8,10 +8,12 @@ param routetableName string
 
 resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (networksecuritygroupName != 'none') {
   name: networksecuritygroupName
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 resource routetable 'Microsoft.Network/routeTables@2023-09-01' existing = if (routetableName != 'none') {
   name: routetableName
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 var newProperties1 = networksecuritygroupName != 'none' ? { networkSecurityGroup: { id: networksecuritygroup.id } } : {}
