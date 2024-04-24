@@ -66,12 +66,13 @@ resource integrationAccountDiagnosticSettings  'Microsoft.Insights/diagnosticSet
   name: 'DiagnosticSettings'
   properties: {
     workspaceId: loganalyticsWorkspace.id
-    metrics: [
+    logs: [
       {
-        category: 'allLogs'
+        categoryGroup: 'allLogs'
         enabled: true
       }
     ]
+    metrics: []
   }
 }
 

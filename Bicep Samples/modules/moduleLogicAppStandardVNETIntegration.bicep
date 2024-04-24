@@ -1,9 +1,9 @@
 param virtualNetworkName string
 param virtualNetworkResourceGroup string
-param vnetintegrationSubnetName string
+//param vnetintegrationSubnetName string
 param vnetintegrationSubnetAddressPrefix string
 param logicappstd_name string
-param createSubnet bool
+//param createSubnet bool
 param networksecuritygroupName string
 param routetableName string
 
@@ -41,7 +41,7 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   scope: resourceGroup(virtualNetworkResourceGroup)
   params: {
     virtualNetworkName: virtualNetworkName
-    vnetintegrationSubnetName: vnetintegrationSubnetName
+    vnetintegrationSubnetName: LogicAppStdApp.name
     defaultProperties: defaultProperties
     optionalProperties: union(newProperties1, newProperties2)
   }

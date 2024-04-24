@@ -15,9 +15,9 @@ param enableVNETIntegration bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param vnetintegrationSubnetName string 
+//param vnetintegrationSubnetName string 
 param vnetintegrationSubnetAddressPrefix string 
-param createSubnet bool 
+//param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
 param publicNetworkAccess string 
@@ -212,9 +212,9 @@ module moduleFunctionAppVNETIntegration './moduleFunctionAppVNETIntegration.bice
     functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetName: functionApp.name
+    //vnetintegrationSubnetName: functionApp.name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    createSubnet: createSubnet
+    //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }

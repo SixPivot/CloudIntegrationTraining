@@ -104,6 +104,21 @@ resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' = {
 // }
 
 //****************************************************************
+// Add Private Link for SQL Server
+//****************************************************************
+
+module moduleSQLServerPrivateLink './moduleSQLServerPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleSQLServerPrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: privatelinkSubnetName
+    sqlserver_name: sqlserver.name
+  }
+}
+
+//****************************************************************
 // Add Service Bus Namespace details to App Configuration
 //****************************************************************
 

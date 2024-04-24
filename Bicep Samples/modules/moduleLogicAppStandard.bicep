@@ -15,9 +15,9 @@ param enableVNETIntegration bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param vnetintegrationSubnetName string 
+//param vnetintegrationSubnetName string 
 param vnetintegrationSubnetAddressPrefix string 
-param createSubnet bool 
+//param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
 param publicNetworkAccess string
@@ -238,9 +238,9 @@ module moduleVNETIntegrationLogicAppStd './moduleLogicAppStandardVNETIntegration
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetName: LogicAppStdApp.name
+    //vnetintegrationSubnetName: LogicAppStdApp.name
     vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    createSubnet: createSubnet
+    //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }

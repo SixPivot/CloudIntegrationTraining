@@ -40,10 +40,10 @@ param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
 param createLogicAppStdSubnet bool
-param logicAppStdSubnetName string = ''
+//param logicAppStdSubnetName string = ''
 param logicAppStdSubnetAddressPrefix string = '' 
 param createFunctionAppSubnet bool
-param functionAppSubnetName string = ''
+//param functionAppSubnetName string = ''
 param functionAppSubnetAddressPrefix string = '' 
 param networksecuritygroupName string = 'none'
 param routetableName string = 'none'
@@ -195,8 +195,8 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
     ApiManagementVirtualNetowrkType: 'internal'
-    enableVNETIntegration: true
-    createSubnet: createFunctionAppSubnet
+    createSubnet: true
+    enableVNETIntegration: enableVNETIntegration
     vnetintegrationSubnetAddressPrefix: apiManagementSubnetAddressPrefix
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
@@ -388,9 +388,9 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetName: functionAppSubnetName
+    //vnetintegrationSubnetName: functionAppSubnetName
     vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
-    createSubnet: createFunctionAppSubnet
+    //createSubnet: createFunctionAppSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
@@ -497,9 +497,9 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetName: logicAppStdSubnetName
+    //vnetintegrationSubnetName: logicAppStdSubnetName
     vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
-    createSubnet: createLogicAppStdSubnet
+    //createSubnet: createLogicAppStdSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
