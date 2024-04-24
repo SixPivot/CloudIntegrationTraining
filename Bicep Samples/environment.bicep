@@ -62,6 +62,21 @@ param publicNetworkAccess string = 'Disabled'
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
 
 //****************************************************************
+// Add Private Link for App Config 
+//****************************************************************
+
+module moduleAppConfigurationPrivateLink './modules/moduleAppConfigurationPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleAppConfigurationPrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: privatelinkSubnetName
+    appconfig_name: appconfig_name
+  }
+}
+
+//****************************************************************
 // Create Resources
 //****************************************************************
 

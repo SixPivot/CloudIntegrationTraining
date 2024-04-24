@@ -92,7 +92,7 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' =
 }
 
 //****************************************************************
-// Add Private Link for Key Vault 
+// Add Private Link for App Config 
 //****************************************************************
 
 module moduleAppConfigurationPrivateLink './moduleAppConfigurationPrivateLink.bicep' = if (enablePrivateLink) {
