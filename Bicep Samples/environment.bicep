@@ -90,6 +90,7 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
+    dnsExists: false
   }
 }
 

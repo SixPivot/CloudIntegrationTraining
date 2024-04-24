@@ -4,7 +4,7 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param loganalyticsWorkspace_name string 
 param loganalyticsPrivateLinkScopeId string
-param dnsExists bool = true 
+param dnsExists bool = false 
 
 
 //****************************************************************

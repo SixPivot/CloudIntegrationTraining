@@ -12,7 +12,7 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param publicNetworkAccessForIngestion string
 param publicNetworkAccessForQuery string
-param dnsExists bool = true 
+param dnsExists bool = false 
 
 // tags
 param tags object = {}
