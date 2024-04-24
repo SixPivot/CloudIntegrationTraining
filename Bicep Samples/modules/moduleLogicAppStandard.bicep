@@ -209,6 +209,7 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
     AppLocation: AppLocation
     logicappstd_name: logicapp_name
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
   }
   dependsOn: [

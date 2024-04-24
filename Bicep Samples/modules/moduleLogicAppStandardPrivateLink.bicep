@@ -1,5 +1,6 @@
 param AppLocation string 
 param virtualNetworkName string 
+param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param logicappstd_name string 
 
@@ -12,6 +13,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {

@@ -270,6 +270,7 @@ module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep'
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     storage_name: storage.name
     storageType: link.storageType

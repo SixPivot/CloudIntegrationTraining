@@ -195,6 +195,7 @@ module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if 
     AppLocation: AppLocation
     functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
   }
   dependsOn: [

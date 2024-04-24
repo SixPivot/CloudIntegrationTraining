@@ -74,7 +74,7 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
 // Azure App Config
 //****************************************************************
 
-resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' = {
+resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-preview' = {
   name: appconfig_name
   location: AppLocation
   tags: tags
