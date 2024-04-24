@@ -9,6 +9,10 @@ param Instance int = 1
 param publicNetworkAccessForIngestion string
 param publicNetworkAccessForQuery string
 param publicNetworkAccess string
+param enablePrivateLink bool 
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param privatelinkSubnetName string 
 
 // tags
 param tags object = {}
@@ -84,6 +88,21 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' =
     publicNetworkAccess: publicNetworkAccess
     enablePurgeProtection: true
     softDeleteRetentionInDays: 7
+  }
+}
+
+//****************************************************************
+// Add Private Link for Key Vault 
+//****************************************************************
+
+module moduleAppConfigurationPrivateLink './moduleAppConfigurationPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleAppConfigurationPrivateLink'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privatelinkSubnetName: privatelinkSubnetName
+    appconfig_name: appconfig.name
   }
 }
 
