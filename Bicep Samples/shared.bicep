@@ -81,3 +81,17 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
     privatelinkSubnetName: privatelinkSubnetName
   }
 }
+
+//****************************************************************
+// Add Key Vault name and resource group to App Configuration
+//****************************************************************
+
+module moduleAppConfigKeyValuetesst1name './modules/moduleAppConfigKeyValue.bicep' = {
+  name: 'test1_name'
+  params: {
+    variables_appconfig_name: moduleAppConfiguration.outputs.appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'test1_name'
+    variables_value: 'test1'
+  }
+}
