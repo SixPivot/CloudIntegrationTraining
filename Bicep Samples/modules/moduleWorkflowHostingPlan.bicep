@@ -19,6 +19,8 @@ param WorkflowHostingPlanSKUName string
 param appconfig_name string 
 param appconfig_resourcegroup string 
 param appconfig_subscriptionId string 
+param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string 
 
 //****************************************************************
 // Variables
@@ -34,6 +36,15 @@ var workflowHostingPlan_name = 'aspwf-${toLower(BaseName)}-${toLower(Environment
 // az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv
 
 //****************************************************************
+// Existing Azure Resources
+//****************************************************************
+
+resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = if (enableDiagnostic) {
+  name: loganalyticsWorkspace_name
+  scope: resourceGroup(loganalyticsWorkspace_resourcegroup)
+}
+
+//****************************************************************
 // Azure Function App Hosting Plan
 //****************************************************************
 
@@ -46,6 +57,20 @@ resource workflowHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
     name: WorkflowHostingPlanSKUName
   }
   properties: {}
+}
+
+resource AppServicePlanDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
+  scope: workflowHostingPlan
+  name: 'DiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+  }
 }
 
 //****************************************************************
