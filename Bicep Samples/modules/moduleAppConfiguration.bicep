@@ -102,7 +102,7 @@ module moduleAppConfigurationPrivateLink './moduleAppConfigurationPrivateLink.bi
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
-    appconfig: appconfig
+    appconfig_name: appconfig.name
   }
 }
 

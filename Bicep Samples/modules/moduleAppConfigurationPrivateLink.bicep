@@ -2,11 +2,16 @@ param AppLocation string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param appconfig object
+//param appconfig object
+param appconfig_name string
 
 //****************************************************************
-// Add Private Link for Storage Account 
+// Add Private Link for App Config
 //****************************************************************
+
+resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-preview' existing = {
+  name: appconfig_name
+}
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
   name: virtualNetworkName
