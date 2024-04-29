@@ -78,3 +78,5 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
+
+output DNSZone string = privateDnsZones.name

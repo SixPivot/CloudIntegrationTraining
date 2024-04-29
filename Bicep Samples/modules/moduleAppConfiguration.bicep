@@ -178,3 +178,4 @@ output appconfig_identityType string = appconfig.identity.type
 output appconfig_location string = appconfig.location
 output appconfig_endpoint string = appconfig.properties.endpoint
 output appconfig_resourcegroup string = resourceGroup().name
+output DNSZone string = enablePrivateLink ? moduleAppConfigurationPrivateLink.outputs.DNSZone : ''

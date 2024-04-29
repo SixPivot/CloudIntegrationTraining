@@ -134,6 +134,36 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
   }
 }
 
+module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+  name: 'moduleDNSZoneVirtualNetworkLinkAppConfigDevOps'
+  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+  params: {
+    linkId: 'DevOps'
+    DNSZone_name: moduleAppConfiguration.outputs.DNSZone
+    virtualNetworkName: virtualNetworkNameDevOps
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+  }
+  dependsOn:[
+    moduleAppConfiguration
+  ]
+}
+
+module moduleDNSZoneVirtualNetworkLinkAppConfigVMInside './modules/moduleDNSZoneVirtualNetworkLink.bicep' = if (virtualNetworkNameDevOps != virtualNetworkNameVMInside) {
+  name: 'moduleDNSZoneVirtualNetworkLinkAppConfigVMInside'
+  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+  params: {
+    linkId: 'VMInside'
+    DNSZone_name: moduleAppConfiguration.outputs.DNSZone
+    virtualNetworkName: virtualNetworkNameVMInside
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+  }
+  dependsOn:[
+    moduleAppConfiguration
+  ]
+}
+
 //****************************************************************
 // Add Key Vault name and resource group to App Configuration
 //****************************************************************
@@ -148,6 +178,7 @@ module moduleAppConfigKeyValuetesst1name './modules/moduleAppConfigKeyValue.bice
   }
   dependsOn:[
     moduleDNSZoneVirtualNetworkLinkRMDevOps
+    moduleDNSZoneVirtualNetworkLinkAppConfigDevOps
     moduleAppConfiguration
   ]
 }
