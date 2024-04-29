@@ -18,6 +18,12 @@ param privatelinkSubnetName string = 'default'
 param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
 param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
 param resourcemanagerPL_name string = '$(resourcemanagerPL_name)'
+param virtualNetworkNameDevOps string = 'CloudIntegrationTraining'
+param virtualNetworkResourceGroupDevOps string = 'CloudIntegrationTraining'
+param virtualNetworkSubscriptionIdDevOps string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
+param virtualNetworkNameVMInside string = 'CloudIntegrationTraining'
+param virtualNetworkResourceGroupVMInside string = 'CloudIntegrationTraining'
+param virtualNetworkSubscriptionIdVMInside string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
 
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
@@ -39,6 +45,30 @@ module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateL
     resourcemanagerPL_subscriptionId: resourcemanagerPL_subscriptionId
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+  }
+}
+
+module moduleDNSZoneVirtualNetworkLinkRMDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+  name: 'moduleDNSZoneVirtualNetworkLinkRMDevOps'
+  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+  params: {
+    linkId: EnvironmentName
+    DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
+    virtualNetworkName: virtualNetworkNameDevOps
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+  }
+}
+
+module moduleDNSZoneVirtualNetworkLinkRMVMInside './modules/moduleDNSZoneVirtualNetworkLink.bicep' = if (virtualNetworkNameDevOps != virtualNetworkNameVMInside) {
+  name: 'moduleDNSZoneVirtualNetworkLinkRMVMInside'
+  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+  params: {
+    linkId: EnvironmentName
+    DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
+    virtualNetworkName: virtualNetworkNameVMInside
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
   }
 }
 
@@ -111,7 +141,7 @@ module moduleAppConfigKeyValuetesst1name './modules/moduleAppConfigKeyValue.bice
     variables_value: 'test1'
   }
   dependsOn:[
-    moduleResourceManagerPrivateLink
+    moduleDNSZoneVirtualNetworkLinkRMDevOps
     moduleAppConfiguration
   ]
 }
