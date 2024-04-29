@@ -30,15 +30,31 @@ stages:
         azureSubscription: '$(azureResourceManagerConnection)'
         scriptType: ps
         scriptLocation: inlineScript
-        inlineScript: 'az bicep build --file "Bicep Samples/shared.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        inlineScript: 'az bicep build --file "Bicep Samples/sharedAppConfig.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
 
     - task: CopyFiles@2
       displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-        Contents: shared.json
+        Contents: sharedAppConfig.json
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         CleanTargetFolder: true
+
+    - task: AzureCLI@2
+      displayName: 'Azure CLI '
+      inputs:
+        azureSubscription: '$(azureResourceManagerConnection)'
+        scriptType: ps
+        scriptLocation: inlineScript
+        inlineScript: 'az bicep build --file "Bicep Samples/sharedResourceManager.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        Contents: sharedResourceManager.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: false
 
     - task: AzureCLI@2
       displayName: 'Azure CLI '
@@ -56,135 +72,7 @@ stages:
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         CleanTargetFolder: false
 
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/appconfiguration.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: appconfiguration.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: true
-
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/keyvault.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: keyvault.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/loganalyticsworkspace.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: loganalyticsworkspace.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/apimanagementbase.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: apimanagementbase.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/apimanagementAPI.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: apimanagementAPI.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-        
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/functionApps.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: functionApps.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/logicAppsConsumption.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: logicAppsConsumption.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-
-    # - task: AzureCLI@2
-    #   displayName: 'Azure CLI '
-    #   inputs:
-    #     azureSubscription: '$(azureResourceManagerConnection)'
-    #     scriptType: ps
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az bicep build --file "Bicep Samples/logicAppsStandard.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
-    #   inputs:
-    #     SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
-    #     Contents: logicAppsStandard.json
-    #     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    #     CleanTargetFolder: false
-
     - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: bicep samples'
+      displayName: 'Publish Artifact: ARM'
       inputs:
-        ArtifactName: bicepsamples
+        ArtifactName: ARM
