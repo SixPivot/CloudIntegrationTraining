@@ -155,6 +155,7 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   }
   dependsOn:[
     moduleApiManagementVNETIntegration
+    moduleApiManagementVNETIntegration2
   ]
 }
 
