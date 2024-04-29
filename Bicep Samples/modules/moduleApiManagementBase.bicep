@@ -50,6 +50,7 @@ param ApiManagementVirtualNetowrkType string
 
 var InstanceString = padLeft(Instance,3,'0')
 var apimanagement_name = 'apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
+var apimanagementIP_name = 'pip-apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 
 //****************************************************************
 // Role Definitions
@@ -113,6 +114,21 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
 //****************************************************************
 var virtualNetworkConfiguration = enableVNETIntegration ? { subnetResourceId: moduleApiManagementVNETIntegration.outputs.apim_subnet_id } : null
 
+resource apimanagementPublicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
+  name: apimanagementIP_name
+  location: AppLocation
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'
+    dnsSettings: {
+      domainNameLabel: toLower('${apimanagementIP_name}-${uniqueString(resourceGroup().id)}')
+    }
+  }
+}
+
 resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: apimanagement_name
   location: AppLocation
@@ -129,6 +145,7 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     publisherName: ApiManagementPublisherName
     virtualNetworkType: ApiManagementVirtualNetowrkType
     virtualNetworkConfiguration: virtualNetworkConfiguration
+    publicIpAddressId: apimanagementPublicIp.id
     apiVersionConstraint: {}
     //publicNetworkAccess: publicNetworkAccess
   }

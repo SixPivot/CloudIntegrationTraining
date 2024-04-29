@@ -110,6 +110,9 @@ module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualN
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     virtualNetworkSubscriptionId: subscription().subscriptionId
   }
+  dependsOn:[
+    moduleDNSZoneVirtualNetworkLinkRM
+  ]
 }
 
 //****************************************************************
@@ -142,6 +145,9 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
   }
+  dependsOn:[
+    moduleDNSZoneVirtualNetworkLinkAppConfig
+  ]
 }
 
 module moduleKeyVault './modules/moduleKeyVault.bicep' = {
