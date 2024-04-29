@@ -130,7 +130,7 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     virtualNetworkType: ApiManagementVirtualNetowrkType
     virtualNetworkConfiguration: virtualNetworkConfiguration
     apiVersionConstraint: {}
-    publicNetworkAccess: publicNetworkAccess
+    //publicNetworkAccess: publicNetworkAccess
   }
   dependsOn:[
     moduleApiManagementVNETIntegration
