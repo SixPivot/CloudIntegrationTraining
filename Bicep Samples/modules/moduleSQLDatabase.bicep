@@ -78,8 +78,8 @@ resource sqldatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   }  
 }
 
-// resource keyvaultAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   scope: servicebusnamespace
+// resource SQLDatabaseAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   scope: sqldatabase
 //   name: 'AuditSettings'
 //   properties: {
 //     workspaceId: loganalyticsWorkspace.id
@@ -92,8 +92,8 @@ resource sqldatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
 //   }
 // }
 
-// resource keyvaultDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   scope: servicebusnamespace
+// resource SQLDatabaseDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   scope: sqldatabase
 //   name: 'DiagnosticSettings'
 //   properties: {
 //     workspaceId: loganalyticsWorkspace.id
@@ -107,7 +107,7 @@ resource sqldatabase 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
 // }
 
 //****************************************************************
-// Add Service Bus Namespace details to App Configuration
+// Add SQL Database details to App Configuration
 //****************************************************************
 
 module moduleAppConfigKeyValuesqldatabasename './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {

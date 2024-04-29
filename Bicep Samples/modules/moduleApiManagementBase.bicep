@@ -336,6 +336,9 @@ module moduleApiManagementVNETIntegration2 './moduleApiManagementVNETIntegration
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }
+  dependsOn:[
+    moduleApiManagementVNETIntegration
+  ]
 }
 
 module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.bicep' = if (enableVNETIntegration) {

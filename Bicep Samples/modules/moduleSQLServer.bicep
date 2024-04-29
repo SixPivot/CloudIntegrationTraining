@@ -75,8 +75,8 @@ resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' = {
   }  
 }
 
-// resource keyvaultAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   scope: servicebusnamespace
+// resource SQLServerAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   scope: sqlserver
 //   name: 'AuditSettings'
 //   properties: {
 //     workspaceId: loganalyticsWorkspace.id
@@ -89,8 +89,8 @@ resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' = {
 //   }
 // }
 
-// resource keyvaultDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   scope: servicebusnamespace
+// resource SQLServerDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   scope: sqlserver
 //   name: 'DiagnosticSettings'
 //   properties: {
 //     workspaceId: loganalyticsWorkspace.id
@@ -119,7 +119,7 @@ module moduleSQLServerPrivateLink './moduleSQLServerPrivateLink.bicep' = if (ena
 }
 
 //****************************************************************
-// Add Service Bus Namespace details to App Configuration
+// Add SQL Server details to App Configuration
 //****************************************************************
 
 module moduleAppConfigKeyValuesqlservername './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
