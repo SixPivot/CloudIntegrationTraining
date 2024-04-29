@@ -51,6 +51,8 @@ param ApiManagementVirtualNetowrkType string
 var InstanceString = padLeft(Instance,3,'0')
 var apimanagement_name = 'apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 var apimanagementIP_name = 'pip-apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
+var InstanceString2 = padLeft(2,3,'0')
+var apimanagement_name2 = 'apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString2}'
 
 //****************************************************************
 // Role Definitions
@@ -114,7 +116,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
 //****************************************************************
 var virtualNetworkConfiguration = enableVNETIntegration ? { subnetResourceId: moduleApiManagementVNETIntegration.outputs.apim_subnet_id } : null
 
-resource apimanagementPublicIp 'Microsoft.Network/publicIPAddresses@2022-07-01' = {
+resource apimanagementPublicIp 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
   name: apimanagementIP_name
   location: AppLocation
   sku: {
@@ -321,6 +323,20 @@ module moduleApiManagementBasePrivateLink './moduleApiManagementBasePrivateLink.
 //****************************************************************
 // Add VNET Integration for API Management
 //****************************************************************
+
+// testing
+module moduleApiManagementVNETIntegration2 './moduleApiManagementVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleApiManagementVNETIntegration2'
+  params: {
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    vnetintegrationSubnetName: apimanagement_name2
+    vnetintegrationSubnetAddressPrefix: '172.22.4.32/27'
+    //createSubnet: createSubnet
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
+  }
+}
 
 module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.bicep' = if (enableVNETIntegration) {
   name: 'moduleApiManagementVNETIntegration'
