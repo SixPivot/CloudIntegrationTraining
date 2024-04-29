@@ -33,6 +33,10 @@ param enableAppConfig bool = false
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
+param appconfig_DNSZone string = '$(appconfig_DNSZone)'
+param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
+param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
+param resourcemanagerPL_DNSZone string = '$(resourcemanagerPL_DNSZone)'
 param enableDiagnostic bool = false
 param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
@@ -79,6 +83,34 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 //     appconfig: appconfig
 //   }
 // }
+
+//****************************************************************
+// Create DNS Zone Links for RM & App Config
+//****************************************************************
+
+module moduleDNSZoneVirtualNetworkLinkRM './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+  name: 'moduleDNSZoneVirtualNetworkLinkRM'
+  params: {
+    linkId: EnvironmentName
+    name: resourcemanagerPL_DNSZone
+    resourceGroup: resourcemanagerPL_resourcegroup
+    subscriptionId: resourcemanagerPL_subscriptionId
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+  }
+}
+
+module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+  name: 'moduleDNSZoneVirtualNetworkLinkAppConfig'
+  params: {
+    linkId: EnvironmentName
+    name: appconfig_DNSZone
+    resourceGroup: appconfig_resourcegroup
+    subscriptionId: appconfig_subscriptionId
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+  }
+}
 
 //****************************************************************
 // Create Resources
@@ -219,7 +251,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     vnetintegrationSubnetAddressPrefix: '172.20.4.0/27'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
   }
 }
 
