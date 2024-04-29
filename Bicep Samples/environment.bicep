@@ -453,6 +453,9 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
   }
+  dependsOn:[
+    moduleApiManagementBase
+  ]
 } 
 
 module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
