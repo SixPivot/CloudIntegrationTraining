@@ -46,7 +46,7 @@ var LogAnalyticsContributor = subscriptionResourceId('Microsoft.Authorization/ro
 // Azure Log Anaytics Workspace
 //****************************************************************
 
-resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: loganalyticsWorkspace_name
   location: AppLocation
   tags: tags
@@ -89,7 +89,7 @@ module moduleAppConfigKeyValueloganalyticsWorkspaceresourcegroup './moduleAppCon
 // Azure Log Anaytics Private Link Scopes
 //****************************************************************
 
-resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-preview' = if(enablePrivateLink) {
+resource privateLinkScope 'microsoft.insights/privateLinkScopes@2021-07-01-preview' = if(enablePrivateLink) {
   name: privateLinkScope_name
   location: 'global'
   properties: {

@@ -13,12 +13,12 @@ resource servicebusnamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
 
 }
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
+resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
   scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = {
   name: privatelinkSubnetName
   parent: virtualNetwork
 }

@@ -49,7 +49,7 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   }
 }
 
-resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = {
+resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2023-01-01' = {
   parent: LogicAppStdApp
   name: 'virtualNetwork'
   properties: {

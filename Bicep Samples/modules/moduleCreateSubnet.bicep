@@ -3,11 +3,11 @@ param vnetintegrationSubnetName string
 param defaultProperties object
 param optionalProperties object
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = {
   name: vnetintegrationSubnetName
   parent: virtualNetwork
   properties: union(defaultProperties, optionalProperties)
