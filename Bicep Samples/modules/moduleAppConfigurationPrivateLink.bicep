@@ -4,6 +4,8 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 //param appconfig object
 param appconfig_name string
+// tags
+param tags object = {}
 
 //****************************************************************
 // Add Private Link for App Config
@@ -28,6 +30,7 @@ var privateEndPointName = 'pep-${(appconfig.name)}'
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
   location: AppLocation
+  tags: tags
   properties: {
     subnet: {
       id: subnet.id
@@ -56,6 +59,7 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   parent: privateDnsZones
   name: '${privateDnsZones.name}-link'
   location: 'global'
+  tags: tags
   properties: {
     registrationEnabled: false
     virtualNetwork: {

@@ -12,6 +12,8 @@ param privatelinkSubnetName string
 param resourcemanagerPL_name string
 param resourcemanagerPL_resourceGroup string
 param resourcemanagerPL_subscriptionId string
+// tags
+param tags object = {}
 
 //****************************************************************
 // Add Private Link for App Config
@@ -47,12 +49,12 @@ resource resourceManagementPrivateLinks 'Microsoft.Authorization/resourceManagem
 }
 
 var InstanceString = padLeft(Instance,3,'0')
-//var privateEndPointName = replace(resourcemanagerPL_name,'pl-','pep-')
 var privateEndPointName = 'pep-rm-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
   location: AppLocation
+  tags: tags
   properties: {
     subnet: {
       id: subnet.id
@@ -75,12 +77,17 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: 'privatelink.azure.com'
   location: 'global'
+  tags: tags
+  dependsOn:[
+    privateEndpoint
+  ]
 }
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZones
   name: '${privateDnsZones.name}-link'
   location: 'global'
+  tags: tags
   properties: {
     registrationEnabled: false
     virtualNetwork: {
