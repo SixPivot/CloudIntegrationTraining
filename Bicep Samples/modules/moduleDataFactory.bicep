@@ -78,16 +78,16 @@ resource datafactoryDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2
 var DataFactoryPrivateLinks = [
   {
     type: 'dataFactory'
-    zone: 'datafactory'
+    zone: 'privatelink.datafactory.azure.net'
   }
   {
     type: 'portal'
-    zone: 'adf'
+    zone: 'privatelink.adf.azure.com'
   }
 ]
 
 module moduleDataFactoryPrivateLink './moduleDataFactoryPrivateLink.bicep' = [for (link, index) in DataFactoryPrivateLinks: if (enablePrivateLink) {
-  name: 'moduleDataFactoryPrivateLink'
+  name: 'moduleDataFactoryPrivateLink-${link.type}'
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName

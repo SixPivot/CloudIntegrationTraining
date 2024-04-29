@@ -1,0 +1,2 @@
+az rest --method delete --header "Accept=application/json" \
+-u 'https://management.azure.com/subscriptions/3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4/providers/Microsoft.ApiManagement/locations/australiaeast/deletedservices/apim-cloudintegrationtraining-dev-ause-001?api-version=2020-06-01-preview'

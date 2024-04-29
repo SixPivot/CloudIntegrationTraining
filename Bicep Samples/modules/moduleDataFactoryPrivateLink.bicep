@@ -14,7 +14,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
   name: datafactory_name
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
+resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
   scope: resourceGroup(virtualNetworkResourceGroup)
 }
@@ -40,8 +40,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
         properties: {
           privateLinkServiceId: dataFactory.id
           groupIds: [
-            'dataFactory'
-            'portal'
+            type
           ]
         }
       }
@@ -49,14 +48,19 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
+var privateDnsZones_name = zone
+
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.${(zone)}.azure.net'
+  name: privateDnsZones_name
   location: 'global'
+  tags: {
+    isResourceDeployed: 'true'
+  }
 }
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZones
-  name: '${privateDnsZones.name}-link'
+  name: '${privateDnsZones_name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -72,11 +76,14 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: privateDnsZones.name
+        name: privateDnsZones_name
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }
       }
     ]
   }
+  dependsOn: [
+    privateDnsZoneLink
+  ]
 }
