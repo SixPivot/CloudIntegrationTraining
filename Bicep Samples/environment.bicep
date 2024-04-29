@@ -90,25 +90,25 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 
 module moduleDNSZoneVirtualNetworkLinkRM './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
   name: 'moduleDNSZoneVirtualNetworkLinkRM'
+  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
   params: {
     linkId: EnvironmentName
-    name: resourcemanagerPL_DNSZone
-    resourceGroup: resourcemanagerPL_resourcegroup
-    subscriptionId: resourcemanagerPL_subscriptionId
+    DNSZone_name: resourcemanagerPL_DNSZone
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: subscription().subscriptionId
   }
 }
 
 module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
   name: 'moduleDNSZoneVirtualNetworkLinkAppConfig'
+  scope: resourceGroup(appconfig_subscriptionId, appconfig_resourcegroup)
   params: {
     linkId: EnvironmentName
-    name: appconfig_DNSZone
-    resourceGroup: appconfig_resourcegroup
-    subscriptionId: appconfig_subscriptionId
+    DNSZone_name: appconfig_DNSZone
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: subscription().subscriptionId
   }
 }
 

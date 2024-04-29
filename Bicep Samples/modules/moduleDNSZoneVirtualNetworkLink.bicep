@@ -1,18 +1,16 @@
 param linkId string
-param name string
-param resourceGroup string
-param subscriptionId string 
+param DNSZone_name string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-  name: name
-  scope: resourceGroup(subscriptionId, resourceGroup)
+  name: DNSZone_name
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
-  scope: resourceGroup(virtualNetworkResourceGroup)
+  scope: resourceGroup(virtualNetworkSubscriptionId, virtualNetworkResourceGroup)
 }
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
