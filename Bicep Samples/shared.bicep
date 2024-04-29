@@ -38,7 +38,13 @@ param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateLink.bicep' = {
   name: 'moduleResourceManagerPrivateLink'
   params:{
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
     privatelinkSubnetName: privatelinkSubnetName
     resourcemanagerPL_name: resourcemanagerPL_name
     resourcemanagerPL_resourceGroup: resourcemanagerPL_resourcegroup
@@ -52,7 +58,7 @@ module moduleDNSZoneVirtualNetworkLinkRMDevOps './modules/moduleDNSZoneVirtualNe
   name: 'moduleDNSZoneVirtualNetworkLinkRMDevOps'
   scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
   params: {
-    linkId: EnvironmentName
+    linkId: 'DevOps'
     DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
     virtualNetworkName: virtualNetworkNameDevOps
     virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
@@ -64,7 +70,7 @@ module moduleDNSZoneVirtualNetworkLinkRMVMInside './modules/moduleDNSZoneVirtual
   name: 'moduleDNSZoneVirtualNetworkLinkRMVMInside'
   scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
   params: {
-    linkId: EnvironmentName
+    linkId: 'VMInside'
     DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
     virtualNetworkName: virtualNetworkNameVMInside
     virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside

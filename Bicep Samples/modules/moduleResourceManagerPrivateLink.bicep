@@ -1,4 +1,10 @@
+param BaseName string 
+param BaseShortName string 
+param EnvironmentName string 
+param EnvironmentShortName string 
 param AppLocation string 
+param AzureRegion string = 'ause'
+param Instance int = 1
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
@@ -40,7 +46,9 @@ resource resourceManagementPrivateLinks 'Microsoft.Authorization/resourceManagem
   scope: resourceGroup(resourcemanagerPL_subscriptionId,resourcemanagerPL_resourceGroup)
 }
 
-var privateEndPointName = replace(resourcemanagerPL_name,'pl-','pep-')
+var InstanceString = padLeft(Instance,3,'0')
+//var privateEndPointName = replace(resourcemanagerPL_name,'pl-','pep-')
+var privateEndPointName = 'pep-rm-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
