@@ -13,7 +13,8 @@ param enableVNETIntegration bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param vnetintegrationSubnetAddressPrefix string
+param vnetintegrationSubnetAddressPrefix1 string
+param vnetintegrationSubnetAddressPrefix2 string
 //param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
@@ -51,7 +52,8 @@ param ApiManagementVirtualNetowrkType string
 var InstanceString = padLeft(Instance,3,'0')
 var apimanagement_name = 'apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 var apimanagementIP_name = 'pip-apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
-var InstanceString2 = padLeft(2,3,'0')
+// for creating 2nd subnet
+var InstanceString2 = padLeft(Instance+1,3,'0')
 var apimanagement_name2 = 'apim-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString2}'
 
 //****************************************************************
@@ -331,7 +333,7 @@ module moduleApiManagementVNETIntegration2 './moduleApiManagementVNETIntegration
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name2
-    vnetintegrationSubnetAddressPrefix: '172.22.4.32/27'
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix2
     //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
@@ -347,7 +349,7 @@ module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix1
     //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName

@@ -252,9 +252,9 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
     ApiManagementVirtualNetowrkType: 'Internal'
-    //createSubnet: true
     enableVNETIntegration: true
-    vnetintegrationSubnetAddressPrefix: '172.22.4.0/27'
+    vnetintegrationSubnetAddressPrefix1: '172.22.4.0/27'
+    vnetintegrationSubnetAddressPrefix2: '172.22.4.32/27'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Disabled'
