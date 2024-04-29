@@ -15,6 +15,9 @@ param enablePrivateLink bool = true
 param virtualNetworkName string = 'CloudIntegrationTraining-Shared'
 param virtualNetworkResourceGroup string = 'CloudIntegrationTraining-Shared'
 param privatelinkSubnetName string = 'default'
+param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
+param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
+param resourcemanagerPL_name string = '$(resourcemanagerPL_name)'
 
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
@@ -25,6 +28,19 @@ param Workload string = '$(Workload)'
 param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)'
 param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
+
+module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateLink.bicep' = {
+  name: 'moduleResourceManagerPrivateLink'
+  params:{
+    AppLocation: AppLocation
+    privatelinkSubnetName: privatelinkSubnetName
+    resourcemanagerPL_name: resourcemanagerPL_name
+    resourcemanagerPL_resourceGroup: resourcemanagerPL_resourcegroup
+    resourcemanagerPL_subscriptionId: resourcemanagerPL_subscriptionId
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+  }
+}
 
 module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
   name: 'moduleLogAnalyticsWorkspace'

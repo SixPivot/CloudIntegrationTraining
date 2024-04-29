@@ -12,7 +12,6 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' exis
   name: apimanagement_name
 }
 
-
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
   scope: resourceGroup(virtualNetworkResourceGroup)
