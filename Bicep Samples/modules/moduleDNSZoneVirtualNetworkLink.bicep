@@ -7,11 +7,12 @@ param virtualNetworkResourceGroup string
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: name
+  scope: resourceGroup(subscriptionId, resourceGroup)
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
-  //scope: resourceGroup(virtualNetworkResourceGroup)
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
