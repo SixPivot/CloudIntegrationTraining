@@ -110,4 +110,8 @@ module moduleAppConfigKeyValuetesst1name './modules/moduleAppConfigKeyValue.bice
     variables_key: 'test1_name'
     variables_value: 'test1'
   }
+  dependsOn:[
+    moduleResourceManagerPrivateLink
+    moduleAppConfiguration
+  ]
 }
