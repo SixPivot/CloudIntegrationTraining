@@ -216,7 +216,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementVirtualNetowrkType: 'internal'
     createSubnet: true
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetAddressPrefix: '172.20.2.0/27'
+    vnetintegrationSubnetAddressPrefix: '172.20.4.0/27'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Enabled'
