@@ -14,7 +14,7 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
 param vnetintegrationSubnetAddressPrefix string
-param createSubnet bool 
+//param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
 param publicNetworkAccess string
@@ -132,6 +132,9 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     apiVersionConstraint: {}
     publicNetworkAccess: publicNetworkAccess
   }
+  dependsOn:[
+    moduleApiManagementVNETIntegration
+  ]
 }
 
 resource apiManagementAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostic) {
