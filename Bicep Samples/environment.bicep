@@ -254,7 +254,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementVirtualNetowrkType: 'Internal'
     //createSubnet: true
     enableVNETIntegration: true
-    vnetintegrationSubnetAddressPrefix: '172.20.4.0/27'
+    vnetintegrationSubnetAddressPrefix: '172.22.4.0/27'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Disabled'
@@ -446,7 +446,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
     //vnetintegrationSubnetName: functionAppSubnetName
-    vnetintegrationSubnetAddressPrefix: '172.20.1.16/28'
+    vnetintegrationSubnetAddressPrefix: '172.22.1.16/28'
     //createSubnet: createFunctionAppSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
@@ -555,7 +555,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
     //vnetintegrationSubnetName: logicAppStdSubnetName
-    vnetintegrationSubnetAddressPrefix: '172.20.1.0/28'
+    vnetintegrationSubnetAddressPrefix: '172.22.1.0/28'
     //createSubnet: createLogicAppStdSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
