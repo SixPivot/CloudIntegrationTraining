@@ -35,6 +35,21 @@ param Workload string = '$(Workload)'
 // param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 // param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
+var VNETLinks = [
+  {
+    linkId: 'DevOps'
+    virtualNetworkName: virtualNetworkNameDevOps
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+  }
+  // {
+  //   linkId: 'VMInside'
+  //   virtualNetworkName: virtualNetworkNameVMInside
+  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+  // }
+]
+
 module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateLink.bicep' = {
   name: 'moduleResourceManagerPrivateLink'
   params:{
@@ -54,26 +69,41 @@ module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateL
   }
 }
 
-module moduleDNSZoneVirtualNetworkLinkRMDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
-  name: 'moduleDNSZoneVirtualNetworkLinkRMDevOps'
-  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+module moduleDNSZoneVirtualNetworkLinkRM './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: {
+  name: 'moduleDNSZoneVirtualNetworkLinkAppConfig-${link.linkId}'
+  //scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
   params: {
-    linkId: 'DevOps'
+    linkId: link.linkId
     DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
-    virtualNetworkName: virtualNetworkNameDevOps
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+    virtualNetworkName: link.virtualNetworkName
+    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
   }
-}
+  dependsOn:[
+    moduleResourceManagerPrivateLink
+  ]
+}]
 
-module moduleDNSZoneVirtualNetworkLinkRMVMInside './modules/moduleDNSZoneVirtualNetworkLink.bicep' = if (virtualNetworkNameDevOps != virtualNetworkNameVMInside) {
-  name: 'moduleDNSZoneVirtualNetworkLinkRMVMInside'
-  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
-  params: {
-    linkId: 'VMInside'
-    DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
-    virtualNetworkName: virtualNetworkNameVMInside
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-  }
-}
+// module moduleDNSZoneVirtualNetworkLinkRMDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+//   name: 'moduleDNSZoneVirtualNetworkLinkRMDevOps'
+//   scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+//   params: {
+//     linkId: 'DevOps'
+//     DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
+//     virtualNetworkName: virtualNetworkNameDevOps
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+//   }
+// }
+
+// module moduleDNSZoneVirtualNetworkLinkRMVMInside './modules/moduleDNSZoneVirtualNetworkLink.bicep' = if (virtualNetworkNameDevOps != virtualNetworkNameVMInside) {
+//   name: 'moduleDNSZoneVirtualNetworkLinkRMVMInside'
+//   scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+//   params: {
+//     linkId: 'VMInside'
+//     DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
+//     virtualNetworkName: virtualNetworkNameVMInside
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   }
+// }

@@ -35,6 +35,21 @@ param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)
 param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
+var VNETLinks = [
+  {
+    linkId: 'DevOps'
+    virtualNetworkName: virtualNetworkNameDevOps
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+  }
+  // {
+  //   linkId: 'VMInside'
+  //   virtualNetworkName: virtualNetworkNameVMInside
+  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+  // }
+]
+
 module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
   name: 'moduleLogAnalyticsWorkspace'
   params: {
@@ -60,6 +75,7 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
+    VNETLinks: []
   }
 }
 
@@ -91,35 +107,50 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
   }
 }
 
-module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
-  name: 'moduleDNSZoneVirtualNetworkLinkAppConfigDevOps'
-  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
+  name: 'moduleDNSZoneVirtualNetworkLinkAppConfig-${link.linkId}'
+  //scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
   params: {
-    linkId: 'DevOps'
+    linkId: link.linkId
     DNSZone_name: moduleAppConfiguration.outputs.DNSZone
-    virtualNetworkName: virtualNetworkNameDevOps
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+    virtualNetworkName: link.virtualNetworkName
+    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
   }
   dependsOn:[
     moduleAppConfiguration
   ]
-}
+}]
 
-module moduleDNSZoneVirtualNetworkLinkAppConfigVMInside './modules/moduleDNSZoneVirtualNetworkLink.bicep' = if (virtualNetworkNameDevOps != virtualNetworkNameVMInside) {
-  name: 'moduleDNSZoneVirtualNetworkLinkAppConfigVMInside'
-  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
-  params: {
-    linkId: 'VMInside'
-    DNSZone_name: moduleAppConfiguration.outputs.DNSZone
-    virtualNetworkName: virtualNetworkNameVMInside
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-  }
-  dependsOn:[
-    moduleAppConfiguration
-  ]
-}
+// module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfigDevOps'
+//   scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+//   params: {
+//     linkId: 'DevOps'
+//     DNSZone_name: moduleAppConfiguration.outputs.DNSZone
+//     virtualNetworkName: virtualNetworkNameDevOps
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+//   }
+//   dependsOn:[
+//     moduleAppConfiguration
+//   ]
+// }
+
+// module moduleDNSZoneVirtualNetworkLinkAppConfigVMInside './modules/moduleDNSZoneVirtualNetworkLink.bicep' = if (virtualNetworkNameDevOps != virtualNetworkNameVMInside) {
+//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfigVMInside'
+//   scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+//   params: {
+//     linkId: 'VMInside'
+//     DNSZone_name: moduleAppConfiguration.outputs.DNSZone
+//     virtualNetworkName: virtualNetworkNameVMInside
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   }
+//   dependsOn:[
+//     moduleAppConfiguration
+//   ]
+// }
 
 //****************************************************************
 // Add Key Vault name and resource group to App Configuration
@@ -134,7 +165,7 @@ module moduleAppConfigKeyValuetesst1name './modules/moduleAppConfigKeyValue.bice
     variables_value: 'test1'
   }
   dependsOn:[
-    moduleDNSZoneVirtualNetworkLinkAppConfigDevOps
+    moduleDNSZoneVirtualNetworkLinkAppConfig
     moduleAppConfiguration
   ]
 }
