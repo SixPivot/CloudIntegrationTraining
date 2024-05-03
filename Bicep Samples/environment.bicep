@@ -37,6 +37,12 @@ param appconfig_DNSZone string = '$(appconfig_DNSZone)'
 param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
 param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
 param resourcemanagerPL_DNSZone string = '$(resourcemanagerPL_DNSZone)'
+param virtualNetworkNameDevOps string = 'CloudIntegrationTraining'
+param virtualNetworkResourceGroupDevOps string = 'CloudIntegrationTraining'
+param virtualNetworkSubscriptionIdDevOps string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
+param virtualNetworkNameVMInside string = 'CloudIntegrationTraining'
+param virtualNetworkResourceGroupVMInside string = 'CloudIntegrationTraining'
+param virtualNetworkSubscriptionIdVMInside string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
 param enableDiagnostic bool = false
 param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
@@ -65,6 +71,21 @@ param publicNetworkAccess string = 'Disabled'
 
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
 
+var VNETLinks = [
+  {
+    linkId: 'DevOps'
+    virtualNetworkName: virtualNetworkNameDevOps
+    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+  }
+  // {
+  //   linkId: 'VMInside'
+  //   virtualNetworkName: virtualNetworkNameVMInside
+  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+  // }
+]
+
 //****************************************************************
 // Add Private Link for App Config 
 //****************************************************************
@@ -88,32 +109,47 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 // Create DNS Zone Links for RM & App Config
 //****************************************************************
 
-module moduleDNSZoneVirtualNetworkLinkRM './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
-  name: 'moduleDNSZoneVirtualNetworkLinkRM'
-  scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
-  params: {
-    linkId: EnvironmentName
-    DNSZone_name: resourcemanagerPL_DNSZone
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: subscription().subscriptionId
+var SharedVNETLinks = [
+  {
+    link: 'RM'
+    linkResourceGroup: resourcemanagerPL_subscriptionId
+    linkSubscription: resourcemanagerPL_resourcegroup
+    DNSZone: resourcemanagerPL_DNSZone
   }
-}
+  {
+    link: 'AppConfig'
+    linkResourceGroup: resourcemanagerPL_subscriptionId
+    linkSubscription: resourcemanagerPL_resourcegroup
+    DNSZone: resourcemanagerPL_DNSZone
+  }
+]
 
-module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
-  name: 'moduleDNSZoneVirtualNetworkLinkAppConfig'
-  scope: resourceGroup(appconfig_subscriptionId, appconfig_resourcegroup)
+module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in SharedVNETLinks: {
+  name: 'moduleDNSZoneVirtualNetworkLink-${link.link}'
+  scope: resourceGroup(link.linkResourceGroup, link.linkSubscription)
   params: {
     linkId: EnvironmentName
-    DNSZone_name: appconfig_DNSZone
+    DNSZone_name: link.DNSZone
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     virtualNetworkSubscriptionId: subscription().subscriptionId
   }
-  dependsOn:[
-    moduleDNSZoneVirtualNetworkLinkRM
-  ]
-}
+}]
+
+// module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
+//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfig'
+//   scope: resourceGroup(appconfig_subscriptionId, appconfig_resourcegroup)
+//   params: {
+//     linkId: EnvironmentName
+//     DNSZone_name: appconfig_DNSZone
+//     virtualNetworkName: virtualNetworkName
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+//     virtualNetworkSubscriptionId: subscription().subscriptionId
+//   }
+//   dependsOn:[
+//     moduleDNSZoneVirtualNetworkLinkRM
+//   ]
+// }
 
 //****************************************************************
 // Create Resources
@@ -144,9 +180,10 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
+    VNETLinks: VNETLinks
   }
   dependsOn:[
-    moduleDNSZoneVirtualNetworkLinkAppConfig
+    moduleDNSZoneVirtualNetworkLink
   ]
 }
 
@@ -180,6 +217,13 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
+    VNETLinks: VNETLinks
+    // virtualNetworkNameDevOps: virtualNetworkNameDevOps
+    // virtualNetworkResourceGroupDevOps: virtualNetworkResourceGroupDevOps
+    // virtualNetworkSubscriptionIdDevOps: virtualNetworkSubscriptionIdDevOps
+    // virtualNetworkNameVMInside: virtualNetworkNameVMInside
+    // virtualNetworkResourceGroupVMInside: virtualNetworkResourceGroupVMInside
+    // virtualNetworkSubscriptionIdVMInside: virtualNetworkSubscriptionIdVMInside
   }
 }
 

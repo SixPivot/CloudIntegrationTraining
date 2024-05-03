@@ -12,6 +12,7 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param publicNetworkAccessForIngestion string
 param publicNetworkAccessForQuery string
+param VNETLinks array
 
 // tags
 param tags object = {}
@@ -118,6 +119,20 @@ module moduleLogAnalyticsPrivateLink './moduleLogAnalyticsPrivateLink.bicep' = i
     loganalyticsPrivateLinkScopeId: privateLinkScope.id
   }
 }
+
+module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
+  name: 'moduleDNSZoneVirtualNetworkLinkKeyVault-${link.linkId}'
+  params: {
+    linkId: link.linkId
+    DNSZone_name: moduleLogAnalyticsPrivateLink.outputs.DNSZoneMonitor
+    virtualNetworkName: link.virtualNetworkName
+    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
+  }
+  dependsOn:[
+    moduleLogAnalyticsPrivateLink
+  ]
+}]
 
 output loganalyticsWorkspace_name string = loganalyticsWorkspace.name
 output loganalyticsWorkspace_id string = loganalyticsWorkspace.id

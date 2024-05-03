@@ -12,7 +12,14 @@ param enablePrivateLink bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param publicNetworkAccess string 
+param publicNetworkAccess string
+param VNETLinks array
+// param virtualNetworkNameDevOps string 
+// param virtualNetworkResourceGroupDevOps string 
+// param virtualNetworkSubscriptionIdDevOps string 
+// param virtualNetworkNameVMInside string 
+// param virtualNetworkResourceGroupVMInside string 
+// param virtualNetworkSubscriptionIdVMInside string 
 
 // tags
 param tags object = {}
@@ -180,6 +187,34 @@ module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enabl
     keyvault_name: keyvault.name
   }
 }
+
+module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
+  name: 'moduleDNSZoneVirtualNetworkLinkKeyVault-${link.linkId}'
+  params: {
+    linkId: link.linkId
+    DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
+    virtualNetworkName: link.virtualNetworkName
+    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
+  }
+  dependsOn:[
+    moduleKeyVaultPrivateLink
+  ]
+}]
+
+// module moduleDNSZoneVirtualNetworkLinkAppConfigVMInside './moduleDNSZoneVirtualNetworkLink.bicep' = if ((enablePrivateLink) && (virtualNetworkNameDevOps != virtualNetworkNameVMInside)) {
+//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfigVMInside'
+//   params: {
+//     linkId: 'VMInside'
+//     DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
+//     virtualNetworkName: virtualNetworkNameVMInside
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   }
+//   dependsOn:[
+//     moduleKeyVaultPrivateLink
+//   ]
+// }
 
 //****************************************************************
 // Add Key Vault name and resource group to App Configuration

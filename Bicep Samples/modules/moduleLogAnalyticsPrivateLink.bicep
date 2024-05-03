@@ -144,3 +144,8 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
+
+output DNSZoneMonitor string = privateDnsZonesMonitor.name
+output DNSZoneOms string = privateDnsZonesOms.name
+output DNSZoneOds string = privateDnsZonesOds.name
+output DNSZoneAgentsvc string = privateDnsZonesAgentsvc.name
