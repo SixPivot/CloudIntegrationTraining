@@ -35,12 +35,12 @@ param Workload string = '$(Workload)'
 // param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 // param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
-var VNETLinks = [
+param VNETLinks array = [
   {
     linkId: 'DevOps'
-    virtualNetworkName: virtualNetworkNameDevOps
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+    virtualNetworkName: 'CloudIntegrationTraining'
+    virtualNetworkResourceGroup: 'CloudIntegrationTraining'
+    virtualNetworkSubscriptionId: '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
   }
   // {
   //   linkId: 'VMInside'
