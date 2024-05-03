@@ -60,18 +60,7 @@ param routetableName string = 'none'
 param publicNetworkAccess string = 'Disabled'
 //param apiManagementSubnetAddressPrefix string = ''
 
-//****************************************************************
-// Variables
-//****************************************************************
-
-// var ApiManagementSKUName =  toLower(EnvironmentName) == 'prod' ? 'Standardv2' : 'Developer'
-// var ApiManagementCapacity = 1
-// var ApiManagementPublisherName = 'wilsongroupau'
-// var ApiManagementPublisherEmail = 'trevor.booth@wilsongroupau.com'
-
-var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
-
-var VNETLinks = [
+param VNETLinks array = [
   {
     linkId: 'DevOps'
     virtualNetworkName: virtualNetworkNameDevOps
@@ -85,6 +74,17 @@ var VNETLinks = [
   //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
   // }
 ]
+
+//****************************************************************
+// Variables
+//****************************************************************
+
+// var ApiManagementSKUName =  toLower(EnvironmentName) == 'prod' ? 'Standardv2' : 'Developer'
+// var ApiManagementCapacity = 1
+// var ApiManagementPublisherName = 'wilsongroupau'
+// var ApiManagementPublisherEmail = 'trevor.booth@wilsongroupau.com'
+
+var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
 
 //****************************************************************
 // Add Private Link for App Config 

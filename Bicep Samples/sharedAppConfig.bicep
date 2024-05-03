@@ -35,7 +35,7 @@ param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)
 param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
-var VNETLinks = [
+param VNETLinks array = [
   {
     linkId: 'DevOps'
     virtualNetworkName: virtualNetworkNameDevOps
