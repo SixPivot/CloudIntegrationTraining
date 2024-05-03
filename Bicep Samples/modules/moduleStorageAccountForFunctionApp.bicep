@@ -28,6 +28,7 @@ param appconfig_name string
 param appconfig_resourcegroup string 
 param appconfig_subscriptionId string 
 param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string
 
 //****************************************************************
 // Variables
@@ -50,6 +51,7 @@ var storage_name = 'stfn${toLower(BaseShortName)}${toLower(storage_app_name)}${t
 
 resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = if(enableDiagnostic) {
   name: loganalyticsWorkspace_name
+  scope: resourceGroup(loganalyticsWorkspace_resourcegroup)
 }
 
 //****************************************************************
