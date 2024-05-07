@@ -17,18 +17,18 @@ param CostCentre string = '$(CostCentre)'
 param Workload string = '$(Workload)'
 
 // existing resources
-param enableAppConfig bool = false
+param enableAppConfig bool = true
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
-param enableDiagnostic bool = false
+param enableDiagnostic bool = true
 param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
-param privatelinkSubnetName string = ''
-param networksecuritygroupName string = 'none'
-param routetableName string = 'none'
+param virtualNetworkName string = '$(virtualNetworkName)'
+param virtualNetworkResourceGroup string = '$(virtualNetworkResourceGroup)'
+param privatelinkSubnetName string = '$(privatelinkSubnetName)'
+param networksecuritygroupName string = '$(networksecuritygroupName)'
+param routetableName string = '$(routetableName)'
 param publicNetworkAccess string = 'Disabled'
 param keyvault_name string = '$(keyvault_name)'
 param keyvault_resourcegroup string = '$(keyvault_resourcegroup)'

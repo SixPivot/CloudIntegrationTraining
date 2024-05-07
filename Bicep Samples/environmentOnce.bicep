@@ -11,8 +11,8 @@ param AppLocation string = resourceGroup().location
 param AzureRegion string = 'ause'
 param Instance int = 1
 
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
+param virtualNetworkName string = '$(virtualNetworkName)'
+param virtualNetworkResourceGroup string = '$(virtualNetworkResourceGroup)'
 
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'

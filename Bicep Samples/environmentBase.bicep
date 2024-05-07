@@ -24,12 +24,12 @@ param CostCentre string = '$(CostCentre)'
 param Workload string = '$(Workload)'
 
 // service principals and groups
-param AzureDevOpsServiceConnectionId string = ''
-param KeyVaultAdministratorsGroupId string = ''
-param KeyVaultReaderGroupId string = ''
+param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)'
+param KeyVaultAdministratorsGroupId string = '$(KeyVaultAdministratorsGroupId)'
+param KeyVaultReaderGroupId string = '$(KeyVaultReaderGroupId)'
 
 // existing resources
-param enableAppConfig bool = false
+param enableAppConfig bool = true
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
@@ -43,20 +43,20 @@ param virtualNetworkSubscriptionIdDevOps string = '3e2bea16-63ed-4349-9b9c-fe2f9
 param virtualNetworkNameVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkResourceGroupVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkSubscriptionIdVMInside string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
-param enableDiagnostic bool = false
+param enableDiagnostic bool = true
 param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
-param virtualNetworkName string = ''
-param virtualNetworkResourceGroup string = ''
-param privatelinkSubnetName string = ''
+param virtualNetworkName string = '$(virtualNetworkName)'
+param virtualNetworkResourceGroup string = '$(virtualNetworkResourceGroup)'
+param privatelinkSubnetName string = '$(privatelinkSubnetName)'
 //param createLogicAppStdSubnet bool
 //param logicAppStdSubnetName string = ''
 ////param logicAppStdSubnetAddressPrefix string = '' 
 //param createFunctionAppSubnet bool
 //param functionAppSubnetName string = ''
 //param functionAppSubnetAddressPrefix string = '' 
-param networksecuritygroupName string = 'none'
-param routetableName string = 'none'
+param networksecuritygroupName string = '$(networksecuritygroupName)'
+param routetableName string = '$(routetableName)'
 param publicNetworkAccess string = 'Disabled'
 //param apiManagementSubnetAddressPrefix string = ''
 
