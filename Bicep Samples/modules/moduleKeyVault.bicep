@@ -28,6 +28,7 @@ param tags object = {}
 param appconfig_name string 
 param appconfig_resourcegroup string 
 param appconfig_subscriptionId string 
+param appconfig_vnetName string
 param loganalyticsWorkspace_name string 
 param loganalyticsWorkspace_resourcegroup string 
 
@@ -202,19 +203,19 @@ module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './moduleDNSZoneVirtualNet
   ]
 }]
 
-// module moduleDNSZoneVirtualNetworkLinkAppConfigVMInside './moduleDNSZoneVirtualNetworkLink.bicep' = if ((enablePrivateLink) && (virtualNetworkNameDevOps != virtualNetworkNameVMInside)) {
-//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfigVMInside'
-//   params: {
-//     linkId: 'VMInside'
-//     DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
-//     virtualNetworkName: virtualNetworkNameVMInside
-//     virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-//   }
-//   dependsOn:[
-//     moduleKeyVaultPrivateLink
-//   ]
-// }
+module moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig './moduleDNSZoneVirtualNetworkLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig'
+  params: {
+    linkId: appconfig_name
+    DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
+    virtualNetworkName: appconfig_vnetName
+    virtualNetworkResourceGroup: appconfig_resourcegroup
+    virtualNetworkSubscriptionId: appconfig_subscriptionId
+  }
+  dependsOn:[
+    moduleKeyVaultPrivateLink
+  ]
+}
 
 //****************************************************************
 // Add Key Vault name and resource group to App Configuration
