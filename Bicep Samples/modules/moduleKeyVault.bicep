@@ -164,6 +164,16 @@ resource keyvaultRoleAssignmentKeyVaultAdministratorsGroupId 'Microsoft.Authoriz
   }
 }
 
+resource keyvaultRoleAssignmentKeyVaultReaderGroupId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(KeyVaultReaderGroupId)) {
+  scope: keyvault
+  name: guid(keyvault.id, KeyVaultReaderGroupId, KeyVaultSecretsUser)
+  properties: {
+    roleDefinitionId: KeyVaultSecretsUser
+    principalId: KeyVaultReaderGroupId
+    principalType: 'Group'
+  }
+}
+
 resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-preview' existing = {
   name: appconfig_name
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
@@ -171,7 +181,7 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-pr
 
 resource keyvaultRoleAssignmentKeyVaultAppConfig 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyvault
-  name: guid(keyvault.id, KeyVaultReaderGroupId, appconfig_name)
+  name: guid(keyvault.id, appconfig_name, KeyVaultSecretsUser)
   properties: {
     roleDefinitionId: KeyVaultSecretsUser
     principalId: appconfig.identity.principalId
