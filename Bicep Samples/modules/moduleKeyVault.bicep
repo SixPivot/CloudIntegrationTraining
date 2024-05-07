@@ -206,7 +206,7 @@ module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './moduleDNSZoneVirtualNet
 module moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig './moduleDNSZoneVirtualNetworkLink.bicep' = if (enablePrivateLink) {
   name: 'moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig'
   params: {
-    linkId: appconfig_name
+    linkId: 'appconfig'
     DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
     virtualNetworkName: appconfig_vnetName
     virtualNetworkResourceGroup: appconfig_resourcegroup
