@@ -79,31 +79,7 @@ param VNETLinks array = [
 // Variables
 //****************************************************************
 
-// var ApiManagementSKUName =  toLower(EnvironmentName) == 'prod' ? 'Standardv2' : 'Developer'
-// var ApiManagementCapacity = 1
-// var ApiManagementPublisherName = 'wilsongroupau'
-// var ApiManagementPublisherEmail = 'trevor.booth@wilsongroupau.com'
-
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
-
-//****************************************************************
-// Add Private Link for App Config 
-//****************************************************************
-// resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
-//   name: appconfig_name
-//   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
-// }
-
-// module moduleAppConfigurationPrivateLink './modules/moduleAppConfigurationPrivateLink.bicep' = if (enablePrivateLink) {
-//   name: 'moduleAppConfigurationPrivateLink'
-//   params: {
-//     AppLocation: AppLocation
-//     virtualNetworkName: virtualNetworkName
-//     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-//     privatelinkSubnetName: privatelinkSubnetName
-//     appconfig: appconfig
-//   }
-// }
 
 //****************************************************************
 // Create DNS Zone Links for RM & App Config
@@ -135,21 +111,6 @@ module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLin
     virtualNetworkSubscriptionId: subscription().subscriptionId
   }
 }]
-
-// module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
-//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfig'
-//   scope: resourceGroup(appconfig_subscriptionId, appconfig_resourcegroup)
-//   params: {
-//     linkId: EnvironmentName
-//     DNSZone_name: appconfig_DNSZone
-//     virtualNetworkName: virtualNetworkName
-//     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-//     virtualNetworkSubscriptionId: subscription().subscriptionId
-//   }
-//   dependsOn:[
-//     moduleDNSZoneVirtualNetworkLinkRM
-//   ]
-// }
 
 //****************************************************************
 // Create Resources
@@ -315,46 +276,37 @@ module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {
   }
 }
 
-// module moduleApiManagementWorkspacePolicy './modules/moduleApiManagementWorkspacePolicy.bicep' = {
-//   name: 'moduleApiManagementWorkspacePolicy'
+// module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
+//   name: 'moduleServiceBusNamespace'
 //   params: {
-//     apimanagement_name: moduleApiManagmentBase.outputs.apimanagement_name
-//     apimanagement_workspace_name: moduleApiManagmentWorkspace.outputs.apimanagement_workspace_name 
-//     policyString: policyString
+//     BaseName: BaseName
+//     BaseShortName: BaseShortName
+//     EnvironmentName: EnvironmentName
+//     EnvironmentShortName: EnvironmentShortName
+//     AppLocation: AppLocation
+//     AzureRegion: AzureRegion
+//     Instance: Instance
+//     tags: {
+//       BusinessOwner: BusinessOwner
+//       CostCentre: CostCentre
+//       Workload: Workload
+//     }
+//     ServiceBusSKUName: 'Premium'
+//     ServiceBusCapacity: 1
+//     ServiceBusTierName: 'Premium'
+//     enableAppConfig: enableAppConfig
+//     appconfig_name: enableAppConfig ? appconfig_name : ''
+//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+//     enableDiagnostic: enableDiagnostic
+//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+//     enablePrivateLink: enablePrivateLink
+//     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+//     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+//     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+//     publicNetworkAccess: publicNetworkAccess
 //   }
 // }
-
-module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
-  name: 'moduleServiceBusNamespace'
-  params: {
-    BaseName: BaseName
-    BaseShortName: BaseShortName
-    EnvironmentName: EnvironmentName
-    EnvironmentShortName: EnvironmentShortName
-    AppLocation: AppLocation
-    AzureRegion: AzureRegion
-    Instance: Instance
-    tags: {
-      BusinessOwner: BusinessOwner
-      CostCentre: CostCentre
-      Workload: Workload
-    }
-    ServiceBusSKUName: 'Premium'
-    ServiceBusCapacity: 1
-    ServiceBusTierName: 'Premium'
-    enableAppConfig: enableAppConfig
-    appconfig_name: enableAppConfig ? appconfig_name : ''
-    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
-    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
-    enableDiagnostic: enableDiagnostic
-    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-    enablePrivateLink: enablePrivateLink
-    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
-    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
-    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
-    publicNetworkAccess: publicNetworkAccess
-  }
-}
 
 module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccount'
