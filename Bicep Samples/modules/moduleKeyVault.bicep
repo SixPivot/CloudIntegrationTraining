@@ -213,7 +213,7 @@ module moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig './moduleDNSZoneVirtualN
     virtualNetworkSubscriptionId: appconfig_subscriptionId
   }
   dependsOn:[
-    moduleKeyVaultPrivateLink
+    moduleDNSZoneVirtualNetworkLinkAppConfigDevOps
   ]
 }
 
