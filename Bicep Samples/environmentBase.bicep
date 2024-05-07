@@ -33,7 +33,7 @@ param enableAppConfig bool = true
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
-param appconfig_vnetname string = '$(appconfig_vnetname)'
+param appconfig_vnetName string = '$(appconfig_vnetName)'
 // param appconfig_DNSZone string = '$(appconfig_DNSZone)'
 // param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
 // param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
@@ -171,7 +171,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     appconfig_name: enableAppConfig ? appconfig_name : ''
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
-    appconfig_vnetName: appconfig_vnetname
+    appconfig_vnetName: appconfig_vnetName
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
