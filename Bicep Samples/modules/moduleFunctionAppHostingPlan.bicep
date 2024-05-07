@@ -100,6 +100,18 @@ module moduleAppConfigKeyValuefunctionHostingPlanResourcegroup './moduleAppConfi
   }
 }
 
+module moduleAppConfigKeyValuefunctionHostingPlanSubscriptionId './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: 'functionapphostingplan_subscriptionid'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'functionapphostingplan_subscriptionId'
+    variables_value: subscription().subscriptionId
+  }
+}
+
+
 output functionapphostingplan_name string = functionAppHostingPlan.name
 output functionapphostingplan_resourcegroup string = resourceGroup().name
 output functionapphostingplan_subscriptionId string = subscription().subscriptionId

@@ -88,7 +88,7 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' existing = if (e
 
 resource functionappHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
   name: functionapphostingplan_name
-  scope: resourceGroup(functionapphostingplan_resourcegroup)
+  scope: resourceGroup(functionapphostingplan_subscriptionId, functionapphostingplan_resourcegroup)
 }
 
 resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
