@@ -33,10 +33,10 @@ param enableAppConfig bool = false
 param appconfig_name string = '$(appconfig_name)'
 param appconfig_resourcegroup string = '$(appconfig_resourcegroup)'
 param appconfig_subscriptionId string = '$(appconfig_subscriptionId)'
-param appconfig_DNSZone string = '$(appconfig_DNSZone)'
-param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
-param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
-param resourcemanagerPL_DNSZone string = '$(resourcemanagerPL_DNSZone)'
+// param appconfig_DNSZone string = '$(appconfig_DNSZone)'
+// param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
+// param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
+// param resourcemanagerPL_DNSZone string = '$(resourcemanagerPL_DNSZone)'
 param virtualNetworkNameDevOps string = 'CloudIntegrationTraining'
 param virtualNetworkResourceGroupDevOps string = 'CloudIntegrationTraining'
 param virtualNetworkSubscriptionIdDevOps string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
@@ -49,10 +49,10 @@ param enableVNETIntegration bool = true
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''
 param privatelinkSubnetName string = ''
-param createLogicAppStdSubnet bool
+//param createLogicAppStdSubnet bool
 //param logicAppStdSubnetName string = ''
 ////param logicAppStdSubnetAddressPrefix string = '' 
-param createFunctionAppSubnet bool
+//param createFunctionAppSubnet bool
 //param functionAppSubnetName string = ''
 //param functionAppSubnetAddressPrefix string = '' 
 param networksecuritygroupName string = 'none'
@@ -85,32 +85,32 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 // Create DNS Zone Links for RM & App Config
 //****************************************************************
 
-var SharedVNETLinks = [
-  {
-    link: 'RM'
-    linkResourceGroup: resourcemanagerPL_subscriptionId
-    linkSubscription: resourcemanagerPL_resourcegroup
-    DNSZone: resourcemanagerPL_DNSZone
-  }
-  {
-    link: 'AppConfig'
-    linkResourceGroup: resourcemanagerPL_subscriptionId
-    linkSubscription: resourcemanagerPL_resourcegroup
-    DNSZone: resourcemanagerPL_DNSZone
-  }
-]
+// var SharedVNETLinks = [
+//   {
+//     link: 'RM'
+//     linkResourceGroup: resourcemanagerPL_subscriptionId
+//     linkSubscription: resourcemanagerPL_resourcegroup
+//     DNSZone: resourcemanagerPL_DNSZone
+//   }
+//   {
+//     link: 'AppConfig'
+//     linkResourceGroup: resourcemanagerPL_subscriptionId
+//     linkSubscription: resourcemanagerPL_resourcegroup
+//     DNSZone: resourcemanagerPL_DNSZone
+//   }
+// ]
 
-module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in SharedVNETLinks: {
-  name: 'moduleDNSZoneVirtualNetworkLink-${link.link}'
-  scope: resourceGroup(link.linkResourceGroup, link.linkSubscription)
-  params: {
-    linkId: EnvironmentName
-    DNSZone_name: link.DNSZone
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: subscription().subscriptionId
-  }
-}]
+// module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in SharedVNETLinks: {
+//   name: 'moduleDNSZoneVirtualNetworkLink-${link.link}'
+//   scope: resourceGroup(link.linkResourceGroup, link.linkSubscription)
+//   params: {
+//     linkId: EnvironmentName
+//     DNSZone_name: link.DNSZone
+//     virtualNetworkName: virtualNetworkName
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+//     virtualNetworkSubscriptionId: subscription().subscriptionId
+//   }
+// }]
 
 //****************************************************************
 // Create Resources
@@ -143,9 +143,9 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     publicNetworkAccessForQuery: publicNetworkAccess
     VNETLinks: VNETLinks
   }
-  dependsOn:[
-    moduleDNSZoneVirtualNetworkLink
-  ]
+  // dependsOn:[
+  //   moduleDNSZoneVirtualNetworkLink
+  // ]
 }
 
 module moduleKeyVault './modules/moduleKeyVault.bicep' = {
@@ -257,7 +257,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
     ApiManagementVirtualNetowrkType: 'Internal'
-    enableVNETIntegration: true
+    enableVNETIntegration: enableVNETIntegration
     vnetintegrationSubnetAddressPrefix1: '172.22.4.0/27'
     vnetintegrationSubnetAddressPrefix2: '172.22.4.32/27'
     networksecuritygroupName: networksecuritygroupName
