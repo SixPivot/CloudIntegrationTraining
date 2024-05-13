@@ -1,9 +1,7 @@
 param BaseName string = 'CloudIntegrationTraining'
 param BaseShortName string = 'cit'
-param AppName string = 'devops'
-param AppShortName string = 'devops'
-param EnvironmentName string = 'shared'
-param EnvironmentShortName string = 'shr'
+param EnvironmentName string = 'devops'
+param EnvironmentShortName string = 'devops'
 param AppLocation string = resourceGroup().location
 @allowed([
   'auea'
@@ -27,7 +25,7 @@ param privatelinkSubnetName string = '$(privatelinkSubnetName)'
 //****************************************************************
 
 var InstanceString = padLeft(Instance,3,'0')
-var vmss_name = 'vmss-${toLower(AppName)}-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
+var vmss_name = 'vmss-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
 
 //****************************************************************
 // Existing Azure Resources
