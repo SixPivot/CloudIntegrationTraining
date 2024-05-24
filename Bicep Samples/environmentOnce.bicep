@@ -22,27 +22,31 @@ param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptio
 param resourcemanagerPL_DNSZone string = '$(resourcemanagerPL_DNSZone)'
 
 //****************************************************************
+// Create VNET Peering
+//****************************************************************
+
+//****************************************************************
 // Create DNS Zone Links for RM & App Config
 //****************************************************************
 
 var SharedVNETLinks = [
   {
     link: 'RM'
-    linkResourceGroup: resourcemanagerPL_subscriptionId
-    linkSubscription: resourcemanagerPL_resourcegroup
+    linkResourceGroup: resourcemanagerPL_resourcegroup
+    linkSubscription: resourcemanagerPL_subscriptionId
     DNSZone: resourcemanagerPL_DNSZone
   }
   {
     link: 'AppConfig'
-    linkResourceGroup: resourcemanagerPL_subscriptionId
-    linkSubscription: resourcemanagerPL_resourcegroup
-    DNSZone: resourcemanagerPL_DNSZone
+    linkResourceGroup: appconfig_resourcegroup
+    linkSubscription: appconfig_subscriptionId
+    DNSZone: appconfig_DNSZone
   }
 ]
 
 module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in SharedVNETLinks: {
   name: 'moduleDNSZoneVirtualNetworkLink-${link.link}'
-  scope: resourceGroup(link.linkResourceGroup, link.linkSubscription)
+  scope: resourceGroup(link.linkSubscription, link.linkResourceGroup)
   params: {
     linkId: EnvironmentName
     DNSZone_name: link.DNSZone

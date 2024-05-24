@@ -10,6 +10,7 @@ param AppLocation string = resourceGroup().location
 ])
 param AzureRegion string = 'ause'
 param Instance int = 1
+
 param publicNetworkAccess string = 'Disabled'
 param enablePrivateLink bool = true
 param virtualNetworkName string = 'CloudIntegrationTraining-Shared'
