@@ -16,10 +16,6 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
 //param vnetintegrationSubnetName string 
-param functionapp_subnet string 
-//param createSubnet bool 
-param networksecuritygroupName string 
-param routetableName string 
 param publicNetworkAccess string 
 
 // tags
@@ -45,6 +41,9 @@ param storage_subscriptionId string
 
 param functionappWorkerRuntime string = 'dotnet-isolated'
 param functionappExtentionVersion string = '~4'
+
+param functionapp_subnet_name string 
+param functionapp_subnet_id string 
 
 //****************************************************************
 // Variables
@@ -113,6 +112,8 @@ resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/s
 // Azure Function App
 //****************************************************************
 
+var virtualNetworkSubnetId = enableVNETIntegration ? functionapp_subnet_id : null
+
 resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   name: functionapp_name
   location: AppLocation
@@ -122,8 +123,10 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    vnetContentShareEnabled: publicNetworkAccess == 'Enable' ? false : true
     serverFarmId: functionappHostingPlan.id
+    virtualNetworkSubnetId: virtualNetworkSubnetId
+    vnetRouteAllEnabled: enableVNETIntegration ? true : false
+    vnetContentShareEnabled: enableVNETIntegration ? true : false
     publicNetworkAccess: publicNetworkAccess
     httpsOnly: true
     siteConfig: {

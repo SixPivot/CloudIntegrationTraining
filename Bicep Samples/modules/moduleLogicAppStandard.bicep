@@ -15,9 +15,6 @@ param enableVNETIntegration bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param logicappstd_subnet string 
-param networksecuritygroupName string 
-param routetableName string 
 param publicNetworkAccess string
 
 // tags
@@ -40,6 +37,8 @@ param storage_name string
 param storage_resourcegroup string 
 param storage_subscriptionId string 
 //param apimanagement_publicIPAddress string 
+param logicapp_subnet_name string 
+param logicapp_subnet_id string 
 
 //****************************************************************
 // Variables
@@ -121,6 +120,8 @@ resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/s
 // Azure Logic App Std 
 //****************************************************************
 
+var virtualNetworkSubnetId = enableVNETIntegration ? logicapp_subnet_id : null
+
 resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
   name: logicapp_name
   location: AppLocation
@@ -130,8 +131,10 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    vnetContentShareEnabled: publicNetworkAccess == 'Enable' ? false : true
     serverFarmId: workflowHostingPlan.id
+    virtualNetworkSubnetId: virtualNetworkSubnetId
+    vnetRouteAllEnabled: enableVNETIntegration ? true : false
+    vnetContentShareEnabled: enableVNETIntegration ? true : false
     publicNetworkAccess: publicNetworkAccess
     httpsOnly: true
     siteConfig: {

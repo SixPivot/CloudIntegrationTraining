@@ -42,6 +42,10 @@ param functionapphostingplan_subscriptionId string = '$(functionapphostingplan_s
 param workflowhostingplan_name string = '$(workflowhostingplan_name)'
 param workflowhostingplan_resourcegroup string = '$(workflowhostingplan_resourcegroup)'
 param workflowhostingplan_subscriptionId string = '$(workflowhostingplan_subscriptionId)'
+param logicapp_subnet_id string = '$(logicapp_subnet_id)'
+param logicapp_subnet_name string = '$(logicapp_subnet_name)'
+param functionapp_subnet_id string = '$(functionapp_subnet_id)'
+param functionapp_subnet_name string = '$(functionapp_subnet_name)'
 
 param VNETLinks array = [
   {
@@ -164,10 +168,9 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    functionapp_subnet: '172.22.1.16/28'
-    networksecuritygroupName: networksecuritygroupName
-    routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
+    functionapp_subnet_id: functionapp_subnet_id
+    functionapp_subnet_name: functionapp_subnet_name
   }
 } 
 
@@ -246,10 +249,9 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    functionapp_subnet: '172.22.1.0/28'
-    networksecuritygroupName: networksecuritygroupName
-    routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
+    logicapp_subnet_id: logicapp_subnet_id
+    logicapp_subnet_name: logicapp_subnet_name
   }
   dependsOn: [
     moduleFunctionApp

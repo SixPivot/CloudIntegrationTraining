@@ -51,18 +51,13 @@ param enableVNETIntegration bool = true
 param virtualNetworkName string = '$(virtualNetworkName)'
 param virtualNetworkResourceGroup string = '$(virtualNetworkResourceGroup)'
 param privatelinkSubnetName string = '$(privatelinkSubnetName)'
-//param createLogicAppStdSubnet bool
-//param logicAppStdSubnetName string = ''
-////param logicAppStdSubnetAddressPrefix string = '' 
-//param createFunctionAppSubnet bool
-//param functionAppSubnetName string = ''
-//param functionAppSubnetAddressPrefix string = '' 
 param networksecuritygroupName string = '$(networksecuritygroupName)'
 param routetableName string = '$(routetableName)'
 param publicNetworkAccess string = 'Disabled'
-//param apiManagementSubnetAddressPrefix string = ''
-param logicappstd_subnet string = '$(logicappstd_subnet)'
-param functionapp_subnet string = '$(functionapp_subnet)'
+param ApiManagement_subnet1 string = '172.22.4.0/27'
+param ApiManagement_subnet2 string = '172.22.4.32/27'
+param logicappstd_subnet string = '172.22.4.64/27'
+param functionapp_subnet string = '172.22.4.96/27'
 
 param VNETLinks array = [
   {
@@ -268,11 +263,11 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
     ApiManagementVirtualNetowrkType: 'Internal'
     enableVNETIntegration: enableVNETIntegration
-    ApiManagement_subnet1: '172.22.4.0/27'
-    ApiManagement_subnet2: '172.22.4.32/27'
+    ApiManagement_subnet1: ApiManagement_subnet1
+    ApiManagement_subnet2: ApiManagement_subnet2
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
