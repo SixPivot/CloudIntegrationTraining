@@ -204,28 +204,6 @@ module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if 
 } 
 
 //****************************************************************
-// Add VNET Integration for Function App
-//****************************************************************
-
-module moduleFunctionAppVNETIntegration './moduleFunctionAppVNETIntegration.bicep' = if (enableVNETIntegration) {
-  name: 'moduleFunctionAppVNETIntegration'
-  params: {
-    functionapp_name: functionapp_name
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    //vnetintegrationSubnetName: functionApp.name
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix
-    //createSubnet: createSubnet
-    networksecuritygroupName: networksecuritygroupName
-    routetableName: routetableName
-  }
-  dependsOn: [
-    functionApp
-  ]
-}
-
-
-//****************************************************************
 // Add Function App Std reader role to App Configuration
 //****************************************************************
 

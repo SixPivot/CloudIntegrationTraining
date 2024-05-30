@@ -9,6 +9,7 @@ param Instance int
 
 
 param enablePrivateLink bool 
+param publicNetworkAccess string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
@@ -66,8 +67,8 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
     Application_Type:'other'
     Request_Source: 'rest'
     WorkspaceResourceId: loganalyticsWorkspace.id
-    publicNetworkAccessForIngestion: enablePrivateLink ? 'Disabled' : 'Enabled'
-    publicNetworkAccessForQuery: enablePrivateLink ? 'Disabled' : 'Enabled'
+    publicNetworkAccessForIngestion: publicNetworkAccess
+    publicNetworkAccessForQuery: publicNetworkAccess
     IngestionMode: 'LogAnalytics'
   }
 }

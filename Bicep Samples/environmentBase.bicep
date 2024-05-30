@@ -18,6 +18,7 @@ param SQLDatabaseSKUName string = 'Standard'
 param SQLDatabaseCapacity int = toLower(EnvironmentName) == 'prod' ? 50 : 20
 param SQLDatabaseTierName string = 'Standard'
 
+
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
 param CostCentre string = '$(CostCentre)'
@@ -60,6 +61,8 @@ param networksecuritygroupName string = '$(networksecuritygroupName)'
 param routetableName string = '$(routetableName)'
 param publicNetworkAccess string = 'Disabled'
 //param apiManagementSubnetAddressPrefix string = ''
+param vnetintegrationSubnetAddressPrefixLogicAppStd string
+param vnetintegrationSubnetAddressPrefixFunctionApp string
 
 param VNETLinks array = [
   {
@@ -81,6 +84,10 @@ param VNETLinks array = [
 //****************************************************************
 
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
+var padInstance = '0'
+var InstanceString = Instance > 0 ? '-${padLeft(Instance,3,padInstance)}' : ''
+var logicapp_subnet_name = 'logic-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}${InstanceString}'
+var functionapp_subnet_name = 'func-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}${InstanceString}'
 
 //****************************************************************
 // Create DNS Zone Links for RM & App Config
@@ -215,6 +222,7 @@ module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = i
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     enablePrivateLink: enablePrivateLink
+    publicNetworkAccess: publicNetworkAccess
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
@@ -369,6 +377,30 @@ module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bice
   }
 }
 
+//****************************************************************
+// Add VNET Integration for Function App
+//****************************************************************
+
+module moduleFunctionAppVNETIntegration './modules/moduleFunctionAppVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleFunctionAppVNETIntegration'
+  params: {
+    EnvironmentName: EnvironmentName
+    enableAppConfig: enableAppConfig
+    appconfig_name: appconfig_name
+    appconfig_resourcegroup: appconfig_resourcegroup
+    appconfig_subscriptionId: appconfig_subscriptionId
+    functionapp_subnet_name: functionapp_subnet_name
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefixFunctionApp
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
+  }
+  dependsOn: [
+    moduleFunctionAppHostingPlan
+  ]
+}
+
 // module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunctionApp.bicep' = {
 //   name: 'moduleStorageAccountForFunctionApp'
 //   params: {
@@ -480,6 +512,31 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
   }
+}
+
+//****************************************************************
+// Add VNET Integration for Logic App Std 
+//****************************************************************
+
+module moduleLogicAppStandardVNETIntegration './modules/moduleLogicAppStandardVNETIntegration.bicep' = if (enableVNETIntegration) {
+  name: 'moduleLogicAppStandardVNETIntegration'
+  params: {
+    EnvironmentName: EnvironmentName
+    enableAppConfig: enableAppConfig
+    appconfig_name: appconfig_name
+    appconfig_resourcegroup: appconfig_resourcegroup
+    appconfig_subscriptionId: appconfig_subscriptionId
+    logicappstd_subnet_name: logicapp_subnet_name
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefixLogicAppStd
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName
+
+  }
+  dependsOn: [
+    moduleWorkflowHostingPlan
+  ]
 }
 
 // module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogicAppStd.bicep' = {
@@ -651,6 +708,7 @@ module moduleDataFactory './modules/moduleDataFactory.bicep' = {
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     enablePrivateLink: enablePrivateLink
+    publicNetworkAccess: publicNetworkAccess
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''

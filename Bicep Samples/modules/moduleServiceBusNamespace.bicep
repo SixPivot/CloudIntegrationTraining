@@ -101,7 +101,7 @@ resource servicebusnamespaceDiagnosticSettings  'Microsoft.Insights/diagnosticSe
 }
 
 //****************************************************************
-// Add Private Link for Storage Account 
+// Add Private Link for Service Bus
 //****************************************************************
 
 module moduleServiceBusNamespacePrivateLink './moduleServiceBusNamespacePrivateLink.bicep' = if (enablePrivateLink) {

@@ -88,6 +88,10 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-pr
     publicNetworkAccess: publicNetworkAccess
     enablePurgeProtection: true
     softDeleteRetentionInDays: 7
+    dataPlaneProxy: {
+      authenticationMode: 'Pass-through'
+      privateLinkDelegation: 'Enabled'
+    } 
   }
 }
 

@@ -8,7 +8,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing 
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' = {
-  name: vnetintegrationSubnetName
+  name: 'snet-${vnetintegrationSubnetName}'
   parent: virtualNetwork
   properties: union(defaultProperties, optionalProperties)
 }

@@ -9,6 +9,7 @@ param Instance int = 1
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool 
+param publicNetworkAccess string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
@@ -54,6 +55,9 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
 tags: tags
   identity: {
     type: 'SystemAssigned'
+  }
+  properties: {
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 

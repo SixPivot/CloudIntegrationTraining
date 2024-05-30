@@ -1,15 +1,21 @@
 param virtualNetworkName string
 param virtualNetworkResourceGroup string
-//param vnetintegrationSubnetName string
 param vnetintegrationSubnetAddressPrefix string
-param logicappstd_name string
-//param createSubnet bool
+//param logicappstd_name string
+param logicappstd_subnet_name string
 param networksecuritygroupName string
 param routetableName string
 
-resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
-  name: logicappstd_name
-}
+param EnvironmentName string 
+
+param enableAppConfig bool 
+param appconfig_name string 
+param appconfig_resourcegroup string 
+param appconfig_subscriptionId string 
+
+// resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
+//   name: logicappstd_name
+// }
 
 resource networksecuritygroup 'Microsoft.Network/networkSecurityGroups@2023-09-01' existing = if (networksecuritygroupName != 'none') {
   name: networksecuritygroupName
@@ -43,17 +49,43 @@ module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
   scope: resourceGroup(virtualNetworkResourceGroup)
   params: {
     virtualNetworkName: virtualNetworkName
-    vnetintegrationSubnetName: LogicAppStdApp.name
+    vnetintegrationSubnetName: logicappstd_subnet_name
     defaultProperties: defaultProperties
     optionalProperties: union(newProperties1, newProperties2)
   }
 }
 
-resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2023-01-01' = {
-  parent: LogicAppStdApp
-  name: 'virtualNetwork'
-  properties: {
-    subnetResourceId: moduleCreateSubnet.outputs.subnet_id
-    swiftSupported: true
+// resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2023-01-01' = {
+//   parent: LogicAppStdApp
+//   name: 'virtualNetwork'
+//   properties: {
+//     subnetResourceId: moduleCreateSubnet.outputs.subnet_id
+//     swiftSupported: true
+//   }
+// }
+
+//****************************************************************
+// Add Logic App subnet details to App Configuration
+//****************************************************************
+
+module moduleAppConfigKeyValuelogicappstsubnetname './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: 'logicapp_subnet_name'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'logicapp_subnet_name'
+    variables_value: moduleCreateSubnet.outputs.subnet_name
+  }
+}
+
+module moduleAppConfigKeyValuelogicappstsubnetid './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: 'logicapp_subnet_id'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: 'logicapp_subnet_id'
+    variables_value: moduleCreateSubnet.outputs.subnet_id
   }
 }

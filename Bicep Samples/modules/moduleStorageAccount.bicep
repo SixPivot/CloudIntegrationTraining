@@ -251,19 +251,6 @@ resource storageQueueDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@
 // Add Private Link for Storage Account 
 //****************************************************************
 
-// resource privateDnsZonesblobExists 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-//   name: 'privatelink.blob.${environment().suffixes.storage}'
-// }
-
-// var blobDNSExists = contains(privateDnsZonesblobExists.tags, 'isResourceDeployed') && privateDnsZonesblobExists.tags['isResourceDeployed'] == 'true'
-
-// resource privateDnsZonesfileExists 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-//   name: 'privatelink.blob.${environment().suffixes.storage}'
-// }
-
-// var fileDNSExists = contains(privateDnsZonesfileExists.tags, 'isResourceDeployed') && privateDnsZonesfileExists.tags['isResourceDeployed'] == 'true'
-
-
 var storagePrivateLinks = [
   {
     storageType: 'blob'

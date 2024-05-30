@@ -95,13 +95,7 @@ resource privateLinkScope 'microsoft.insights/privateLinkScopes@2021-07-01-previ
   location: 'global'
   properties: {
     accessModeSettings: {
-      exclusions: [
-        // {
-        //   ingestionAccessMode: 'string'
-        //   privateEndpointConnectionName: 'string'
-        //   queryAccessMode: 'string'
-        // }
-      ]
+      exclusions: []
       ingestionAccessMode: 'PrivateOnly'
       queryAccessMode: 'PrivateOnly'
     }

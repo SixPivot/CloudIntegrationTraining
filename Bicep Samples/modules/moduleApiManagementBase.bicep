@@ -151,7 +151,7 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     virtualNetworkConfiguration: virtualNetworkConfiguration
     publicIpAddressId: apimanagementPublicIp.id
     apiVersionConstraint: {}
-    //publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: publicNetworkAccess
   }
   dependsOn:[
     moduleApiManagementVNETIntegration
@@ -327,7 +327,6 @@ module moduleApiManagementBasePrivateLink './moduleApiManagementBasePrivateLink.
 // Add VNET Integration for API Management
 //****************************************************************
 
-// testing
 module moduleApiManagementVNETIntegration2 './moduleApiManagementVNETIntegration.bicep' = if (enableVNETIntegration) {
   name: 'moduleApiManagementVNETIntegration2'
   params: {
