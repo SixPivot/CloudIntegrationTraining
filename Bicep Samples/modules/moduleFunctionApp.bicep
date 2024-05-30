@@ -16,7 +16,7 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
 //param vnetintegrationSubnetName string 
-param vnetintegrationSubnetAddressPrefix string 
+param functionapp_subnet string 
 //param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 

@@ -164,7 +164,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetAddressPrefix: '172.22.1.16/28'
+    functionapp_subnet: '172.22.1.16/28'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
@@ -246,7 +246,7 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetAddressPrefix: '172.22.1.0/28'
+    functionapp_subnet: '172.22.1.0/28'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess

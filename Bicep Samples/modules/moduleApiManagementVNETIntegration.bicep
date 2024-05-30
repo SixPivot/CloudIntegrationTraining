@@ -1,7 +1,7 @@
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param vnetintegrationSubnetName string 
-param vnetintegrationSubnetAddressPrefix string 
+param ApiManagement_subnet string 
 //param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
@@ -20,7 +20,7 @@ var newProperties1 = networksecuritygroupName != 'none' ? { networkSecurityGroup
 var newProperties2 = routetableName != 'none' ? { routeTable: { id: routetable.id } } : {}
 
 var defaultProperties = {
-  addressPrefix: vnetintegrationSubnetAddressPrefix
+  addressPrefix: ApiManagement_subnet
   delegations: [
     // {
     //   name: 'delegation'

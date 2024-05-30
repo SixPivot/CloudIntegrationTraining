@@ -61,8 +61,8 @@ param networksecuritygroupName string = '$(networksecuritygroupName)'
 param routetableName string = '$(routetableName)'
 param publicNetworkAccess string = 'Disabled'
 //param apiManagementSubnetAddressPrefix string = ''
-param vnetintegrationSubnetAddressPrefixLogicAppStd string
-param vnetintegrationSubnetAddressPrefixFunctionApp string
+param logicappstd_subnet string = '$(logicappstd_subnet)'
+param functionapp_subnet string = '$(functionapp_subnet)'
 
 param VNETLinks array = [
   {
@@ -268,8 +268,8 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
     ApiManagementVirtualNetowrkType: 'Internal'
     enableVNETIntegration: enableVNETIntegration
-    vnetintegrationSubnetAddressPrefix1: '172.22.4.0/27'
-    vnetintegrationSubnetAddressPrefix2: '172.22.4.32/27'
+    ApiManagement_subnet1: '172.22.4.0/27'
+    ApiManagement_subnet2: '172.22.4.32/27'
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Disabled'
@@ -392,7 +392,7 @@ module moduleFunctionAppVNETIntegration './modules/moduleFunctionAppVNETIntegrat
     functionapp_subnet_name: functionapp_subnet_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefixFunctionApp
+    functionapp_subnet: functionapp_subnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }
@@ -477,7 +477,7 @@ module moduleFunctionAppVNETIntegration './modules/moduleFunctionAppVNETIntegrat
 //     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
 //     enableVNETIntegration: enableVNETIntegration
 //     //vnetintegrationSubnetName: functionAppSubnetName
-//     vnetintegrationSubnetAddressPrefix: '172.22.1.16/28'
+//     functionapp_subnet: '172.22.1.16/28'
 //     //createSubnet: createFunctionAppSubnet
 //     networksecuritygroupName: networksecuritygroupName
 //     routetableName: routetableName
@@ -529,7 +529,7 @@ module moduleLogicAppStandardVNETIntegration './modules/moduleLogicAppStandardVN
     logicappstd_subnet_name: logicapp_subnet_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefixLogicAppStd
+    functionapp_subnet: logicappstd_subnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
 
@@ -615,7 +615,7 @@ module moduleLogicAppStandardVNETIntegration './modules/moduleLogicAppStandardVN
 //     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
 //     enableVNETIntegration: enableVNETIntegration
 //     //vnetintegrationSubnetName: logicAppStdSubnetName
-//     vnetintegrationSubnetAddressPrefix: '172.22.1.0/28'
+//     functionapp_subnet: '172.22.1.0/28'
 //     //createSubnet: createLogicAppStdSubnet
 //     networksecuritygroupName: networksecuritygroupName
 //     routetableName: routetableName

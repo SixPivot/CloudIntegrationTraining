@@ -15,7 +15,7 @@ param enableVNETIntegration bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param vnetintegrationSubnetAddressPrefix string 
+param logicappstd_subnet string 
 param networksecuritygroupName string 
 param routetableName string 
 param publicNetworkAccess string

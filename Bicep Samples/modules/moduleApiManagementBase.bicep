@@ -13,8 +13,6 @@ param enableVNETIntegration bool
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
-param vnetintegrationSubnetAddressPrefix1 string
-param vnetintegrationSubnetAddressPrefix2 string
 //param createSubnet bool 
 param networksecuritygroupName string 
 param routetableName string 
@@ -44,6 +42,8 @@ param ApiManagementCapacity int = 1
 param ApiManagementPublisherName string 
 param ApiManagementPublisherEmail string 
 param ApiManagementVirtualNetowrkType string 
+param ApiManagement_subnet1 string
+param ApiManagement_subnet2 string
 
 //****************************************************************
 // Variables
@@ -333,7 +333,7 @@ module moduleApiManagementVNETIntegration2 './moduleApiManagementVNETIntegration
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name2
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix2
+    ApiManagement_subnet: ApiManagement_subnet2
     //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
@@ -349,7 +349,7 @@ module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name
-    vnetintegrationSubnetAddressPrefix: vnetintegrationSubnetAddressPrefix1
+    ApiManagement_subnet: ApiManagement_subnet2
     //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName

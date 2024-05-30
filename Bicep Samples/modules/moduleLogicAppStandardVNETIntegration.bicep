@@ -1,6 +1,6 @@
 param virtualNetworkName string
 param virtualNetworkResourceGroup string
-param vnetintegrationSubnetAddressPrefix string
+param functionapp_subnet string
 //param logicappstd_name string
 param logicappstd_subnet_name string
 param networksecuritygroupName string
@@ -31,7 +31,7 @@ var newProperties1 = networksecuritygroupName != 'none' ? { networkSecurityGroup
 var newProperties2 = routetableName != 'none' ? { routeTable: { id: routetable.id } } : {}
 
 var defaultProperties = {
-  addressPrefix: vnetintegrationSubnetAddressPrefix
+  addressPrefix: functionapp_subnet
   delegations: [
     {
       name: 'delegation'
