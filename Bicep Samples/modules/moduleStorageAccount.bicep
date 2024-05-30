@@ -28,6 +28,7 @@ param appconfig_name string
 param appconfig_resourcegroup string 
 param appconfig_subscriptionId string 
 param loganalyticsWorkspace_name string 
+param loganalyticsWorkspace_resourcegroup string
 
 //****************************************************************
 // Variables

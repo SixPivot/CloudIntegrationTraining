@@ -336,6 +336,7 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''

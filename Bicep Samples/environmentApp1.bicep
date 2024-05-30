@@ -96,7 +96,7 @@ var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Stan
 // Create Resources
 //****************************************************************
 
-module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunctionApp.bicep' = {
+module moduleStorageAccountForFunctionApp './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccountForFunctionApp'
   params: {
     BaseName: BaseName
@@ -174,7 +174,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
   }
 } 
 
-module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogicAppStd.bicep' = {
+module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccountForLogicAppStd'
   params: {
     BaseName: BaseName
