@@ -12,6 +12,7 @@ param enablePrivateLink bool
 param enableVNETIntegration bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string
 param privatelinkSubnetName string 
 //param createSubnet bool 
 param networksecuritygroupName string 
@@ -44,6 +45,9 @@ param ApiManagementPublisherEmail string
 param ApiManagementVirtualNetowrkType string 
 param ApiManagement_subnet1 string
 param ApiManagement_subnet2 string
+
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
 
 //****************************************************************
 // Variables
@@ -353,6 +357,21 @@ module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.
     //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
+  }
+}
+
+module moduleApiManagementPrivateDNSZones './moduleApiManagementPrivateDNSZones.bicep' = if (enableVNETIntegration) {
+  name: 'moduleApiManagementPrivateDNSZones'
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
+  params: {
+    apimanagement_name: apimanagement.name
+    apimanagement_privateIpAddress: apimanagement.properties.privateIPAddresses[0]
+    EnvironmentName: EnvironmentName
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 

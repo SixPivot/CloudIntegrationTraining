@@ -30,6 +30,9 @@ param appconfig_subscriptionId string
 param loganalyticsWorkspace_name string 
 param loganalyticsWorkspace_resourcegroup string
 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
+
 //****************************************************************
 // Variables
 //****************************************************************
@@ -288,7 +291,8 @@ module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep'
     privatelinkSubnetName: privatelinkSubnetName
     storage_name: storage.name
     storageType: link.storageType
-    dnsExists: link.dnsExists
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }]
 

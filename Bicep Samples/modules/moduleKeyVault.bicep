@@ -48,6 +48,9 @@ param KeyVaultSKUFamily string = 'A'
 ])
 param KeyVaultSKUName string = 'standard'
 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
+
 //****************************************************************
 // Variables
 //****************************************************************
@@ -201,6 +204,8 @@ module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enabl
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     keyvault_name: keyvault.name
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 

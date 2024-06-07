@@ -3,6 +3,8 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param logicappstd_name string 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -45,22 +47,22 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.azurewebsites.net'
-  location: 'global'
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsZones
-  name: '${privateDnsZones.name}-link'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
+// resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+//   parent: privateDnsZones
+//   name: '${privateDnsZones.name}-link'
+//   location: 'global'
+//   properties: {
+//     registrationEnabled: false
+//     virtualNetwork: {
+//       id: virtualNetwork.id
+//     }
+//   }
+// }
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
   parent: privateEndpoint

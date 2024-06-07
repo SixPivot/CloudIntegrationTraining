@@ -4,6 +4,8 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param loganalyticsWorkspace_name string 
 param loganalyticsPrivateLinkScopeId string 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
 
 
 //****************************************************************

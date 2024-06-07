@@ -3,6 +3,8 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
 param servicBusNamespace_name string 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -47,22 +49,22 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.servicebus.azure.net'
-  location: 'global'
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+  name: 'privatelink.servicebus.windows.net'
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsZones
-  name: '${privateDnsZones.name}-link'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
+// resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+//   parent: privateDnsZones
+//   name: '${privateDnsZones.name}-link'
+//   location: 'global'
+//   properties: {
+//     registrationEnabled: false
+//     virtualNetwork: {
+//       id: virtualNetwork.id
+//     }
+//   }
+// }
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
   parent: privateEndpoint
@@ -78,3 +80,6 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
+
+output DNSZone string = privateDnsZones.name
+output privateendpointid string = privateEndpoint.id

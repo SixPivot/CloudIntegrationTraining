@@ -26,6 +26,9 @@ param virtualNetworkNameVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkResourceGroupVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkSubscriptionIdVMInside string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
 
+param privateDNSZoneResourceGroup string = '$(privateDNSZoneResourceGroup)'
+param privateDNSZoneSubscriptionId string  = '$(privateDNSZoneSubscriptionId)'
+
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
 param CostCentre string = '$(CostCentre)'
@@ -77,6 +80,8 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
     VNETLinks: []
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 

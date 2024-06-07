@@ -23,6 +23,9 @@ param appconfig_name string
 param appconfig_resourcegroup string 
 param appconfig_subscriptionId string 
 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
+
 //****************************************************************
 // Variables
 //****************************************************************
@@ -111,6 +114,8 @@ module moduleLogAnalyticsPrivateLink './moduleLogAnalyticsPrivateLink.bicep' = i
     privatelinkSubnetName: privatelinkSubnetName 
     loganalyticsWorkspace_name: loganalyticsWorkspace.name
     loganalyticsPrivateLinkScopeId: privateLinkScope.id
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 

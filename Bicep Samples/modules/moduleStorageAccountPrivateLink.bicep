@@ -4,7 +4,8 @@ param virtualNetworkResourceGroup string
 param privatelinkSubnetName string 
 param storage_name string 
 param storageType string 
-param dnsExists bool = false
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -50,25 +51,22 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
 
 var privateDnsZones_name = 'privatelink.${storageType}.${environment().suffixes.storage}'
 
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!dnsExists) {
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: privateDnsZones_name
-  location: 'global'
-  tags: {
-    isResourceDeployed: 'true'
-  }
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (!dnsExists) {
-  parent: privateDnsZones
-  name: '${privateDnsZones_name}-link'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
+// resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+//   parent: privateDnsZones
+//   name: '${privateDnsZones_name}-link'
+//   location: 'global'
+//   properties: {
+//     registrationEnabled: false
+//     virtualNetwork: {
+//       id: virtualNetwork.id
+//     }
+//   }
+// }
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
   parent: privateEndpoint
@@ -83,7 +81,4 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       }
     ]
   }
-  dependsOn: [
-    privateDnsZoneLink
-  ]
 }

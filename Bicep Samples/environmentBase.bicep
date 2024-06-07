@@ -50,6 +50,7 @@ param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
 param virtualNetworkName string = '$(virtualNetworkName)'
 param virtualNetworkResourceGroup string = '$(virtualNetworkResourceGroup)'
+param virtualNetworkSubscriptionId string = '$(virtualNetworkSubscriptionId)' 
 param privatelinkSubnetName string = '$(privatelinkSubnetName)'
 param networksecuritygroupName string = '$(networksecuritygroupName)'
 param routetableName string = '$(routetableName)'
@@ -58,6 +59,9 @@ param ApiManagement_subnet1 string = '172.22.4.0/27'
 param ApiManagement_subnet2 string = '172.22.4.32/27'
 param logicappstd_subnet string = '172.22.4.64/27'
 param functionapp_subnet string = '172.22.4.96/27'
+
+param privateDNSZoneResourceGroup string = '$(privateDNSZoneResourceGroup)'
+param privateDNSZoneSubscriptionId string  = '$(privateDNSZoneSubscriptionId)'
 
 param VNETLinks array = [
   {
@@ -145,6 +149,8 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
     VNETLinks: VNETLinks
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
   // dependsOn:[
   //   moduleDNSZoneVirtualNetworkLink
@@ -183,6 +189,8 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
     VNETLinks: VNETLinks
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
     // virtualNetworkNameDevOps: virtualNetworkNameDevOps
     // virtualNetworkResourceGroupDevOps: virtualNetworkResourceGroupDevOps
     // virtualNetworkSubscriptionIdDevOps: virtualNetworkSubscriptionIdDevOps
@@ -254,6 +262,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     AzureDevOpsServiceConnectionId: AzureDevOpsServiceConnectionId
     KeyVaultAdministratorsGroupId: KeyVaultAdministratorsGroupId
     KeyVaultReaderGroupId: KeyVaultReaderGroupId
@@ -261,13 +270,15 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementCapacity: 1
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
-    ApiManagementVirtualNetowrkType: 'Internal'
+    ApiManagementVirtualNetowrkType: 'External'
     enableVNETIntegration: enableVNETIntegration
     ApiManagement_subnet1: ApiManagement_subnet1
     ApiManagement_subnet2: ApiManagement_subnet2
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: publicNetworkAccess
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
@@ -343,6 +354,8 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
@@ -647,6 +660,8 @@ module moduleSQLServer './modules/moduleSQLServer.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
