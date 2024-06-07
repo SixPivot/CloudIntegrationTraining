@@ -39,51 +39,51 @@ param AzureDevOpsServiceConnectionId string = '$(AzureDevOpsServiceConnectionId)
 param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
-param VNETLinks array = [
-  {
-    linkId: 'DevOps'
-    virtualNetworkName: virtualNetworkNameDevOps
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
-  }
-  // {
-  //   linkId: 'VMInside'
-  //   virtualNetworkName: virtualNetworkNameVMInside
-  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-  // }
-]
+// param VNETLinks array = [
+//   {
+//     linkId: 'DevOps'
+//     virtualNetworkName: virtualNetworkNameDevOps
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+//   }
+//   // {
+//   //   linkId: 'VMInside'
+//   //   virtualNetworkName: virtualNetworkNameVMInside
+//   //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//   //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   // }
+// ]
 
-module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
-  name: 'moduleLogAnalyticsWorkspace'
-  params: {
-    BaseName: BaseName
-    BaseShortName: BaseShortName
-    EnvironmentName: EnvironmentName
-    EnvironmentShortName: EnvironmentShortName
-    AppLocation: AppLocation
-    AzureRegion: AzureRegion
-    Instance: Instance
-    tags: {
-      BusinessOwner: BusinessOwner
-      CostCentre: CostCentre
-      Workload: Workload
-    }
-    enableAppConfig: false
-    appconfig_name: ''
-    appconfig_resourcegroup: ''
-    appconfig_subscriptionId: ''
-    enablePrivateLink: enablePrivateLink
-    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
-    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
-    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
-    publicNetworkAccessForIngestion: publicNetworkAccess
-    publicNetworkAccessForQuery: publicNetworkAccess
-    VNETLinks: []
-    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
-    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
-  }
-}
+// module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = {
+//   name: 'moduleLogAnalyticsWorkspace'
+//   params: {
+//     BaseName: BaseName
+//     BaseShortName: BaseShortName
+//     EnvironmentName: EnvironmentName
+//     EnvironmentShortName: EnvironmentShortName
+//     AppLocation: AppLocation
+//     AzureRegion: AzureRegion
+//     Instance: Instance
+//     tags: {
+//       BusinessOwner: BusinessOwner
+//       CostCentre: CostCentre
+//       Workload: Workload
+//     }
+//     enableAppConfig: false
+//     appconfig_name: ''
+//     appconfig_resourcegroup: ''
+//     appconfig_subscriptionId: ''
+//     enablePrivateLink: enablePrivateLink
+//     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+//     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+//     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+//     publicNetworkAccessForIngestion: publicNetworkAccess
+//     publicNetworkAccessForQuery: publicNetworkAccess
+//     // VNETLinks: []
+//     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+//     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+//   }
+// }
 
 module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
   name: 'moduleAppConfiguration'
@@ -113,20 +113,20 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
   }
 }
 
-module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
-  name: 'moduleDNSZoneVirtualNetworkLinkAppConfig-${link.linkId}'
-  //scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
-  params: {
-    linkId: link.linkId
-    DNSZone_name: moduleAppConfiguration.outputs.DNSZone
-    virtualNetworkName: link.virtualNetworkName
-    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
-  }
-  dependsOn:[
-    moduleAppConfiguration
-  ]
-}]
+// module moduleDNSZoneVirtualNetworkLinkAppConfig './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
+//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfig-${link.linkId}'
+//   //scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+//   params: {
+//     linkId: link.linkId
+//     DNSZone_name: moduleAppConfiguration.outputs.DNSZone
+//     virtualNetworkName: link.virtualNetworkName
+//     virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+//     virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
+//   }
+//   dependsOn:[
+//     moduleAppConfiguration
+//   ]
+// }]
 
 // module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
 //   name: 'moduleDNSZoneVirtualNetworkLinkAppConfigDevOps'
@@ -171,7 +171,6 @@ module moduleAppConfigKeyValuetesst1name './modules/moduleAppConfigKeyValue.bice
     variables_value: 'test1'
   }
   dependsOn:[
-    moduleDNSZoneVirtualNetworkLinkAppConfig
     moduleAppConfiguration
   ]
 }

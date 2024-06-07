@@ -45,7 +45,7 @@ param virtualNetworkSubscriptionIdDevOps string = '3e2bea16-63ed-4349-9b9c-fe2f9
 param virtualNetworkNameVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkResourceGroupVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkSubscriptionIdVMInside string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
-param enableDiagnostic bool = true
+param enableDiagnostic bool = false
 param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
 param virtualNetworkName string = '$(virtualNetworkName)'
@@ -63,20 +63,20 @@ param functionapp_subnet string = '172.22.4.96/27'
 param privateDNSZoneResourceGroup string = '$(privateDNSZoneResourceGroup)'
 param privateDNSZoneSubscriptionId string  = '$(privateDNSZoneSubscriptionId)'
 
-param VNETLinks array = [
-  {
-    linkId: 'DevOps'
-    virtualNetworkName: virtualNetworkNameDevOps
-    virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
-  }
-  // {
-  //   linkId: 'VMInside'
-  //   virtualNetworkName: virtualNetworkNameVMInside
-  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-  // }
-]
+// param VNETLinks array = [
+//   {
+//     linkId: 'DevOps'
+//     virtualNetworkName: virtualNetworkNameDevOps
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroupDevOps
+//     virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdDevOps
+//   }
+//   // {
+//   //   linkId: 'VMInside'
+//   //   virtualNetworkName: virtualNetworkNameVMInside
+//   //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//   //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   // }
+// ]
 
 //****************************************************************
 // Variables
@@ -148,7 +148,7 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccessForIngestion: publicNetworkAccess
     publicNetworkAccessForQuery: publicNetworkAccess
-    VNETLinks: VNETLinks
+    // VNETLinks: VNETLinks
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
@@ -188,7 +188,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
     publicNetworkAccess: publicNetworkAccess
-    VNETLinks: VNETLinks
+    // VNETLinks: VNETLinks
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
     // virtualNetworkNameDevOps: virtualNetworkNameDevOps

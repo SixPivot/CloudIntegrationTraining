@@ -35,20 +35,20 @@ param Workload string = '$(Workload)'
 // param AppConfigAdministratorsGroupId string = '$(AppConfigAdministratorsGroupId)'
 // param AppConfigReaderGroupId string = '$(AppConfigReaderGroupId)'
 
-param VNETLinks array = [
-  {
-    linkId: 'DevOps'
-    virtualNetworkName: 'CloudIntegrationTraining'
-    virtualNetworkResourceGroup: 'CloudIntegrationTraining'
-    virtualNetworkSubscriptionId: '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
-  }
-  // {
-  //   linkId: 'VMInside'
-  //   virtualNetworkName: virtualNetworkNameVMInside
-  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-  // }
-]
+// param VNETLinks array = [
+//   {
+//     linkId: 'DevOps'
+//     virtualNetworkName: 'CloudIntegrationTraining'
+//     virtualNetworkResourceGroup: 'CloudIntegrationTraining'
+//     virtualNetworkSubscriptionId: '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
+//   }
+//   // {
+//   //   linkId: 'VMInside'
+//   //   virtualNetworkName: virtualNetworkNameVMInside
+//   //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//   //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   // }
+// ]
 
 module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateLink.bicep' = {
   name: 'moduleResourceManagerPrivateLink'
@@ -69,20 +69,20 @@ module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateL
   }
 }
 
-module moduleDNSZoneVirtualNetworkLinkRM './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: {
-  name: 'moduleDNSZoneVirtualNetworkLinkAppConfig-${link.linkId}'
-  //scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
-  params: {
-    linkId: link.linkId
-    DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
-    virtualNetworkName: link.virtualNetworkName
-    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
-  }
-  dependsOn:[
-    moduleResourceManagerPrivateLink
-  ]
-}]
+// module moduleDNSZoneVirtualNetworkLinkRM './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: {
+//   name: 'moduleDNSZoneVirtualNetworkLinkAppConfig-${link.linkId}'
+//   //scope: resourceGroup(resourcemanagerPL_subscriptionId, resourcemanagerPL_resourcegroup)
+//   params: {
+//     linkId: link.linkId
+//     DNSZone_name: moduleResourceManagerPrivateLink.outputs.DNSZone
+//     virtualNetworkName: link.virtualNetworkName
+//     virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+//     virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
+//   }
+//   dependsOn:[
+//     moduleResourceManagerPrivateLink
+//   ]
+// }]
 
 // module moduleDNSZoneVirtualNetworkLinkRMDevOps './modules/moduleDNSZoneVirtualNetworkLink.bicep' = {
 //   name: 'moduleDNSZoneVirtualNetworkLinkRMDevOps'

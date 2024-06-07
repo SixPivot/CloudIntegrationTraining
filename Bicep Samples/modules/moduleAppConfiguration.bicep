@@ -53,22 +53,22 @@ var AppConfigurationDataReader = subscriptionResourceId('Microsoft.Authorization
 // Azure Log Anaytics Workspace
 //****************************************************************
 
-resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
-  name: loganalyticsWorkspace_name
-  location: AppLocation
-  tags: tags
-  properties: {
-    sku: {
-      name: 'PerGB2018'
-    }
-    retentionInDays: 30
-    workspaceCapping: {
-      dailyQuotaGb: 1
-    }
-    publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
-    publicNetworkAccessForQuery: publicNetworkAccessForQuery
-  }
-}
+// resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+//   name: loganalyticsWorkspace_name
+//   location: AppLocation
+//   tags: tags
+//   properties: {
+//     sku: {
+//       name: 'PerGB2018'
+//     }
+//     retentionInDays: 30
+//     workspaceCapping: {
+//       dailyQuotaGb: 1
+//     }
+//     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
+//     publicNetworkAccessForQuery: publicNetworkAccessForQuery
+//   }
+// }
 
 //****************************************************************
 // Azure App Config
@@ -110,39 +110,39 @@ module moduleAppConfigurationPrivateLink './moduleAppConfigurationPrivateLink.bi
   }
 }
 
-resource appconfigAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  scope: appconfig
-  name: 'AuditSettings'
-  properties: {
-    workspaceId: loganalyticsWorkspace.id
-    logs: [
-      {
-        categoryGroup: 'Audit'
-        enabled: true
-      }
-    ]
-  }
-}
+// resource appconfigAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   scope: appconfig
+//   name: 'AuditSettings'
+//   properties: {
+//     workspaceId: loganalyticsWorkspace.id
+//     logs: [
+//       {
+//         categoryGroup: 'Audit'
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
 
-resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  scope: appconfig
-  name: 'DiagnosticSettings'
-  properties: {
-    workspaceId: loganalyticsWorkspace.id
-    logs: [
-      {
-        category: 'HttpRequest'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
-  }
-}
+// resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   scope: appconfig
+//   name: 'DiagnosticSettings'
+//   properties: {
+//     workspaceId: loganalyticsWorkspace.id
+//     logs: [
+//       {
+//         category: 'HttpRequest'
+//         enabled: true
+//       }
+//     ]
+//     metrics: [
+//       {
+//         category: 'AllMetrics'
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
 
 resource appconfigRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(AzureDevOpsServiceConnectionId)) {
   scope: appconfig

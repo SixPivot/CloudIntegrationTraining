@@ -13,7 +13,7 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param privatelinkSubnetName string 
 param publicNetworkAccess string
-param VNETLinks array
+// param VNETLinks array
 // param virtualNetworkNameDevOps string 
 // param virtualNetworkResourceGroupDevOps string 
 // param virtualNetworkSubscriptionIdDevOps string 
@@ -209,19 +209,19 @@ module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enabl
   }
 }
 
-module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
-  name: 'moduleDNSZoneVirtualNetworkLinkKeyVault-${link.linkId}'
-  params: {
-    linkId: link.linkId
-    DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
-    virtualNetworkName: link.virtualNetworkName
-    virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
-  }
-  dependsOn:[
-    moduleKeyVaultPrivateLink
-  ]
-}]
+// module moduleDNSZoneVirtualNetworkLinkAppConfigDevOps './moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in VNETLinks: if (enablePrivateLink) {
+//   name: 'moduleDNSZoneVirtualNetworkLinkKeyVault-${link.linkId}'
+//   params: {
+//     linkId: link.linkId
+//     DNSZone_name: moduleKeyVaultPrivateLink.outputs.DNSZone
+//     virtualNetworkName: link.virtualNetworkName
+//     virtualNetworkResourceGroup: link.virtualNetworkResourceGroup
+//     virtualNetworkSubscriptionId: link.virtualNetworkSubscriptionId
+//   }
+//   dependsOn:[
+//     moduleKeyVaultPrivateLink
+//   ]
+// }]
 
 module moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig './moduleDNSZoneVirtualNetworkLink.bicep' = if (enablePrivateLink) {
   name: 'moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig'
@@ -232,9 +232,6 @@ module moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig './moduleDNSZoneVirtualN
     virtualNetworkResourceGroup: appconfig_resourcegroup
     virtualNetworkSubscriptionId: appconfig_subscriptionId
   }
-  dependsOn:[
-    moduleDNSZoneVirtualNetworkLinkAppConfigDevOps
-  ]
 }
 
 //****************************************************************

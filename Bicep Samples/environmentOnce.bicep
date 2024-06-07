@@ -29,29 +29,29 @@ param resourcemanagerPL_DNSZone string = '$(resourcemanagerPL_DNSZone)'
 // Create DNS Zone Links for RM & App Config
 //****************************************************************
 
-var SharedVNETLinks = [
-  {
-    link: 'RM'
-    linkResourceGroup: resourcemanagerPL_resourcegroup
-    linkSubscription: resourcemanagerPL_subscriptionId
-    DNSZone: resourcemanagerPL_DNSZone
-  }
-  {
-    link: 'AppConfig'
-    linkResourceGroup: appconfig_resourcegroup
-    linkSubscription: appconfig_subscriptionId
-    DNSZone: appconfig_DNSZone
-  }
-]
+// var SharedVNETLinks = [
+//   {
+//     link: 'RM'
+//     linkResourceGroup: resourcemanagerPL_resourcegroup
+//     linkSubscription: resourcemanagerPL_subscriptionId
+//     DNSZone: resourcemanagerPL_DNSZone
+//   }
+//   {
+//     link: 'AppConfig'
+//     linkResourceGroup: appconfig_resourcegroup
+//     linkSubscription: appconfig_subscriptionId
+//     DNSZone: appconfig_DNSZone
+//   }
+// ]
 
-module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in SharedVNETLinks: {
-  name: 'moduleDNSZoneVirtualNetworkLink-${link.link}'
-  scope: resourceGroup(link.linkSubscription, link.linkResourceGroup)
-  params: {
-    linkId: EnvironmentName
-    DNSZone_name: link.DNSZone
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: subscription().subscriptionId
-  }
-}]
+// module moduleDNSZoneVirtualNetworkLink './modules/moduleDNSZoneVirtualNetworkLink.bicep' = [for (link, index) in SharedVNETLinks: {
+//   name: 'moduleDNSZoneVirtualNetworkLink-${link.link}'
+//   scope: resourceGroup(link.linkSubscription, link.linkResourceGroup)
+//   params: {
+//     linkId: EnvironmentName
+//     DNSZone_name: link.DNSZone
+//     virtualNetworkName: virtualNetworkName
+//     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+//     virtualNetworkSubscriptionId: subscription().subscriptionId
+//   }
+// }]

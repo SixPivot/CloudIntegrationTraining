@@ -50,20 +50,20 @@ param functionapp_subnet_name string = '$(functionapp_subnet_name)'
 param privateDNSZoneResourceGroup string = '$(privateDNSZoneResourceGroup)'
 param privateDNSZoneSubscriptionId string  = '$(privateDNSZoneSubscriptionId)'
 
-param VNETLinks array = [
-  {
-    linkId: 'DevOps'
-    virtualNetworkName: 'CloudIntegrationTraining'
-    virtualNetworkResourceGroup: 'CloudIntegrationTraining'
-    virtualNetworkSubscriptionId: '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
-  }
-  // {
-  //   linkId: 'VMInside'
-  //   virtualNetworkName: virtualNetworkNameVMInside
-  //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
-  //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
-  // }
-]
+// param VNETLinks array = [
+//   {
+//     linkId: 'DevOps'
+//     virtualNetworkName: 'CloudIntegrationTraining'
+//     virtualNetworkResourceGroup: 'CloudIntegrationTraining'
+//     virtualNetworkSubscriptionId: '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
+//   }
+//   // {
+//   //   linkId: 'VMInside'
+//   //   virtualNetworkName: virtualNetworkNameVMInside
+//   //   virtualNetworkResourceGroup: virtualNetworkResourceGroupVMInside
+//   //   virtualNetworkSubscriptionId: virtualNetworkSubscriptionIdVMInside
+//   // }
+// ]
 
 //****************************************************************
 // Variables
