@@ -47,6 +47,9 @@ param logicapp_subnet_name string = '$(logicapp_subnet_name)'
 param functionapp_subnet_id string = '$(functionapp_subnet_id)'
 param functionapp_subnet_name string = '$(functionapp_subnet_name)'
 
+param privateDNSZoneResourceGroup string = '$(privateDNSZoneResourceGroup)'
+param privateDNSZoneSubscriptionId string  = '$(privateDNSZoneSubscriptionId)'
+
 param VNETLinks array = [
   {
     linkId: 'DevOps'
@@ -126,6 +129,8 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccount.bicep'
     AppName: 'fnapp1'
     AppShortName: 'fnapp1'
     publicNetworkAccess: publicNetworkAccess
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
@@ -171,6 +176,8 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     publicNetworkAccess: publicNetworkAccess
     functionapp_subnet_id: functionapp_subnet_id
     functionapp_subnet_name: functionapp_subnet_name
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 } 
 
@@ -204,6 +211,8 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccount.bicep'
     AppName: 'laapp1'
     AppShortName: 'laapp1'
     publicNetworkAccess: publicNetworkAccess
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
   dependsOn: [
     moduleStorageAccountForFunctionApp
@@ -252,6 +261,8 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     publicNetworkAccess: publicNetworkAccess
     logicapp_subnet_id: logicapp_subnet_id
     logicapp_subnet_name: logicapp_subnet_name
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
   dependsOn: [
     moduleFunctionApp

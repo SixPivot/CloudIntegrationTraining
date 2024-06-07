@@ -40,6 +40,9 @@ param storage_subscriptionId string
 param logicapp_subnet_name string 
 param logicapp_subnet_id string 
 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
+
 //****************************************************************
 // Variables
 //****************************************************************
@@ -212,6 +215,8 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
   dependsOn: [
     LogicAppStdApp

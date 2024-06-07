@@ -45,6 +45,9 @@ param functionappExtentionVersion string = '~4'
 param functionapp_subnet_name string 
 param functionapp_subnet_id string 
 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
+
 //****************************************************************
 // Variables
 //****************************************************************
@@ -200,6 +203,8 @@ module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if 
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
   dependsOn: [
     functionApp
