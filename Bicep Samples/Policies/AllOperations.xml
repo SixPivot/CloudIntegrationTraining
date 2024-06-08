@@ -1,0 +1,18 @@
+<!-- API ALL OPERATIONS SCOPE -->
+<policies>    
+    <inbound>        
+        <base />        
+        <set-backend-service base-url="__backendurl__" />
+        <!-- <authentication-managed-identity resource="#{APIM_ApplicationId}#" ignore-error="false" />         -->
+        <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />    
+    </inbound>    
+    <backend>        
+        <base />    
+    </backend>    
+    <outbound>        
+        <base />    
+    </outbound>    
+    <on-error>        
+        <base />    
+    </on-error>
+</policies>

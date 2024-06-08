@@ -1,0 +1,28 @@
+<!-- API OPERATION SCOPE -->
+<policies>    
+    <inbound>        
+        <base /> 
+        <rewrite-uri template="__urltemplate__" copy-unmatched-params="false" />      
+        <set-query-parameter name="api-version" exists-action="append">            
+            <value>__api-version__</value>        
+        </set-query-parameter>        
+        <set-query-parameter name="sp" exists-action="append">            
+            <value>__sp__</value>        
+        </set-query-parameter>        
+        <set-query-parameter name="sv" exists-action="append">            
+            <value>__sv__</value>        
+        </set-query-parameter>        
+        <set-query-parameter name="sig" exists-action="append">            
+            <value>{{__sigNamedValue__}}</value>        
+        </set-query-parameter>    
+    </inbound>    
+    <backend>        
+        <base />    
+    </backend>    
+    <outbound>        
+        <base />    
+    </outbound>    
+    <on-error>        
+        <base />    
+    </on-error>
+</policies>

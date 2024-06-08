@@ -2,6 +2,8 @@
 param apimanagement_name string 
 param apiName string 
 param apiPath string 
+param versioningScheme string = 'Segment'
+param apiVersion string = 'V1'
 
 //****************************************************************
 // Existing Azure Resources
@@ -20,7 +22,8 @@ resource apiVersionSet 'Microsoft.ApiManagement/service/apiVersionSets@2023-05-0
   parent: apimanagement
   properties: {
     displayName: apiName
-    versioningScheme: 'Segment'
+    versioningScheme: versioningScheme
+    versionQueryName: versioningScheme == 'Query' ? 'api-version' : null
   }
 }
 
@@ -37,8 +40,9 @@ resource API 'Microsoft.ApiManagement/service/apis@2023-05-01-preview' = {
     subscriptionRequired: true
     protocols: [
       'https'
+      'http'
     ]
-    apiVersion: 'V1'
+    apiVersion: apiVersion
     apiVersionSetId: apiVersionSet.id
   }
 }

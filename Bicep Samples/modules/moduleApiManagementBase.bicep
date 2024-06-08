@@ -117,6 +117,14 @@ resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
   name: keyvault_name
 }
 
+module moduleApiManagementBaseNSG './moduleApiManagementBaseNSG.bicep' = if (enableVNETIntegration) {
+  name: 'moduleApiManagementBaseNSG' 
+  scope: resourceGroup(virtualNetworkSubscriptionId, virtualNetworkResourceGroup)
+  params: {
+    networksecuritygroupName: networksecuritygroupName
+  }
+}
+
 //****************************************************************
 // Azure API Management
 //****************************************************************
