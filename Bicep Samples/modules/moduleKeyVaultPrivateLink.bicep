@@ -71,7 +71,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: replace(privateDnsZones.name,'.','_')
+        name: privateDnsZones.name
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }
