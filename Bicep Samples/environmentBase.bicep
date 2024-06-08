@@ -276,7 +276,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagement_subnet2: ApiManagement_subnet2
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: 'Enabled'
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }

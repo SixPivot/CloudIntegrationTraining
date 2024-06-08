@@ -177,14 +177,14 @@ resource apiManagementAuditSettings  'Microsoft.Insights/diagnosticSettings@2021
   }
 }
 
-resource apiManagementLogging 'Microsoft.ApiManagement/service/loggers@2023-05-01-preview'= if (enableDiagnostic) {
+resource apiManagementLogging 'Microsoft.ApiManagement/service/loggers@2023-05-01-preview' = if (enableDiagnostic) {
   name:'${appinsights.name}-logger'
   parent: apimanagement
   properties:{
     loggerType:'applicationInsights'
     description:'Logger resources for APIM'
     credentials:{
-      instrumentationKey:appinsights.properties.InstrumentationKey 
+      instrumentationKey: enableDiagnostic ? appinsights.properties.InstrumentationKey : ''
     }
   }
 }
