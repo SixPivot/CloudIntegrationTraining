@@ -253,11 +253,11 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
     enableDiagnostic: enableDiagnostic
-    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : 'dummy'
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : 'dummy'
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
-    appInsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
+    appInsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : 'dummy'
     enablePrivateLink: false
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
@@ -292,37 +292,39 @@ module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {
   }
 }
 
-// module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
-//   name: 'moduleServiceBusNamespace'
-//   params: {
-//     BaseName: BaseName
-//     BaseShortName: BaseShortName
-//     EnvironmentName: EnvironmentName
-//     EnvironmentShortName: EnvironmentShortName
-//     AppLocation: AppLocation
-//     AzureRegion: AzureRegion
-//     Instance: Instance
-//     tags: {
-//       BusinessOwner: BusinessOwner
-//       CostCentre: CostCentre
-//       Workload: Workload
-//     }
-//     ServiceBusSKUName: 'Premium'
-//     ServiceBusCapacity: 1
-//     ServiceBusTierName: 'Premium'
-//     enableAppConfig: enableAppConfig
-//     appconfig_name: enableAppConfig ? appconfig_name : ''
-//     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
-//     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
-//     enableDiagnostic: enableDiagnostic
-//     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-//     enablePrivateLink: enablePrivateLink
-//     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
-//     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
-//     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
-//     publicNetworkAccess: publicNetworkAccess
-//   }
-// }
+module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
+  name: 'moduleServiceBusNamespace'
+  params: {
+    BaseName: BaseName
+    BaseShortName: BaseShortName
+    EnvironmentName: EnvironmentName
+    EnvironmentShortName: EnvironmentShortName
+    AppLocation: AppLocation
+    AzureRegion: AzureRegion
+    Instance: Instance
+    tags: {
+      BusinessOwner: BusinessOwner
+      CostCentre: CostCentre
+      Workload: Workload
+    }
+    ServiceBusSKUName: 'Premium'
+    ServiceBusCapacity: 1
+    ServiceBusTierName: 'Premium'
+    enableAppConfig: enableAppConfig
+    appconfig_name: enableAppConfig ? appconfig_name : ''
+    appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
+    appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : '' 
+    enableDiagnostic: enableDiagnostic
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    enablePrivateLink: enablePrivateLink
+    privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
+    virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    publicNetworkAccess: publicNetworkAccess
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+  }
+}
 
 module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccount'

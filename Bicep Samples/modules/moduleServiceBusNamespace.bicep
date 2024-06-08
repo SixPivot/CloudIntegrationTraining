@@ -28,6 +28,9 @@ param appconfig_resourcegroup string
 param appconfig_subscriptionId string 
 param loganalyticsWorkspace_name string 
 
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
+
 //****************************************************************
 // Variables
 //****************************************************************
@@ -112,6 +115,8 @@ module moduleServiceBusNamespacePrivateLink './moduleServiceBusNamespacePrivateL
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
     servicBusNamespace_name: servicebusnamespace.name
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
