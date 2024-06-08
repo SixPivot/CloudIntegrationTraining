@@ -65,13 +65,13 @@ resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing
 //   }
 // }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
   parent: privateEndpoint
   name: 'default'
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: privateDnsZones.name
+        name: replace(privateDnsZones.name,'.','_')
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }
