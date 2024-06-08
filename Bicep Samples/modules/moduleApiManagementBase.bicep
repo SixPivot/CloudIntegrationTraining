@@ -353,7 +353,7 @@ module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name
-    ApiManagement_subnet: ApiManagement_subnet2
+    ApiManagement_subnet: ApiManagement_subnet1
     //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
