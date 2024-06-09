@@ -1,0 +1,103 @@
+name: $(Build.DefinitionName)_1.0.$(year:yy)$(DayOfYear)$(Rev:.r)
+trigger:
+  branches:
+    include:
+    - main
+pool:
+  name: Azure Pipelines
+
+variables:
+  azureResourceManagerConnection: '$(variables.azureResourceManagerConnection)'
+
+stages:
+- stage: Build 
+  jobs:
+  - job: Build 
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - script: md AzureDeployFiles
+      displayName: create output directory
+      workingDirectory: $(System.DefaultWorkingDirectory)
+
+    - task: AzureCLI@2
+      displayName: 'Azure CLI '
+      inputs:
+        azureSubscription: '$(azureResourceManagerConnection)'
+        scriptType: ps
+        scriptLocation: inlineScript
+        inlineScript: 'az bicep build --file "Code Samples\LogicApps\App1Sample\App1_apim.bicep" --outdir $(System.DefaultWorkingDirectory)/AzureDeployFiles'
+
+    - task: CopyFiles@2
+      displayName: 'Copy ARM Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/AzureDeployFiles'
+        Contents: App1_apim.json
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        CleanTargetFolder: true
+  
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: ARM Templates'
+      inputs:
+        ArtifactName: armTemplates
+
+    - task: DotNetCoreCLI@2
+      displayName: "Function App Build"
+      inputs:
+        command: build
+        projects: 'Code Samples\LogicApps\App1Sample\App1\Function\App1Helpers.csproj'
+
+    - task: CopyFiles@2
+      displayName: 'Create project folder'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/Code Samples/LogicApps/App1Sample/App1/LogicApp'
+        Contents: |
+          **
+          !.funcignore
+          !.debug
+          !.git*
+          !.vscode/**/*
+          !__azurite_db*__.json
+          !__blobstorage__
+          !__queuestorage__
+          !local.settings.json
+          !test
+          !workflow-designtime/**/*
+        TargetFolder: 'LogicAppStdFiles'
+        CleanTargetFolder: true
+
+    # - task: DeleteFiles@1
+    #   displayName: 'delete connections.json'
+    #   inputs:
+    #     contents: |
+    #       $(System.DefaultWorkingDirectory)\LogicAppStdFiles\connections.json
+
+    - task: CmdLine@2  
+      displayName: 'delete connections.json'
+      inputs:    
+        script: del $(System.DefaultWorkingDirectory)\LogicAppStdFiles\connections.json
+    
+    - task: CmdLine@2  
+      displayName: 'dir'
+      inputs:    
+        script: dir $(System.DefaultWorkingDirectory)\LogicAppStdFiles
+
+    - task: CmdLine@2  
+      displayName: 'rename connections.deploy to connections.json'
+      inputs:    
+        script: ren $(System.DefaultWorkingDirectory)\LogicAppStdFiles\connections.deploy connections.json
+
+    - task: ArchiveFiles@2
+      displayName: 'Create project zip'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/LogicAppStdFiles'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Artifact: LogicAppsStd'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        ArtifactName: LogicAppsStd

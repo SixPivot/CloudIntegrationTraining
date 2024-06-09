@@ -1,0 +1,6 @@
+{
+  "APIMHost": {
+    "type": "String",
+    "value": "@appsetting('apimanagement_host')"
+  }
+}
