@@ -48,7 +48,7 @@ resource apimNamedValueSig 'Microsoft.ApiManagement/service/namedValues@2023-03-
     displayName: keyVaultSecretSig.name
     secret: true
     keyVault: {
-      identityClientId: apiManagement.identity.principalId
+      identityClientId: null
       secretIdentifier: '${keyVault.properties.vaultUri}secrets/${keyVaultSecretSig.name}'
     }
   }

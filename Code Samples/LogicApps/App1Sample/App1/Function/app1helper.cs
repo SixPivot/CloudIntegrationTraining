@@ -65,9 +65,9 @@ namespace demo.app1
             {
                 CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_configuration["AzureWebJobsStorage"]);
                 var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-                var container = cloudBlobClient.GetContainerReference("younity");
+                var container = cloudBlobClient.GetContainerReference("App1");
                 await container.CreateIfNotExistsAsync();
-                blobToken = container.GetBlockBlobReference("younityToken");
+                blobToken = container.GetBlockBlobReference("App1Token");
             }
             catch (Exception Ex1)
             {
@@ -84,9 +84,9 @@ namespace demo.app1
             {
                 CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_configuration["AzureWebJobsStorage"]);
                 var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-                var container = cloudBlobClient.GetContainerReference("younity");
+                var container = cloudBlobClient.GetContainerReference("App1");
                 await container.CreateIfNotExistsAsync();
-                blobQueryTime = container.GetBlockBlobReference("younityQueryTime"+QuertyType.ToLower());
+                blobQueryTime = container.GetBlockBlobReference("App1QueryTime"+QuertyType.ToLower());
             }
             catch (Exception Ex1)
             {

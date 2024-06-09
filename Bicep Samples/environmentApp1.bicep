@@ -113,6 +113,15 @@ var StorageBlobDataOwner = subscriptionResourceId('Microsoft.Authorization/roleD
 var StorageSKUName = toLower(EnvironmentName) == 'prod' ? 'Standard_GRS' : 'Standard_LRS'
 
 //****************************************************************
+// Existing Azure Resources
+//****************************************************************
+
+resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
+  name: appconfig_name
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+}
+
+//****************************************************************
 // Add Private Link for App Config 
 //****************************************************************
 // resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
@@ -217,6 +226,20 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
   }
 } 
 
+module moduleFunctionAppCustomConfig './modules/moduleFunctionAppCustomConfig.bicep' = {
+  name: 'moduleFunctionAppCustomConfig'
+  params:{
+    functionapp_name: moduleFunctionApp.outputs.functionapp_name
+    currentAppSettings: moduleFunctionApp.outputs.functionapp_appsettings
+    newAppSettings: {
+      SubscriptionId: subscription().subscriptionId
+      ResourceGroup: resourceGroup().name
+      serviceBus_fullyQualifiedNamespace: '@Microsoft.AppConfiguration(Endpoint=${appconfig.properties.endpoint}; Key=servicebusnamespace_fullname; Label=${toLower(EnvironmentName)})'
+      apimanagement_host: '@Microsoft.AppConfiguration(Endpoint=${appconfig.properties.endpoint}; Key=apimanagement_host; Label=${toLower(EnvironmentName)})'
+    }
+  }
+}
+
 module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccountForLogicAppStd'
   params: {
@@ -304,6 +327,20 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     moduleFunctionApp
   ]
 } 
+
+module moduleLogicAppStandardCustomConfig './modules/moduleLogicAppStandardCustomConfig.bicep' = {
+  name: 'moduleLogicAppStandardCustomConfig'
+  params:{
+    logicapp_name: moduleLogicAppStandard.outputs.logicappstd_name
+    currentAppSettings: moduleLogicAppStandard.outputs.logicappstd_appsettings
+    newAppSettings: {
+      SubscriptionId: subscription().subscriptionId
+      ResourceGroup: resourceGroup().name
+      serviceBus_fullyQualifiedNamespace: '@Microsoft.AppConfiguration(Endpoint=${appconfig.properties.endpoint}; Key=servicebusnamespace_fullname; Label=${toLower(EnvironmentName)})'
+      apimanagement_host: '@Microsoft.AppConfiguration(Endpoint=${appconfig.properties.endpoint}; Key=apimanagement_host; Label=${toLower(EnvironmentName)})'
+    }
+  }
+}
 
 module moduleServiceBustopic './modules/moduleServiceBusTopic.bicep' = {
   name: 'moduleServiceBustopic'
