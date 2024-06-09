@@ -33,19 +33,9 @@ var operations = [
     workflowName: 'GetCustomer'
   }
   {
-    operation: 'CreateSecurityCustomer'
-    method: 'POST'
-    workflowName: 'CreateSecurityCustomer'
-  }
-  {
-    operation: 'UpdateSecurityCustomer'
-    method: 'POST'
-    workflowName: 'UpdateSecurityCustomer'
-  }
-  {
-    operation: 'GetDimensionValues'
+    operation: 'GetCustomers'
     method: 'GET'
-    workflowName: 'GetDimensionValues'
+    workflowName: 'GetCustomers'
   }
 ]
 

@@ -10,71 +10,90 @@ namespace demo.app1
     using Microsoft.Azure.Functions.Extensions.Workflows;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Extensions.Logging;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Blob;
+    using Microsoft.Extensions.Configuration;
+    using Newtonsoft.Json;
 
     /// <summary>
-    /// Represents the app1helper flow invoked function.
+    /// Represents the App1Helper flow invoked function.
     /// </summary>
-    public class app1helper
+    public class App1Helper
     {
-        private readonly ILogger<app1helper> logger;
-
-        public app1helper(ILoggerFactory loggerFactory)
+        private readonly ILogger<App1Helper> logger;
+        private readonly IConfiguration _configuration;
+        public App1Helper(ILoggerFactory loggerFactory, IConfiguration configuration)
         {
-            logger = loggerFactory.CreateLogger<app1helper>();
+            _configuration = configuration;
+            logger = loggerFactory.CreateLogger<App1Helper>();
         }
-
-        /// <summary>
-        /// Executes the logic app workflow.
-        /// </summary>
-        /// <param name="zipCode">The zip code.</param>
-        /// <param name="temperatureScale">The temperature scale (e.g., Celsius or Fahrenheit).</param>
-        [FunctionName("app1helper")]
-        public Task<Weather> Run([WorkflowActionTrigger] int zipCode, string temperatureScale)
+        public async Task<App1Token> RetrieveTokenFromStorage(App1Token token)
         {
-            this.logger.LogInformation("Starting app1helper with Zip Code: " + zipCode + " and Scale: " + temperatureScale);
-            
-            // Generate random temperature within a range based on the temperature scale
-            Random rnd = new Random();
-            var currentTemp = temperatureScale == "Celsius" ? rnd.Next(1, 30) : rnd.Next(40, 90);
-            var lowTemp = currentTemp - 10;
-            var highTemp = currentTemp + 10;
+            this.logger.LogInformation("Starting RetrieveTokenFromStorage");
 
-            // Create a Weather object with the temperature information
-            var weather = new Weather()
+            CloudBlockBlob blobToken = await GetPreviousToken();
+
+            if (await blobToken.ExistsAsync())
             {
-                ZipCode = zipCode,
-                CurrentWeather = $"The current weather is {currentTemp} {temperatureScale}",
-                DayLow = $"The low for the day is {lowTemp} {temperatureScale}",
-                DayHigh = $"The high for the day is {highTemp} {temperatureScale}"
-            };
+                this.logger.LogDebug("Previous Token Found");
+                var tokenText = await blobToken.DownloadTextAsync();
+                token = JsonConvert.DeserializeObject<App1Token>(tokenText);
+            }
+            else
+            {
+                this.logger.LogDebug("Previous Token Not Found");
+                token = new App1Token();
+                token.TokenExpiry = DateTime.Now.AddSeconds(-60);
+            }
 
-            return Task.FromResult(weather);
+            return token;
+        }
+        public async void SaveTokenToStorage(App1Token token)
+        {
+            this.logger.LogInformation("Starting SaveTokenToStorage");
+
+            CloudBlockBlob blobToken = await GetPreviousToken();
+
+            var tokenText = JsonConvert.SerializeObject(token);
+            await blobToken.UploadTextAsync(tokenText);
         }
 
-        /// <summary>
-        /// Represents the weather information for app1helper.
-        /// </summary>
-        public class Weather
+        public async Task<CloudBlockBlob> GetPreviousToken()
         {
-            /// <summary>
-            /// Gets or sets the zip code.
-            /// </summary>
-            public int ZipCode { get; set; }
+            CloudBlockBlob blobToken = null;
+            try
+            {
+                CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_configuration["AzureWebJobsStorage"]);
+                var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                var container = cloudBlobClient.GetContainerReference("younity");
+                await container.CreateIfNotExistsAsync();
+                blobToken = container.GetBlockBlobReference("younityToken");
+            }
+            catch (Exception Ex1)
+            {
+                this.logger.LogError(Ex1, "GetPreviousToken: Error Getting Connection for Previous Token Blob");
+            }
 
-            /// <summary>
-            /// Gets or sets the current weather.
-            /// </summary>
-            public string CurrentWeather { get; set; }
+            return blobToken;
+        }
 
-            /// <summary>
-            /// Gets or sets the low temperature for the day.
-            /// </summary>
-            public string DayLow { get; set; }
+         public async Task<CloudBlockBlob> GetLastQueryTime(string QuertyType)
+        {
+            CloudBlockBlob blobQueryTime = null;
+            try
+            {
+                CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_configuration["AzureWebJobsStorage"]);
+                var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                var container = cloudBlobClient.GetContainerReference("younity");
+                await container.CreateIfNotExistsAsync();
+                blobQueryTime = container.GetBlockBlobReference("younityQueryTime"+QuertyType.ToLower());
+            }
+            catch (Exception Ex1)
+            {
+                this.logger.LogError(Ex1, "GetPreviousToken: Error Getting Connection for Previous Token Blob");
+            }
 
-            /// <summary>
-            /// Gets or sets the high temperature for the day.
-            /// </summary>
-            public string DayHigh { get; set; }
+            return blobQueryTime;
         }
     }
 }

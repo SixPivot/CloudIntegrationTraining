@@ -16,6 +16,9 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
          <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
           <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
+          <PackageReference Include="newtonsoft.json" Version="13.0.3" />
+          <PackageReference Include="RestSharp" Version="106.12.0" />
+          <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
 <Target Name="Task" AfterTargets="Compile">
