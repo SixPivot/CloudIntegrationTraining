@@ -45,7 +45,7 @@ stages:
       displayName: "Function App Build"
       inputs:
         command: build
-        projects: 'Code Samples\LogicApps\App1Sample\App1\Function\App1Helpers.csproj'
+        projects: 'Code Samples\LogicApps\App1Sample\App1\Function\app1helper.csproj'
 
     - task: CopyFiles@2
       displayName: 'Create project folder'
