@@ -374,12 +374,12 @@ module moduleApiManagementPrivateDNSZones './moduleApiManagementPrivateDNSZones.
   params: {
     apimanagement_name: apimanagement.name
     apimanagement_privateIpAddress: apimanagement.properties.privateIPAddresses[0]
-    EnvironmentName: EnvironmentName
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
-    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
-    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    // EnvironmentName: EnvironmentName
+    // virtualNetworkName: virtualNetworkName
+    // virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    // virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    // privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    // privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 

@@ -242,7 +242,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
     AzureRegion: AzureRegion
-    Instance: Instance
+    Instance: 2
     tags: {
       BusinessOwner: BusinessOwner
       CostCentre: CostCentre
