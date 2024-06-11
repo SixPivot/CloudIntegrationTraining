@@ -242,7 +242,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
     AzureRegion: AzureRegion
-    Instance: 2
+    Instance: 3
     tags: {
       BusinessOwner: BusinessOwner
       CostCentre: CostCentre
@@ -258,7 +258,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     keyvault_name: moduleKeyVault.outputs.keyvault_name
     keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     appInsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : 'dummy'
-    enablePrivateLink: false
+    enablePrivateLink: true
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
@@ -270,7 +270,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     ApiManagementCapacity: 1
     ApiManagementPublisherName: 'Cloud Integration Training'
     ApiManagementPublisherEmail: 'bill.chesnut@sixpivot.com.au'
-    ApiManagementVirtualNetowrkType: 'External'
+    ApiManagementVirtualNetowrkType: 'None'
     enableVNETIntegration: enableVNETIntegration
     ApiManagement_subnet1: ApiManagement_subnet1
     ApiManagement_subnet2: ApiManagement_subnet2
