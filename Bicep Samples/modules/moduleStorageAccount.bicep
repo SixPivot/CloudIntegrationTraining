@@ -13,6 +13,7 @@ param enableDiagnostic bool
 param enablePrivateLink bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
 
 // tags
@@ -39,8 +40,10 @@ param privateDNSZoneSubscriptionId string
 
 var storage_app_name = !empty(AppName) ? '${AppName}' : ''
 var storage_appkey_name = !empty(AppName) ? '${AppName}_' : ''
+var storage_app_short_name = !empty(AppShortName) ? '${AppShortName}' : ''
 var InstanceString = padLeft(Instance,3,'0')
 var storage_name = 'st${toLower(BaseShortName)}${toLower(storage_app_name)}${toLower(EnvironmentName)}${toLower(AzureRegion)}${InstanceString}'
+var storage_short_name = 'st${toLower(BaseShortName)}${toLower(storage_app_short_name)}${toLower(EnvironmentName)}${toLower(AzureRegion)}${InstanceString}'
 
 //****************************************************************
 // Role Definitions
@@ -84,8 +87,8 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
 // Azure Storage Account
 //****************************************************************
 
-resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: storage_name
+resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' = {
+  name: length(storage_name) > 24 ? storage_short_name : storage_name
   location: AppLocation
   tags: tags
   sku: {
@@ -272,22 +275,24 @@ var storagePrivateLinks = [
     storageType: 'file'
     dnsExists: false
   }
-  {
-    storageType: 'web'
-    dnsExists: false
-  }
-  {
-    storageType: 'dfs'
-    dnsExists: false
-  }
+  // {
+  //   storageType: 'web'
+  //   dnsExists: false
+  // }
+  // {
+  //   storageType: 'dfs'
+  //   dnsExists: false
+  // }
 ]
 
 module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep' = [for (link, index) in storagePrivateLinks: if (enablePrivateLink) {
   name: 'moduleStorageAccountPrivateLink-${link.storageType}'
   params: {
     AppLocation: AppLocation
+    EnvironmentName: EnvironmentName
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     storage_name: storage.name
     storageType: link.storageType
@@ -300,7 +305,7 @@ module moduleStorageAccountPrivateLink './moduleStorageAccountPrivateLink.bicep'
 // Add Storage Account details to App Configuration
 //****************************************************************
 
-module moduleAppConfigKeyValuestoragename './moduleAppConfigKeyValue.bicep' = if(enableAppConfig) {
+module moduleAppConfigKeyValuestoragename './moduleAppConfigKeyValue.bicep' = {
   name: '${storage_appkey_name}storage_name'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
@@ -311,7 +316,7 @@ module moduleAppConfigKeyValuestoragename './moduleAppConfigKeyValue.bicep' = if
   }
 }
 
-module moduleAppConfigKeyValuestorageresourcegroup './moduleAppConfigKeyValue.bicep' =  if(enableAppConfig) {
+module moduleAppConfigKeyValuestorageresourcegroup './moduleAppConfigKeyValue.bicep' = {
   name: '${storage_appkey_name}storage_resourcegroup'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
@@ -322,6 +327,53 @@ module moduleAppConfigKeyValuestorageresourcegroup './moduleAppConfigKeyValue.bi
   }
 }
 
+module moduleAppConfigKeyValuestoragebloburl './moduleAppConfigKeyValue.bicep' = {
+  name: '${storage_appkey_name}storage_bloburl'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: '${storage_appkey_name}storage_bloburl'
+    variables_value: storage.properties.primaryEndpoints.blob
+  }
+}
+
+module moduleAppConfigKeyValuestoragequeueurl './moduleAppConfigKeyValue.bicep' = {
+  name: '${storage_appkey_name}storage_queueurl'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: '${storage_appkey_name}storage_queueurl'
+    variables_value: storage.properties.primaryEndpoints.queue
+  }
+}
+
+module moduleAppConfigKeyValuestoragetableurl './moduleAppConfigKeyValue.bicep' = {
+  name: '${storage_appkey_name}storage_tableurl'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: '${storage_appkey_name}storage_tableurl'
+    variables_value: storage.properties.primaryEndpoints.table
+  }
+}
+
+module moduleAppConfigKeyValuestoragefileurl './moduleAppConfigKeyValue.bicep' = {
+  name: '${storage_appkey_name}storage_fileurl'
+  scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
+  params: {
+    variables_appconfig_name: appconfig_name
+    variables_environment: EnvironmentName
+    variables_key: '${storage_appkey_name}storage_fileurl'
+    variables_value: storage.properties.primaryEndpoints.file
+  }
+}
+
 output storage_name string = storage.name
 output storage_resourcegroup string = resourceGroup().name
-output storage_subscriptionId string = subscription().subscriptionId
+output storage_bloburl string = storage.properties.primaryEndpoints.blob
+output storage_queueurl string = storage.properties.primaryEndpoints.queue
+output storage_tableurl string = storage.properties.primaryEndpoints.table
+output storage_fileurl string = storage.properties.primaryEndpoints.file

@@ -54,6 +54,10 @@ resource privateLinkScope 'Microsoft.Insights/privateLinkScopes@2021-07-01-previ
   name: loganalyticsWorkspace_privatelinkscope_name
 }
 
+resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
+  name: keyvault_name
+}
+
 //****************************************************************
 // Azure Application Insights
 //****************************************************************
@@ -73,13 +77,13 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource privateLinkScopedResource 'Microsoft.Insights/privateLinkScopes/scopedResources@2021-07-01-preview' = if(enablePrivateLink) {
-  name: appinsights.name
-  parent: privateLinkScope
-  properties: {
-    linkedResourceId: appinsights.id
-  }
-}
+// resource privateLinkScopedResource 'Microsoft.Insights/privateLinkScopes/scopedResources@2021-07-01-preview' = if(enablePrivateLink) {
+//   name: appinsights.name
+//   parent: privateLinkScope
+//   properties: {
+//     linkedResourceId: appinsights.id
+//   }
+// }
 
 module moduleAppConfigKeyValueapplicationinsightsname './moduleAppConfigKeyValue.bicep' = if(enableAppConfig) {
   name: 'applicationinsights_name'

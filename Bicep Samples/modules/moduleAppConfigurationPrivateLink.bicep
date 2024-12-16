@@ -1,6 +1,7 @@
 param AppLocation string 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
 //param appconfig object
 param appconfig_name string
@@ -17,7 +18,7 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-pr
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
-  scope: resourceGroup(virtualNetworkResourceGroup)
+  scope: resourceGroup(virtualNetworkSubscriptionId,virtualNetworkResourceGroup)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = {
@@ -35,7 +36,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
     subnet: {
       id: subnet.id
     }
-    customNetworkInterfaceName: '${privateEndPointName}-nic'
+    customNetworkInterfaceName: 'nic-${privateEndPointName}'
     privateLinkServiceConnections: [
       {
         name: privateEndPointName

@@ -1,8 +1,12 @@
 param AppLocation string 
+param EnvironmentName string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
-param apimanagement_name string 
+param apimanagement_name string
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string 
 
 //****************************************************************
 // Add Private Link for Storage Account 
@@ -46,22 +50,23 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.azure-api.net'
-  location: 'global'
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-// resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-//   parent: privateDnsZones
-//   name: '${privateDnsZones.name}-link'
-//   location: 'global'
-//   properties: {
-//     registrationEnabled: false
-//     virtualNetwork: {
-//       id: virtualNetwork.id
-//     }
-//   }
-// }
+module moduleDNSZoneVirtualNetworkLinkAPIM './moduleDNSZoneVirtualNetworkLink.bicep' =  {
+  name: 'moduleDNSZoneVirtualNetworkLinkAPIM'
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
+  params: {
+    linkId: EnvironmentName
+    DNSZone_name: privateDnsZones.name
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    tags: {}
+  }
+}
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
   parent: privateEndpoint

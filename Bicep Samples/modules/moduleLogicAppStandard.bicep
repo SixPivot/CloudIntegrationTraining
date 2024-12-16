@@ -14,7 +14,10 @@ param enablePrivateLink bool
 param enableVNETIntegration bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
+param networksecuritygroupName string 
+param routetableName string 
 param publicNetworkAccess string
 
 // tags
@@ -49,8 +52,9 @@ param privateDNSZoneSubscriptionId string
 
 var logicapp_app_name = !empty(AppName) ? '-${AppName}' : ''
 var logicapp_appkey_name = !empty(AppName) ? '${AppName}_' : ''
-var InstanceString = padLeft(Instance,3,'0')
-var logicapp_name = 'logic-${toLower(BaseName)}${toLower(logicapp_app_name)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
+var padInstance = '0'
+var InstanceString = Instance > 0 ? '-${padLeft(Instance,3,padInstance)}' : ''
+var logicapp_name = 'logic-${toLower(BaseName)}${toLower(logicapp_app_name)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}${InstanceString}'
 
 //****************************************************************
 // Role Definitions
@@ -98,20 +102,12 @@ resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01'
   name: 'default'
 }
 
-// resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2020-06-01' existing = if (enableVNETIntegration) {
-//   name: virtualNetworkName
-// }
-
-// resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = if (enableVNETIntegration) {
-//   name: vnetintegrationSubnetName
-//   parent: virtualNetwork
-// }
 
 //****************************************************************
 // storage account fileshare 
 //****************************************************************
 
-resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-04-01' = {
   name: toLower(logicapp_name)
   parent: fileService
   properties: {
@@ -125,7 +121,7 @@ resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/s
 
 var virtualNetworkSubnetId = enableVNETIntegration ? logicapp_subnet_id : null
 
-resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
+resource LogicAppStdApp 'Microsoft.Web/sites@2023-12-01' = {
   name: logicapp_name
   location: AppLocation
   tags: tags
@@ -155,7 +151,36 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-resource LogicAppStdAppConfigSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: LogicAppStdApp
+  name: 'DiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        category: 'WorkflowRuntime'
+        enabled: true
+      }
+      {
+        category: 'FunctionAppLogs'
+        enabled: true
+      }
+      {
+        category: 'AppServiceAuthenticationLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+  }
+}
+
+
+resource LogicAppStdAppConfigSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   name: 'appsettings'
   parent: LogicAppStdApp
   properties: {
@@ -169,6 +194,10 @@ resource LogicAppStdAppConfigSettings 'Microsoft.Web/sites/config@2022-09-01' = 
     WEBSITE_NODE_DEFAULT_VERSION: '~18'
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}'
     WEBSITE_CONTENTSHARE: FileServicesFileShare.name
+    WORKFLOWS_SUBSCRIPTION_ID: subscription().subscriptionId
+    WORKFLOWS_RESOURCE_GROUP_NAME: resourceGroup().name
+    WORKFLOWS_LOCATION_NAME: AppLocation
+    WEBSITE_VNET_ROUTE_ALL: enableVNETIntegration? '1' : '0'
   }
 }
 
@@ -211,17 +240,16 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
   name: 'modulePrivateLinkLogicAppStd'
   params: {
     AppLocation: AppLocation
-    logicappstd_name: logicapp_name
+    EnvironmentName: EnvironmentName
+    logicappstd_name: LogicAppStdApp.name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
-  dependsOn: [
-    LogicAppStdApp
-  ]
-} 
+}  
 
 //****************************************************************
 // Add Logic App Std reader role to App Configuration

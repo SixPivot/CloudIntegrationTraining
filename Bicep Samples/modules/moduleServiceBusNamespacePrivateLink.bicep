@@ -1,6 +1,8 @@
 param AppLocation string 
+param EnvironmentName string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
 param servicBusNamespace_name string 
 param privateDNSZoneResourceGroup string 
@@ -15,26 +17,26 @@ resource servicebusnamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
 
 }
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2023-09-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
   name: virtualNetworkName
   scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' existing = {
   name: privatelinkSubnetName
   parent: virtualNetwork
 }
 
 var privateEndPointName = 'pep-${(servicebusnamespace.name)}'
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
   name: privateEndPointName
   location: AppLocation
   properties: {
     subnet: {
       id: subnet.id
     }
-    customNetworkInterfaceName: '${privateEndPointName}-nic'
+    customNetworkInterfaceName: 'nic-${privateEndPointName}'
     privateLinkServiceConnections: [
       {
         name: privateEndPointName
@@ -54,19 +56,20 @@ resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing
   scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-// resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-//   parent: privateDnsZones
-//   name: '${privateDnsZones.name}-link'
-//   location: 'global'
-//   properties: {
-//     registrationEnabled: false
-//     virtualNetwork: {
-//       id: virtualNetwork.id
-//     }
-//   }
-// }
+module moduleDNSZoneVirtualNetworkLinkSB './moduleDNSZoneVirtualNetworkLink.bicep' =  {
+  name: 'moduleDNSZoneVirtualNetworkLinkSB'
+  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
+  params: {
+    linkId: EnvironmentName
+    DNSZone_name: privateDnsZones.name
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    tags: {}
+  }
+}
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
   parent: privateEndpoint
   name: 'default'
   properties: {

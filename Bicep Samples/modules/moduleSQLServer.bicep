@@ -11,6 +11,7 @@ param enableDiagnostic bool
 param enablePrivateLink bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string
+param virtualNetworkSubscriptionId string
 param privatelinkSubnetName string 
 param publicNetworkAccess string
 
@@ -112,14 +113,19 @@ resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' = {
 
 module moduleSQLServerPrivateLink './moduleSQLServerPrivateLink.bicep' = if (enablePrivateLink) {
   name: 'moduleSQLServerPrivateLink'
+  //scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
   params: {
     AppLocation: AppLocation
+    EnvironmentName: EnvironmentName
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     sqlserver_name: sqlserver.name
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    sqlserverResourceGroup: resourceGroup().name
+    sqlserverSubscriptionId: subscription().subscriptionId
   }
 }
 

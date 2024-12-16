@@ -1,28 +1,23 @@
 param AppLocation string 
-param EnvironmentName string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string
 param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
-param storage_name string 
-param storageType string 
-param privateDNSZoneResourceGroup string 
-param privateDNSZoneSubscriptionId string  
-
-// tags
-param tags object = {}
+param datafactory_name string 
+param type string
+param zone string 
 
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
 
-resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: storage_name
+resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
+  name: datafactory_name
 }
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
-  scope: resourceGroup(virtualNetworkResourceGroup)
+  scope: resourceGroup(virtualNetworkSubscriptionId,virtualNetworkResourceGroup)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = {
@@ -30,7 +25,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing 
   parent: virtualNetwork
 }
 
-var privateEndPointName = 'pep-${(storage.name)}-${(storageType)}'
+var privateEndPointName = 'pep-${(dataFactory.name)}-${(type)}'
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
@@ -39,14 +34,14 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
     subnet: {
       id: subnet.id
     }
-    customNetworkInterfaceName: 'nic-${privateEndPointName}'
+    customNetworkInterfaceName: '${privateEndPointName}-nic'
     privateLinkServiceConnections: [
       {
         name: privateEndPointName
         properties: {
-          privateLinkServiceId: storage.id
+          privateLinkServiceId: dataFactory.id
           groupIds: [
-            storageType
+            type
           ]
         }
       }
@@ -54,23 +49,25 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   }
 }
 
-var privateDnsZones_name = 'privatelink.${storageType}.${environment().suffixes.storage}'
+var privateDnsZones_name = zone
 
-resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZones_name
-  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
+  location: 'global'
+  tags: {
+    isResourceDeployed: 'true'
+  }
 }
 
-module moduleDNSZoneVirtualNetworkLinkST './moduleDNSZoneVirtualNetworkLink.bicep' =  {
-  name: 'moduleDNSZoneVirtualNetworkLinkST${storageType}'
-  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
-  params: {
-    linkId: EnvironmentName
-    DNSZone_name: privateDnsZones.name
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
-    tags: {}
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateDnsZones
+  name: '${privateDnsZones_name}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetwork.id
+    }
   }
 }
 
@@ -87,4 +84,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       }
     ]
   }
+  dependsOn: [
+    privateDnsZoneLink
+  ]
 }

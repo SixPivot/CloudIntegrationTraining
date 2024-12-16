@@ -6,13 +6,6 @@ param EnvironmentShortName string
 param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
-param enableAppConfig bool 
-param enableDiagnostic bool 
-param enablePrivateLink bool 
-param virtualNetworkName string 
-param virtualNetworkResourceGroup string 
-param privatelinkSubnetName string
-param publicNetworkAccess string 
 
 // tags
 param tags object = {}
@@ -21,6 +14,14 @@ param tags object = {}
 param ServiceBusSKUName string 
 param ServiceBusCapacity int 
 param ServiceBusTierName string 
+param enableAppConfig bool 
+param enableDiagnostic bool 
+param enablePrivateLink bool 
+param virtualNetworkName string 
+param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
+param privatelinkSubnetName string
+param publicNetworkAccess string 
 
 // existing resources
 param appconfig_name string 
@@ -111,8 +112,10 @@ module moduleServiceBusNamespacePrivateLink './moduleServiceBusNamespacePrivateL
   name: 'moduleServiceBusNamespacePrivateLink'
   params: {
     AppLocation: AppLocation
+    EnvironmentName: EnvironmentName
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     servicBusNamespace_name: servicebusnamespace.name
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup

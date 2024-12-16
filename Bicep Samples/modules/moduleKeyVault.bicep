@@ -10,7 +10,8 @@ param enableAppConfig bool
 param enableDiagnostic bool 
 param enablePrivateLink bool 
 param virtualNetworkName string 
-param virtualNetworkResourceGroup string 
+param virtualNetworkResourceGroup string
+param virtualNetworkSubscriptionId string  
 param privatelinkSubnetName string 
 param publicNetworkAccess string
 // param VNETLinks array
@@ -200,8 +201,10 @@ module moduleKeyVaultPrivateLink './moduleKeyVaultPrivateLink.bicep' = if (enabl
   name: 'moduleKeyVaultPrivateLink'
   params: {
     AppLocation: AppLocation
+    EnvironmentName: EnvironmentName
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     keyvault_name: keyvault.name
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
@@ -231,6 +234,7 @@ module moduleDNSZoneVirtualNetworkLinkKeyVaultAppConfig './moduleDNSZoneVirtualN
     virtualNetworkName: appconfig_vnetName
     virtualNetworkResourceGroup: appconfig_resourcegroup
     virtualNetworkSubscriptionId: appconfig_subscriptionId
+    tags: tags
   }
 }
 

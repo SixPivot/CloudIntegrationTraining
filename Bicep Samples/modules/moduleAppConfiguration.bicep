@@ -6,16 +6,17 @@ param EnvironmentShortName string
 param AppLocation string 
 param AzureRegion string 
 param Instance int = 1
+
+param tags object = {}
+
 param publicNetworkAccessForIngestion string
 param publicNetworkAccessForQuery string
 param publicNetworkAccess string
 param enablePrivateLink bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
-
-// tags
-param tags object = {}
 
 // service principals and groups
 param AzureDevOpsServiceConnectionId string 
@@ -53,28 +54,28 @@ var AppConfigurationDataReader = subscriptionResourceId('Microsoft.Authorization
 // Azure Log Anaytics Workspace
 //****************************************************************
 
-// resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
-//   name: loganalyticsWorkspace_name
-//   location: AppLocation
-//   tags: tags
-//   properties: {
-//     sku: {
-//       name: 'PerGB2018'
-//     }
-//     retentionInDays: 30
-//     workspaceCapping: {
-//       dailyQuotaGb: 1
-//     }
-//     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
-//     publicNetworkAccessForQuery: publicNetworkAccessForQuery
-//   }
-// }
+resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+  name: loganalyticsWorkspace_name
+  location: AppLocation
+  tags: tags
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 30
+    workspaceCapping: {
+      dailyQuotaGb: 1
+    }
+    publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: publicNetworkAccessForQuery
+  }
+}
 
 //****************************************************************
 // Azure App Config
 //****************************************************************
 
-resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-preview' = {
+resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-09-01-preview' = {
   name: appconfig_name
   location: AppLocation
   tags: tags
@@ -95,6 +96,40 @@ resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-08-01-pr
   }
 }
 
+resource appconfigAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: appconfig
+  name: 'AuditSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        categoryGroup: 'Audit'
+        enabled: true
+      }
+    ]
+  }
+}
+
+resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: appconfig
+  name: 'DiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        category: 'HttpRequest'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+  }
+}
+
 //****************************************************************
 // Add Private Link for App Config 
 //****************************************************************
@@ -105,44 +140,15 @@ module moduleAppConfigurationPrivateLink './moduleAppConfigurationPrivateLink.bi
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     appconfig_name: appconfig.name
   }
 }
 
-// resource appconfigAuditSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   scope: appconfig
-//   name: 'AuditSettings'
-//   properties: {
-//     workspaceId: loganalyticsWorkspace.id
-//     logs: [
-//       {
-//         categoryGroup: 'Audit'
-//         enabled: true
-//       }
-//     ]
-//   }
-// }
-
-// resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   scope: appconfig
-//   name: 'DiagnosticSettings'
-//   properties: {
-//     workspaceId: loganalyticsWorkspace.id
-//     logs: [
-//       {
-//         category: 'HttpRequest'
-//         enabled: true
-//       }
-//     ]
-//     metrics: [
-//       {
-//         category: 'AllMetrics'
-//         enabled: true
-//       }
-//     ]
-//   }
-// }
+//****************************************************************
+// Add Role Assignements for App Config 
+//****************************************************************
 
 resource appconfigRoleAssignmentAzureDevOpsServiceConnectionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(AzureDevOpsServiceConnectionId)) {
   scope: appconfig

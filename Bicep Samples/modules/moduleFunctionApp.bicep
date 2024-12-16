@@ -14,6 +14,7 @@ param enablePrivateLink bool
 param enableVNETIntegration bool 
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string 
+param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
 //param vnetintegrationSubnetName string 
 param publicNetworkAccess string 
@@ -146,19 +147,41 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-resource functionAppConfigSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: functionApp
+  name: 'DiagnosticSettings'
+  properties: {
+    workspaceId: loganalyticsWorkspace.id
+    logs: [
+      {
+        category: 'FunctionAppLogs'
+        enabled: true
+      }
+      {
+        category: 'AppServiceAuthenticationLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+  }
+}
+
+resource functionAppConfigSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   name: 'appsettings'
   parent: functionApp
   properties: {
-    FUNCTIONS_EXTENSION_VERSION: functionappExtentionVersion
+    FUNCTIONS_EXTENSION_VERSION: '~4'
     AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}'
-    FUNCTIONS_WORKER_RUNTIME: functionappWorkerRuntime
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet-isolated'
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}'
     WEBSITE_CONTENTSHARE: FileServicesFileShare.name
+    WEBSITE_VNET_ROUTE_ALL: enableVNETIntegration? '1' : '0'
   }
-  // dependsOn: [
-  //   moduleFunctionAppVNETIntegration
-  // ]
 }
 
 module moduleFunctionAppCustomConfigAppInsights './moduleFunctionAppCustomConfig.bicep' = if (enableDiagnostic) {
@@ -199,9 +222,11 @@ module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if 
   name: 'moduleFunctionAppPrivateLink'
   params: {
     AppLocation: AppLocation
+    EnvironmentName: EnvironmentName
     functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
@@ -212,10 +237,10 @@ module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if 
 } 
 
 //****************************************************************
-// Add Function App Std reader role to App Configuration
+// Add Function App reader role to App Configuration
 //****************************************************************
 
-module moduleAppConfigRoleAssignmentAppConfigReaderfunctionappStd './moduleAppConfigurationRoleAssignment.bicep' = if (enableAppConfig) {
+module moduleAppConfigRoleAssignmentAppConfigReaderfunctionapp './moduleAppConfigurationRoleAssignment.bicep' = if (enableAppConfig) {
   name: '${functionapp_appkey_name}appconfigreader'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
@@ -227,10 +252,10 @@ module moduleAppConfigRoleAssignmentAppConfigReaderfunctionappStd './moduleAppCo
 }
 
 //****************************************************************
-// Add Function App Std reader role to Key Vault
+// Add Function App reader role to Key Vault
 //****************************************************************
 
-module moduleKeyVaultRoleAssignmentKeyVaultReaderfunctionappStd './moduleKeyVaultRoleAssignment.bicep' = {
+module moduleKeyVaultRoleAssignmentKeyVaultReaderfunctionapp './moduleKeyVaultRoleAssignment.bicep' = {
   name: '${functionapp_appkey_name}keyvaultreader'
   scope: resourceGroup(keyvault_resourcegroup)
   params: {
@@ -242,38 +267,38 @@ module moduleKeyVaultRoleAssignmentKeyVaultReaderfunctionappStd './moduleKeyVaul
 }
 
 //****************************************************************
-// Add Function App Std details to App Configuration
+// Add Function App details to App Configuration
 //****************************************************************
 
-module moduleAppConfigKeyValuefunctionappstdname './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
-  name: '${functionapp_appkey_name}functionappstd_name'
+module moduleAppConfigKeyValuefunctionappname './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}functionapp_name'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: '${functionapp_appkey_name}functionappstd_name'
+    variables_key: '${functionapp_appkey_name}functionapp_name'
     variables_value: functionApp.name
   }
 }
 
-module moduleAppConfigKeyValuefunctionappstdresourcegroup './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
-  name: '${functionapp_appkey_name}functionappstd_resourcegroup'
+module moduleAppConfigKeyValuefunctionappresourcegroup './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}functionapp_resourcegroup'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: '${functionapp_appkey_name}functionappstd_resourcegroup'
+    variables_key: '${functionapp_appkey_name}functionapp_resourcegroup'
     variables_value: resourceGroup().name
   }
 }
 
-module moduleAppConfigKeyValuefunctionappstdURL './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
-  name: '${functionapp_appkey_name}functionappstd_URL'
+module moduleAppConfigKeyValuefunctionappURL './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}functionapp_URL'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: '${functionapp_appkey_name}functionappstd_URL'
+    variables_key: '${functionapp_appkey_name}functionapp_URL'
     variables_value: functionApp.properties.defaultHostName
   }
 }

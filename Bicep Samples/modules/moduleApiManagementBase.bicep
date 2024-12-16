@@ -45,10 +45,7 @@ param ApiManagementPublisherEmail string
 param ApiManagementVirtualNetowrkType string 
 param ApiManagement_subnet1 string
 param ApiManagement_subnet2 string
-
-param privateDNSZoneResourceGroup string 
-param privateDNSZoneSubscriptionId string  
-
+//param apimanagement_customdomain string 
 //****************************************************************
 // Variables
 //****************************************************************
@@ -100,7 +97,6 @@ var APIManagementDeveloperPortalContentEditor = subscriptionResourceId('Microsof
 var APIManagementServiceWorkspaceAPIDeveloper = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9565a273-41b9-4368-97d2-aeb0c976a9b3')
 var APIManagementServiceWorkspaceAPIProductManager = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd59a3e9c-6d52-4a5a-aeed-6bf3cf0e31da')
 
-
 //****************************************************************
 // Existing Azure Resources
 //****************************************************************
@@ -143,6 +139,9 @@ resource apimanagementPublicIp 'Microsoft.Network/publicIPAddresses@2023-09-01' 
       domainNameLabel: toLower('${apimanagementIP_name}-${uniqueString(resourceGroup().id)}')
     }
   }
+  dependsOn:[
+    moduleApiManagementBaseNSG
+  ]
 }
 
 resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
@@ -162,11 +161,10 @@ resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     virtualNetworkType: ApiManagementVirtualNetowrkType
     virtualNetworkConfiguration: virtualNetworkConfiguration
     publicIpAddressId: apimanagementPublicIp.id
-    apiVersionConstraint: {}
     publicNetworkAccess: publicNetworkAccess
+    apiVersionConstraint: {}
   }
   dependsOn:[
-    moduleApiManagementVNETIntegration
     moduleApiManagementVNETIntegration2
   ]
 }
@@ -251,6 +249,20 @@ resource keyvaultRoleAssignmentAPIMSecretUser 'Microsoft.Authorization/roleAssig
 }
 
 //****************************************************************
+// Add API Management Named Values
+//****************************************************************
+
+resource apimNamedValueaadtenantid 'Microsoft.ApiManagement/service/namedValues@2023-03-01-preview' = {
+  name: 'aad-tenant-id'
+  parent: apimanagement
+  properties: {
+    displayName: 'aad-tenant-id'
+    secret: false
+    value: apimanagement.identity.tenantId
+  }
+}
+
+//****************************************************************
 // Add API Management details to App Configuration
 //****************************************************************
 
@@ -321,21 +333,6 @@ module moduleAppConfigKeyValueapimanagementHostName './moduleAppConfigKeyValue.b
 }
 
 //****************************************************************
-// Add Private Link for Storage Account 
-//****************************************************************
-
-module moduleApiManagementBasePrivateLink './moduleApiManagementBasePrivateLink.bicep' = if (enablePrivateLink) {
-  name: 'moduleApiManagementBasePrivateLink'
-  params: {
-    AppLocation: AppLocation
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    privatelinkSubnetName: privatelinkSubnetName
-    apimanagement_name: apimanagement.name
-  }
-}
-
-//****************************************************************
 // Add VNET Integration for API Management
 //****************************************************************
 
@@ -346,7 +343,6 @@ module moduleApiManagementVNETIntegration2 './moduleApiManagementVNETIntegration
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     vnetintegrationSubnetName: apimanagement_name2
     ApiManagement_subnet: ApiManagement_subnet2
-    //createSubnet: createSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
   }
@@ -368,24 +364,10 @@ module moduleApiManagementVNETIntegration './moduleApiManagementVNETIntegration.
   }
 }
 
-module moduleApiManagementPrivateDNSZones './moduleApiManagementPrivateDNSZones.bicep' = if (enableVNETIntegration) {
-  name: 'moduleApiManagementPrivateDNSZones'
-  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
-  params: {
-    apimanagement_name: apimanagement.name
-    apimanagement_privateIpAddress: apimanagement.properties.privateIPAddresses[0]
-    // EnvironmentName: EnvironmentName
-    // virtualNetworkName: virtualNetworkName
-    // virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    // virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
-    // privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
-    // privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
-  }
-}
-
 output apimanagement_name string = apimanagement.name
 output apimanagement_id string = apimanagement.id
 output apimanagement_location string = apimanagement.location
 output apimanagement_principalId string = apimanagement.identity.principalId
-output apimanagement_IPAddressd string = apimanagement.properties.publicIPAddresses[0]
+output apimanagement_PublicIPAddress string = apimanagement.properties.publicIPAddresses[0]
+output apimanagement_PrivateIPAddress string = apimanagement.properties.privateIPAddresses[0]
 output apimanagementLogging_name string = apiManagementLogging.name

@@ -6,7 +6,7 @@ param topicsubscriptionrule_name string
 param topicsubscriptionrule_filter string 
 param principalid string 
 param principaltype string 
-param CreateRoleAssignment bool = false
+param CreateRoleAssignment bool 
 
 
 //****************************************************************

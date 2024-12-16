@@ -48,7 +48,7 @@ resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
 // Azure Function App Hosting Plan
 //****************************************************************
 
-resource workflowHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
+resource workflowHostingPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: workflowHostingPlan_name
   location: AppLocation
   tags: tags

@@ -16,7 +16,7 @@ param newAppSettings object
 // Existing Azure Resources
 //****************************************************************
 
-resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
+resource LogicAppStdApp 'Microsoft.Web/sites@2023-12-01' existing = {
   name: logicapp_name
 }
 
@@ -24,7 +24,7 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2022-09-01' existing = {
 // Azure Logic App Std App Config
 //****************************************************************
 
-resource LogicAppStdAppConfigSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource LogicAppStdAppConfigSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   name: 'appsettings'
   parent: LogicAppStdApp
   properties: union(currentAppSettings, newAppSettings)

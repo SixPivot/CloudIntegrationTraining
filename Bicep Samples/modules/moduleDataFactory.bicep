@@ -6,16 +6,20 @@ param EnvironmentShortName string
 param AppLocation string 
 param AzureRegion string = 'ause'
 param Instance int = 1
+
+// tags
+param tags object = {}
+
 param enableAppConfig bool 
 param enableDiagnostic bool 
 param enablePrivateLink bool 
 param publicNetworkAccess string
 param virtualNetworkName string 
 param virtualNetworkResourceGroup string
-param privatelinkSubnetName string 
-
-// tags
-param tags object = {}
+param virtualNetworkSubscriptionId string 
+param privatelinkSubnetName string
+param privateDNSZoneResourceGroup string 
+param privateDNSZoneSubscriptionId string  
 
 // existing resources
 param appconfig_name string 
@@ -79,32 +83,39 @@ resource datafactoryDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2
 // Add Private Link for Data Factory 
 //****************************************************************
 
-var DataFactoryPrivateLinks = [
-  {
-    type: 'dataFactory'
-    zone: 'privatelink.datafactory.azure.net'
-  }
-  {
-    type: 'portal'
-    zone: 'privatelink.adf.azure.com'
-  }
-]
-
-module moduleDataFactoryPrivateLink './moduleDataFactoryPrivateLink.bicep' = [for (link, index) in DataFactoryPrivateLinks: if (enablePrivateLink) {
-  name: 'moduleDataFactoryPrivateLink-${link.type}'
+module moduleDataFactoryPrivateLinkDataFactory './moduleDataFactoryPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleDataFactoryPrivateLinkDataFactory'
   params: {
     AppLocation: AppLocation
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     datafactory_name: dataFactory.name
-    type: link.type
-    zone: link.zone
+    type: 'dataFactory'
+    zone: 'privatelink.datafactory.azure.net'
+    EnvironmentName: EnvironmentName
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
-}]
+}
+
+module moduleDataFactoryPrivateLinkPortal './moduleDataFactoryPrivateLinkLocal.bicep' = if (enablePrivateLink) {
+  name: 'moduleDataFactoryPrivateLinkPortal'
+  params: {
+    AppLocation: AppLocation
+    virtualNetworkName: virtualNetworkName
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    privatelinkSubnetName: privatelinkSubnetName
+    datafactory_name: dataFactory.name
+    type: 'portal'
+    zone: 'privatelink.adf.azure.com'
+  }
+}
 
 //****************************************************************
-// Add Service Bus Namespace details to App Configuration
+// Add Data Factory details to App Configuration
 //****************************************************************
 
 module moduleAppConfigKeyValuedatafactoryname './moduleAppConfigKeyValue.bicep' = if(enableAppConfig) {

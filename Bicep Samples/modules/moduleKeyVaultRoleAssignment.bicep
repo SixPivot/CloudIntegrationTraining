@@ -3,7 +3,7 @@ param principalid string
 param principaltype string 
 param roledefinitionid string  
 
-resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
+resource keyvault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyvault_name
 }
 

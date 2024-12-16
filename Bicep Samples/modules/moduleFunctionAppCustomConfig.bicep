@@ -24,7 +24,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' existing = {
 // Azure Logic App Std App Config
 //****************************************************************
 
-resource FunctionAppConfigSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource FunctionAppConfigSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   name: 'appsettings'
   parent: functionApp
   properties: union(currentAppSettings, newAppSettings)

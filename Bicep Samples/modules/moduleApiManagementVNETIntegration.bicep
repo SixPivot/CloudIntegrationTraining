@@ -61,7 +61,7 @@ var defaultProperties = {
       ]
     }
   ]
-  privateEndpointNetworkPolicies: 'Disabled'
+  privateEndpointNetworkPolicies: 'NetworkSecurityGroupEnabled'
   privateLinkServiceNetworkPolicies: 'Enabled'
 }
 

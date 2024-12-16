@@ -4,6 +4,7 @@ param apiName string
 param apiPath string 
 param versioningScheme string = 'Segment'
 param apiVersion string = 'V1'
+param subscriptionRequired bool = true
 
 //****************************************************************
 // Existing Azure Resources
@@ -37,7 +38,7 @@ resource API 'Microsoft.ApiManagement/service/apis@2023-05-01-preview' = {
   properties:{
     displayName:'${apiName} APIs'
     path: apiPath 
-    subscriptionRequired: true
+    subscriptionRequired: subscriptionRequired
     protocols: [
       'https'
       'http'

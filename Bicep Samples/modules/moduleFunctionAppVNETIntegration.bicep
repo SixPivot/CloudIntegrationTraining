@@ -43,8 +43,8 @@ var defaultProperties = {
   privateLinkServiceNetworkPolicies: 'Enabled'
 }
 
-module moduleCreateSubnet './moduleCreateSubnet.bicep' = {
-  name: 'moduleCreateSubnet'
+module moduleCreateSubnetFunc './moduleCreateSubnetFunc.bicep' = {
+  name: 'moduleCreateSubnetFunc'
   scope: resourceGroup(virtualNetworkResourceGroup)
   params: {
     virtualNetworkName: virtualNetworkName
@@ -74,7 +74,7 @@ module moduleAppConfigKeyValuefunctionappsubnetname './moduleAppConfigKeyValue.b
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
     variables_key: 'functionapp_subnet_name'
-    variables_value: moduleCreateSubnet.outputs.subnet_name
+    variables_value: moduleCreateSubnetFunc.outputs.subnet_name
   }
 }
 
@@ -85,6 +85,6 @@ module moduleAppConfigKeyValuefunctionappsubnetid './moduleAppConfigKeyValue.bic
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
     variables_key: 'functionapp_subnet_id'
-    variables_value: moduleCreateSubnet.outputs.subnet_id
+    variables_value: moduleCreateSubnetFunc.outputs.subnet_id
   }
 }
