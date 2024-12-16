@@ -352,6 +352,7 @@ module moduleAppConfigKeyValuestoragefileurl './moduleAppConfigKeyValue.bicep' =
 
 output storage_name string = storage.name
 output storage_resourcegroup string = resourceGroup().name
+output storage_subscriptionId string = subscription().subscriptionId
 output storage_bloburl string = storage.properties.primaryEndpoints.blob
 output storage_queueurl string = storage.properties.primaryEndpoints.queue
 output storage_tableurl string = storage.properties.primaryEndpoints.table

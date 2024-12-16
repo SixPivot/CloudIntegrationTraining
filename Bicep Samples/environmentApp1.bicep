@@ -26,6 +26,7 @@ param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
 param virtualNetworkName string = '$(virtualNetworkName)'
 param virtualNetworkResourceGroup string = '$(virtualNetworkResourceGroup)'
+param virtualNetworkSubscriptionId string = '$(virtualNetworkSubscriptionId)' 
 param privatelinkSubnetName string = '$(privatelinkSubnetName)'
 param networksecuritygroupName string = '$(networksecuritygroupName)'
 param routetableName string = '$(routetableName)'
@@ -171,6 +172,7 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccount.bicep'
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     AppName: 'fnapp1'
     AppShortName: 'fnapp1'
     publicNetworkAccess: publicNetworkAccess
@@ -217,6 +219,7 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     enableVNETIntegration: enableVNETIntegration
     publicNetworkAccess: publicNetworkAccess
     functionapp_subnet_id: functionapp_subnet_id
@@ -267,6 +270,7 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccount.bicep'
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     AppName: 'laapp1'
     AppShortName: 'laapp1'
     publicNetworkAccess: publicNetworkAccess
@@ -316,12 +320,15 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     enableVNETIntegration: enableVNETIntegration
     publicNetworkAccess: publicNetworkAccess
     logicapp_subnet_id: logicapp_subnet_id
     logicapp_subnet_name: logicapp_subnet_name
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    networksecuritygroupName: networksecuritygroupName
+    routetableName: routetableName  
   }
   dependsOn: [
     moduleFunctionApp
