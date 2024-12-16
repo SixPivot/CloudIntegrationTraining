@@ -14,6 +14,7 @@ param Instance int = 1
 // param enablePrivateLink bool = true
 param virtualNetworkName string = 'CloudIntegrationTraining-Shared'
 param virtualNetworkResourceGroup string = 'CloudIntegrationTraining-Shared'
+param virtualNetworkSubscriptionId string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'  
 param privatelinkSubnetName string = 'default'
 param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
 param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
@@ -24,6 +25,8 @@ param virtualNetworkSubscriptionIdDevOps string = '3e2bea16-63ed-4349-9b9c-fe2f9
 param virtualNetworkNameVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkResourceGroupVMInside string = 'CloudIntegrationTraining'
 param virtualNetworkSubscriptionIdVMInside string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'
+
+param tags object = {}
 
 // tags
 param BusinessOwner string = '$(BusinessOwner)'
@@ -66,6 +69,8 @@ module moduleResourceManagerPrivateLink './modules/moduleResourceManagerPrivateL
     resourcemanagerPL_subscriptionId: resourcemanagerPL_subscriptionId
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    tags: tags
   }
 }
 
