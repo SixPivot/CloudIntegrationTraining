@@ -187,6 +187,7 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     publicNetworkAccess: publicNetworkAccess
     // VNETLinks: VNETLinks
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
@@ -277,8 +278,8 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
     publicNetworkAccess: 'Enabled'
-    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
-    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    // privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    // privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
@@ -320,6 +321,7 @@ module moduleServiceBusNamespace './modules/moduleServiceBusNamespace.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''  
     publicNetworkAccess: publicNetworkAccess
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
@@ -355,6 +357,7 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     publicNetworkAccess: publicNetworkAccess
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
@@ -540,7 +543,7 @@ module moduleLogicAppStandardVNETIntegration './modules/moduleLogicAppStandardVN
     logicappstd_subnet_name: logicapp_subnet_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    functionapp_subnet: logicappstd_subnet
+    logicappstd_subnet: logicappstd_subnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
 
@@ -661,6 +664,7 @@ module moduleSQLServer './modules/moduleSQLServer.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''
     publicNetworkAccess: publicNetworkAccess
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
@@ -725,6 +729,9 @@ module moduleDataFactory './modules/moduleDataFactory.bicep' = {
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
     virtualNetworkResourceGroup: enablePrivateLink ? virtualNetworkResourceGroup  : ''
+    virtualNetworkSubscriptionId: enablePrivateLink ? virtualNetworkSubscriptionId  : ''  
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }
 
