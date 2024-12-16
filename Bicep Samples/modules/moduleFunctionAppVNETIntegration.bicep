@@ -54,15 +54,6 @@ module moduleCreateSubnetFunc './moduleCreateSubnetFunc.bicep' = {
   }
 }
 
-// resource virtualnetworkConfig 'Microsoft.Web/sites/networkConfig@2023-01-01' = {
-//   parent: FunctionApp
-//   name: 'virtualNetwork'
-//   properties: {
-//     subnetResourceId: moduleCreateSubnet.outputs.subnet_id
-//     swiftSupported: true
-//   }
-// }
-
 //****************************************************************
 // Add functionapp subnet details to App Configuration
 //****************************************************************

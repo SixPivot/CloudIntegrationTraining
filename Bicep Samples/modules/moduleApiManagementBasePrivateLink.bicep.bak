@@ -4,24 +4,21 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
-param sqlserver_name string 
+param apimanagement_name string
 param privateDNSZoneResourceGroup string 
-param privateDNSZoneSubscriptionId string  
-param sqlserverResourceGroup string 
-param sqlserverSubscriptionId string  
+param privateDNSZoneSubscriptionId string 
 
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
 
-resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
-  name: sqlserver_name
-  scope: resourceGroup(sqlserverSubscriptionId,sqlserverResourceGroup)
+resource apimanagement 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+  name: apimanagement_name
 }
 
-resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2023-09-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
-  scope: resourceGroup(virtualNetworkSubscriptionId,virtualNetworkResourceGroup)
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = {
@@ -29,23 +26,23 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing 
   parent: virtualNetwork
 }
 
-var privateEndPointName = 'pep-${(sqlserver.name)}'
+var privateEndPointName = 'pep-${(apimanagement.name)}'
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
   location: AppLocation
   properties: {
     subnet: {
       id: subnet.id
     }
-    customNetworkInterfaceName: 'nic-${privateEndPointName}'
+    customNetworkInterfaceName: '${privateEndPointName}-nic'
     privateLinkServiceConnections: [
       {
         name: privateEndPointName
         properties: {
-          privateLinkServiceId: sqlserver.id
+          privateLinkServiceId: apimanagement.id
           groupIds: [
-            'sqlServer'
+            'Gateway'
           ]
         }
       }
@@ -54,12 +51,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
 }
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-  name: 'privatelink.database.windows.net'
+  name: 'privatelink.azure-api.net'
   scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-module moduleDNSZoneVirtualNetworkLinkSQL './moduleDNSZoneVirtualNetworkLink.bicep' =  {
-  name: 'moduleDNSZoneVirtualNetworkLinkSQL'
+module moduleDNSZoneVirtualNetworkLinkAPIM './moduleDNSZoneVirtualNetworkLink.bicep' =  {
+  name: 'moduleDNSZoneVirtualNetworkLinkAPIM'
   scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
   params: {
     linkId: EnvironmentName
@@ -71,13 +68,13 @@ module moduleDNSZoneVirtualNetworkLinkSQL './moduleDNSZoneVirtualNetworkLink.bic
   }
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
   parent: privateEndpoint
   name: 'default'
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: replace(privateDnsZones.name,'.','_')
+        name: privateDnsZones.name
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }
@@ -85,5 +82,3 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
-
-output DNSZone string = privateDnsZones.name

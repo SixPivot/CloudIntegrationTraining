@@ -58,18 +58,17 @@ resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing
   scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-module moduleDNSZoneVirtualNetworkLinkSQL './moduleDNSZoneVirtualNetworkLink.bicep' =  {
-  name: 'moduleDNSZoneVirtualNetworkLinkSQL'
-  scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
-  params: {
-    linkId: EnvironmentName
-    DNSZone_name: privateDnsZones.name
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
-    tags: {}
-  }
-}
+// resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+//   parent: privateDnsZones
+//   name: '${privateDnsZones.name}-link'
+//   location: 'global'
+//   properties: {
+//     registrationEnabled: false
+//     virtualNetwork: {
+//       id: virtualNetwork.id
+//     }
+//   }
+// }
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
   parent: privateEndpoint
@@ -77,7 +76,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: replace(privateDnsZones.name,'.','_')
+        name: privateDnsZones.name
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }
@@ -85,5 +84,3 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
-
-output DNSZone string = privateDnsZones.name

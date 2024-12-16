@@ -210,12 +210,12 @@ module moduleApiManagementPrivateDNSZones './moduleApiManagementPrivateDNSZones.
   params: {
     apimanagement_name: apimanagement.name
     apimanagement_privateIpAddress: apimanagement.properties.privateIPAddresses[0]
-    apimanagement_customdomain: apimanagement_customdomain
-    EnvironmentName: EnvironmentName
-    virtualNetworkName: virtualNetworkName
-    virtualNetworkResourceGroup: virtualNetworkResourceGroup
-    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
-    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
-    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    // apimanagement_customdomain: apimanagement_customdomain
+    // EnvironmentName: EnvironmentName
+    // virtualNetworkName: virtualNetworkName
+    // virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    // virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
+    // privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    // privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
 }

@@ -4,24 +4,21 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
-param sqlserver_name string 
+param keyvault_name string 
 param privateDNSZoneResourceGroup string 
 param privateDNSZoneSubscriptionId string  
-param sqlserverResourceGroup string 
-param sqlserverSubscriptionId string  
 
 //****************************************************************
 // Add Private Link for Storage Account 
 //****************************************************************
 
-resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
-  name: sqlserver_name
-  scope: resourceGroup(sqlserverSubscriptionId,sqlserverResourceGroup)
+resource keyvault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
+  name: keyvault_name
 }
 
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2023-09-01' existing = {
   name: virtualNetworkName
-  scope: resourceGroup(virtualNetworkSubscriptionId,virtualNetworkResourceGroup)
+  scope: resourceGroup(virtualNetworkResourceGroup)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing = {
@@ -29,9 +26,9 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-09-01' existing 
   parent: virtualNetwork
 }
 
-var privateEndPointName = 'pep-${(sqlserver.name)}'
+var privateEndPointName = 'pep-${(keyvault.name)}'
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
   name: privateEndPointName
   location: AppLocation
   properties: {
@@ -43,9 +40,9 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
       {
         name: privateEndPointName
         properties: {
-          privateLinkServiceId: sqlserver.id
+          privateLinkServiceId: keyvault.id
           groupIds: [
-            'sqlServer'
+            'vault'
           ]
         }
       }
@@ -54,12 +51,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-11-01' = {
 }
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-  name: 'privatelink.database.windows.net'
+  name: 'privatelink.vaultcore.azure.net'
   scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
 }
 
-module moduleDNSZoneVirtualNetworkLinkSQL './moduleDNSZoneVirtualNetworkLink.bicep' =  {
-  name: 'moduleDNSZoneVirtualNetworkLinkSQL'
+module moduleDNSZoneVirtualNetworkLinkKV './moduleDNSZoneVirtualNetworkLink.bicep' =  {
+  name: 'moduleDNSZoneVirtualNetworkLinkKV'
   scope: resourceGroup(privateDNSZoneSubscriptionId,privateDNSZoneResourceGroup)
   params: {
     linkId: EnvironmentName
@@ -77,7 +74,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: replace(privateDnsZones.name,'.','_')
+        name: privateDnsZones.name
         properties: {
           privateDnsZoneId: privateDnsZones.id
         }

@@ -68,7 +68,7 @@ module moduleDNSZoneVirtualNetworkLinkKV './moduleDNSZoneVirtualNetworkLink.bice
   }
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-11-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-09-01' = {
   parent: privateEndpoint
   name: 'default'
   properties: {

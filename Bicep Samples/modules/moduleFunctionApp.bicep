@@ -89,16 +89,16 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' existing = if (e
   scope: resourceGroup(applicationinsights_resourcegroup)
 }
 
-resource functionappHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
+resource functionappHostingPlan 'Microsoft.Web/serverfarms@2023-12-01' existing = {
   name: functionapphostingplan_name
   scope: resourceGroup(functionapphostingplan_subscriptionId, functionapphostingplan_resourcegroup)
 }
 
-resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
   name: storage_name
 }
 
-resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01' existing = {
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' existing = {
   parent: storage
   name: 'default'
 }
@@ -107,7 +107,7 @@ resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01'
 // storage account fileshare 
 //****************************************************************
 
-resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = {
+resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-04-01' = {
   name: toLower(functionapp_name)
   parent: fileService
 }
@@ -118,7 +118,7 @@ resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/s
 
 var virtualNetworkSubnetId = enableVNETIntegration ? functionapp_subnet_id : null
 
-resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
+resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   name: functionapp_name
   location: AppLocation
   tags: tags

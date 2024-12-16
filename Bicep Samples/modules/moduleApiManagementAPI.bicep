@@ -41,7 +41,6 @@ resource API 'Microsoft.ApiManagement/service/apis@2023-05-01-preview' = {
     subscriptionRequired: subscriptionRequired
     protocols: [
       'https'
-      'http'
     ]
     apiVersion: apiVersion
     apiVersionSetId: apiVersionSet.id

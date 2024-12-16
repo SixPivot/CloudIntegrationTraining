@@ -16,9 +16,8 @@ param virtualNetworkName string
 param virtualNetworkResourceGroup string 
 param virtualNetworkSubscriptionId string 
 param privatelinkSubnetName string 
-param networksecuritygroupName string 
-param routetableName string 
-param publicNetworkAccess string
+//param vnetintegrationSubnetName string 
+param publicNetworkAccess string 
 
 // tags
 param tags object = {}
@@ -26,22 +25,26 @@ param tags object = {}
 // existing resources
 param appconfig_name string 
 param appconfig_resourcegroup string 
-param appconfig_subscriptionId string 
 param keyvault_name string 
 param keyvault_resourcegroup string 
+param appconfig_subscriptionId string 
 param loganalyticsWorkspace_name string 
 param loganalyticsWorkspace_resourcegroup string 
 param applicationinsights_name string 
 param applicationinsights_resourcegroup string 
-param workflowhostingplan_name string 
-param workflowhostingplan_resourcegroup string 
-param workflowhostingplan_subscriptionId string 
+param functionapphostingplan_name string 
+param functionapphostingplan_resourcegroup string 
+param functionapphostingplan_subscriptionId string 
 param storage_name string 
 param storage_resourcegroup string 
 param storage_subscriptionId string 
 //param apimanagement_publicIPAddress string 
-param logicapp_subnet_name string 
-param logicapp_subnet_id string 
+
+param functionappWorkerRuntime string = 'dotnet-isolated'
+param functionappExtentionVersion string = '~4'
+
+param functionapp_subnet_name string 
+param functionapp_subnet_id string 
 
 param privateDNSZoneResourceGroup string 
 param privateDNSZoneSubscriptionId string  
@@ -50,11 +53,11 @@ param privateDNSZoneSubscriptionId string
 // Variables
 //****************************************************************
 
-var logicapp_app_name = !empty(AppName) ? '-${AppName}' : ''
-var logicapp_appkey_name = !empty(AppName) ? '${AppName}_' : ''
-var padInstance = '0'
-var InstanceString = Instance > 0 ? '-${padLeft(Instance,3,padInstance)}' : ''
-var logicapp_name = 'logic-${toLower(BaseName)}${toLower(logicapp_app_name)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}${InstanceString}'
+var functionapp_app_name = !empty(AppName) ? '-${AppName}' : ''
+var functionapp_appkey_name = !empty(AppName) ? '${AppName}_' : ''
+var InstanceString = padLeft(Instance,3,'0')
+var functionapp_name = 'func-${toLower(BaseName)}${toLower(functionapp_app_name)}-${toLower(EnvironmentName)}-${toLower(AzureRegion)}-${InstanceString}'
+
 
 //****************************************************************
 // Role Definitions
@@ -72,14 +75,13 @@ var AppConfigurationDataReader = subscriptionResourceId('Microsoft.Authorization
 // Existing Azure Resources
 //****************************************************************
 
-resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = if(enableAppConfig) {
+resource appconfig 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = if (enableAppConfig) {
   name: appconfig_name
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
 }
 
 resource loganalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = if (enableDiagnostic) {
   name: loganalyticsWorkspace_name
-  scope: resourceGroup(loganalyticsWorkspace_resourcegroup)
 }
 
 resource appinsights 'Microsoft.Insights/components@2020-02-02' existing = if (enableDiagnostic) {
@@ -87,57 +89,51 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02' existing = if (e
   scope: resourceGroup(applicationinsights_resourcegroup)
 }
 
-resource workflowHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
-  name: workflowhostingplan_name
-  scope: resourceGroup(workflowhostingplan_subscriptionId,workflowhostingplan_resourcegroup)
+resource functionappHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
+  name: functionapphostingplan_name
+  scope: resourceGroup(functionapphostingplan_subscriptionId, functionapphostingplan_resourcegroup)
 }
 
-resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: storage_name
-  //scope: resourceGroup(storage_subscriptionId,storage_resourcegroup)
 }
 
-resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' existing = {
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01' existing = {
   parent: storage
   name: 'default'
 }
-
 
 //****************************************************************
 // storage account fileshare 
 //****************************************************************
 
-resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-04-01' = {
-  name: toLower(logicapp_name)
+resource FileServicesFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2021-04-01' = {
+  name: toLower(functionapp_name)
   parent: fileService
-  properties: {
-    enabledProtocols: 'SMB'
-  }
 }
 
 //****************************************************************
-// Azure Logic App Std 
+// Azure Function App
 //****************************************************************
 
-var virtualNetworkSubnetId = enableVNETIntegration ? logicapp_subnet_id : null
+var virtualNetworkSubnetId = enableVNETIntegration ? functionapp_subnet_id : null
 
-resource LogicAppStdApp 'Microsoft.Web/sites@2023-12-01' = {
-  name: logicapp_name
+resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
+  name: functionapp_name
   location: AppLocation
   tags: tags
-  kind: 'functionapp,workflowapp'
+  kind: 'functionapp'
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
-    serverFarmId: workflowHostingPlan.id
+    serverFarmId: functionappHostingPlan.id
     virtualNetworkSubnetId: virtualNetworkSubnetId
     vnetRouteAllEnabled: enableVNETIntegration ? true : false
     vnetContentShareEnabled: enableVNETIntegration ? true : false
     publicNetworkAccess: publicNetworkAccess
     httpsOnly: true
     siteConfig: {
-      netFrameworkVersion: 'v4.0'
       functionsRuntimeScaleMonitoringEnabled: false
       ftpsState: 'Disabled'
       use32BitWorkerProcess: false
@@ -152,15 +148,11 @@ resource LogicAppStdApp 'Microsoft.Web/sites@2023-12-01' = {
 }
 
 resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  scope: LogicAppStdApp
+  scope: functionApp
   name: 'DiagnosticSettings'
   properties: {
     workspaceId: loganalyticsWorkspace.id
     logs: [
-      {
-        category: 'WorkflowRuntime'
-        enabled: true
-      }
       {
         category: 'FunctionAppLogs'
         enabled: true
@@ -179,69 +171,59 @@ resource appconfigDiagnosticSettings  'Microsoft.Insights/diagnosticSettings@202
   }
 }
 
-
-resource LogicAppStdAppConfigSettings 'Microsoft.Web/sites/config@2023-12-01' = {
+resource functionAppConfigSettings 'Microsoft.Web/sites/config@2023-12-01' = {
   name: 'appsettings'
-  parent: LogicAppStdApp
+  parent: functionApp
   properties: {
-    APP_KIND: 'workflowApp'
-    AzureFunctionsJobHost_extensionBundle_id: 'Microsoft.Azure.Functions.ExtensionBundle.Workflows'
-    AzureFunctionsJobHost_extensionBundle_version: '[1.*,2.0.0)'
-    XDT_MicrosoftApplicationInsights_Mode: 'Recommended'
     FUNCTIONS_EXTENSION_VERSION: '~4'
     AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}'
-    FUNCTIONS_WORKER_RUNTIME: 'node'
-    WEBSITE_NODE_DEFAULT_VERSION: '~18'
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet-isolated'
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storage.listKeys().keys[0].value}'
     WEBSITE_CONTENTSHARE: FileServicesFileShare.name
-    WORKFLOWS_SUBSCRIPTION_ID: subscription().subscriptionId
-    WORKFLOWS_RESOURCE_GROUP_NAME: resourceGroup().name
-    WORKFLOWS_LOCATION_NAME: AppLocation
     WEBSITE_VNET_ROUTE_ALL: enableVNETIntegration? '1' : '0'
   }
 }
 
-module moduleLogicAppStandardCustomConfig './moduleLogicAppStandardCustomConfig.bicep' = if (enableDiagnostic) {
-  name: 'moduleLogicAppStandardCustomConfig'
+module moduleFunctionAppCustomConfigAppInsights './moduleFunctionAppCustomConfig.bicep' = if (enableDiagnostic) {
+  name: 'moduleFunctionAppCustomConfigAppInsights'
   params:{
-    logicapp_name: logicapp_name
-    currentAppSettings: list(resourceId('Microsoft.Web/sites/config', logicapp_name, 'appsettings'), '2022-03-01').properties
+    functionapp_name: functionapp_name
+    currentAppSettings: list(resourceId('Microsoft.Web/sites/config', functionapp_name, 'appsettings'), '2022-03-01').properties
     newAppSettings: {
       APPINSIGHTS_INSTRUMENTATIONKEY: enableDiagnostic ? appinsights.properties.InstrumentationKey : ''
       APPLICATIONINSIGHTS_CONNECTION_STRING: enableDiagnostic ? appinsights.properties.ConnectionString : ''
-      ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
     }
   }
   dependsOn: [
-    LogicAppStdAppConfigSettings
+    functionAppConfigSettings
   ] 
 }
 
-module moduleLogicAppStandardCustomConfigAppConfig './moduleLogicAppStandardCustomConfig.bicep' = if (enableAppConfig) {
-  name: 'moduleLogicAppStandardCustomConfigAppConfig'
+module moduleFunctionAppCustomConfigAppConfig './moduleFunctionAppCustomConfig.bicep' = if (enableAppConfig) {
+  name: 'moduleFunctionAppCustomConfigAppConfig'
   params:{
-    logicapp_name: logicapp_name
-    currentAppSettings: list(resourceId('Microsoft.Web/sites/config', logicapp_name, 'appsettings'), '2022-03-01').properties
+    functionapp_name: functionapp_name
+    currentAppSettings: list(resourceId('Microsoft.Web/sites/config', functionapp_name, 'appsettings'), '2022-03-01').properties
     newAppSettings: {
       AppConfigurationEndpoint: enableAppConfig ? appconfig.properties.endpoint : ''
-      AppConfigurationEnvironment: toLower(EnvironmentName)
+      AppConfigurationEnvironment: enableAppConfig ? toLower(EnvironmentName) : ''
     }
   }
   dependsOn: [
-    LogicAppStdAppConfigSettings
+    functionAppConfigSettings
   ] 
 }
 
 //****************************************************************
-// Add Private Link for Logic App Std 
+// Add Private Link for Function App 
 //****************************************************************
 
-module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' = if (enablePrivateLink) {
-  name: 'modulePrivateLinkLogicAppStd'
+module moduleFunctionAppPrivateLink './moduleFunctionAppPrivateLink.bicep' = if (enablePrivateLink) {
+  name: 'moduleFunctionAppPrivateLink'
   params: {
     AppLocation: AppLocation
     EnvironmentName: EnvironmentName
-    logicappstd_name: LogicAppStdApp.name
+    functionapp_name: functionapp_name
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
@@ -249,77 +231,80 @@ module modulePrivateLinkLogicAppStd './moduleLogicAppStandardPrivateLink.bicep' 
     privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
     privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
   }
-}  
+  dependsOn: [
+    functionApp
+  ]
+} 
 
 //****************************************************************
-// Add Logic App Std reader role to App Configuration
+// Add Function App reader role to App Configuration
 //****************************************************************
 
-module moduleAppConfigRoleAssignmentAppConfigReaderLogicAppStd './moduleAppConfigurationRoleAssignment.bicep' = if (enableAppConfig) {
-  name: '${logicapp_appkey_name}appconfigreader'
+module moduleAppConfigRoleAssignmentAppConfigReaderfunctionapp './moduleAppConfigurationRoleAssignment.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}appconfigreader'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     appconfig_name: appconfig_name
-    principalid: LogicAppStdApp.identity.principalId
+    principalid: functionApp.identity.principalId
     principaltype: 'ServicePrincipal'
     roledefinitionid: AppConfigurationDataReader
   }
 }
 
 //****************************************************************
-// Add Logic App Std reader role to Key Vault
+// Add Function App reader role to Key Vault
 //****************************************************************
 
-module moduleKeyVaultRoleAssignmentKeyVaultReaderLogicAppStd './moduleKeyVaultRoleAssignment.bicep' = {
-  name: '${logicapp_appkey_name}keyvaultreader'
+module moduleKeyVaultRoleAssignmentKeyVaultReaderfunctionapp './moduleKeyVaultRoleAssignment.bicep' = {
+  name: '${functionapp_appkey_name}keyvaultreader'
   scope: resourceGroup(keyvault_resourcegroup)
   params: {
     keyvault_name: keyvault_name
-    principalid: LogicAppStdApp.identity.principalId
+    principalid: functionApp.identity.principalId
     principaltype: 'ServicePrincipal'
     roledefinitionid: KeyVaultSecretsUser
   }
 }
 
 //****************************************************************
-// Add Logic App Std details to App Configuration
+// Add Function App details to App Configuration
 //****************************************************************
 
-module moduleAppConfigKeyValuelogicappstdname './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
-  name: '${logicapp_appkey_name}logicappstd_name'
+module moduleAppConfigKeyValuefunctionappname './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}functionapp_name'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: '${logicapp_appkey_name}logicappstd_name'
-    variables_value: LogicAppStdApp.name
+    variables_key: '${functionapp_appkey_name}functionapp_name'
+    variables_value: functionApp.name
   }
 }
 
-module moduleAppConfigKeyValuelogicappstdresourcegroup './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
-  name: '${logicapp_appkey_name}logicappstd_resourcegroup'
+module moduleAppConfigKeyValuefunctionappresourcegroup './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}functionapp_resourcegroup'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: '${logicapp_appkey_name}logicappstd_resourcegroup'
+    variables_key: '${functionapp_appkey_name}functionapp_resourcegroup'
     variables_value: resourceGroup().name
   }
 }
 
-module moduleAppConfigKeyValuelogicappstdURL './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
-  name: '${logicapp_appkey_name}logicappstd_URL'
+module moduleAppConfigKeyValuefunctionappURL './moduleAppConfigKeyValue.bicep' = if (enableAppConfig) {
+  name: '${functionapp_appkey_name}functionapp_URL'
   scope: resourceGroup(appconfig_subscriptionId,appconfig_resourcegroup)
   params: {
     variables_appconfig_name: appconfig_name
     variables_environment: EnvironmentName
-    variables_key: '${logicapp_appkey_name}logicappstd_URL'
-    variables_value: LogicAppStdApp.properties.defaultHostName
+    variables_key: '${functionapp_appkey_name}functionapp_URL'
+    variables_value: functionApp.properties.defaultHostName
   }
 }
 
-output logicappstd_name string = LogicAppStdApp.name
-output logicappstd_resourcegroup string = resourceGroup().name
-output logicappstd_principalid string = LogicAppStdApp.identity.principalId
-output logicappstd_URL string = LogicAppStdApp.properties.defaultHostName
-output logicappstd_appsettings object = list(resourceId('Microsoft.Web/sites/config', logicapp_name, 'appsettings'), '2022-03-01').properties
+output functionapp_name string = functionApp.name
+output functionapp_resourcegroup string = resourceGroup().name
+output functionapp_principalid string = functionApp.identity.principalId
+output functionapp_URL string = functionApp.properties.defaultHostName
+output functionapp_appsettings object = list(resourceId('Microsoft.Web/sites/config', functionapp_name, 'appsettings'), '2022-03-01').properties

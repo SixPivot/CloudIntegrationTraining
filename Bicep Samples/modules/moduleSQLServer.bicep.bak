@@ -57,7 +57,7 @@ var sqlServer_name = 'sql-${toLower(BaseName)}-${toLower(EnvironmentName)}-${toL
 // SQL Server
 //****************************************************************
 
-resource sqlserver 'Microsoft.Sql/servers@2023-08-01-preview' = {
+resource sqlserver 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: sqlServer_name
   location: AppLocation
   tags: tags

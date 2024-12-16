@@ -14,8 +14,7 @@ param privatelinkSubnetName string
 param resourcemanagerPL_name string
 param resourcemanagerPL_resourceGroup string
 param resourcemanagerPL_subscriptionId string
-// tags
-param tags object = {}
+
 
 //****************************************************************
 // Add Private Link for App Config

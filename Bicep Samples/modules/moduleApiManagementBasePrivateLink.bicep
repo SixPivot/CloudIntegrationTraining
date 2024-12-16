@@ -35,7 +35,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-09-01' = {
     subnet: {
       id: subnet.id
     }
-    customNetworkInterfaceName: '${privateEndPointName}-nic'
+    customNetworkInterfaceName: 'nic-${privateEndPointName}'
     privateLinkServiceConnections: [
       {
         name: privateEndPointName

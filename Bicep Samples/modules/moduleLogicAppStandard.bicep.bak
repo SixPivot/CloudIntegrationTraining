@@ -92,12 +92,12 @@ resource workflowHostingPlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
   scope: resourceGroup(workflowhostingplan_subscriptionId,workflowhostingplan_resourcegroup)
 }
 
-resource storage 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: storage_name
   //scope: resourceGroup(storage_subscriptionId,storage_resourcegroup)
 }
 
-resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' existing = {
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2022-09-01' existing = {
   parent: storage
   name: 'default'
 }

@@ -39,7 +39,7 @@ param KeyVaultReaderGroupId string
 
 // API Management settings
 param ApiManagementSKUName string 
-param ApiManagementCapacity int 
+param ApiManagementCapacity int = 1
 param ApiManagementPublisherName string 
 param ApiManagementPublisherEmail string 
 param ApiManagementVirtualNetowrkType string 
