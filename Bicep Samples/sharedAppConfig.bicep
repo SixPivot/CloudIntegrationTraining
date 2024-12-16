@@ -15,6 +15,7 @@ param publicNetworkAccess string = 'Disabled'
 param enablePrivateLink bool = true
 param virtualNetworkName string = 'CloudIntegrationTraining-Shared'
 param virtualNetworkResourceGroup string = 'CloudIntegrationTraining-Shared'
+param virtualNetworkSubscriptionId string = '3e2bea16-63ed-4349-9b9c-fe2f91f8e3d4'  
 param privatelinkSubnetName string = 'default'
 param resourcemanagerPL_resourcegroup string = '$(resourcemanagerPL_resourcegroup)'
 param resourcemanagerPL_subscriptionId string = '$(resourcemanagerPL_subscriptionId)'
@@ -109,6 +110,7 @@ module moduleAppConfiguration './modules/moduleAppConfiguration.bicep' = {
     enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
   }
 }
