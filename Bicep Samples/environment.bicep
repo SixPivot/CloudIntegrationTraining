@@ -38,6 +38,7 @@ param enablePrivateLink bool = true
 param enableVNETIntegration bool = true
 param virtualNetworkName string = ''
 param virtualNetworkResourceGroup string = ''
+param virtualNetworkSubscriptionId string = ''
 param privatelinkSubnetName string = ''
 param createLogicAppStdSubnet bool
 param logicAppStdSubnetName string = ''
@@ -47,6 +48,9 @@ param functionAppSubnetName string = ''
 param functionAppSubnetAddressPrefix string = '' 
 param networksecuritygroupName string = 'none'
 param routetableName string = 'none'
+
+param privateDNSZoneResourceGroup string = '$(privateDNSZoneResourceGroup)'
+param privateDNSZoneSubscriptionId string  = '$(privateDNSZoneSubscriptionId)'
 
 //****************************************************************
 // Variables
@@ -86,6 +90,10 @@ module moduleLogAnalytics './modules/moduleLogAnalyticsWorkspace.bicep' = if (en
     privatelinkSubnetName: privatelinkSubnetName
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'  
   }
 }
 
@@ -118,6 +126,11 @@ module moduleKeyVault './modules/moduleKeyVault.bicep' = {
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
     privatelinkSubnetName: privatelinkSubnetName
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    appconfig_vnetName: enableAppConfig ? appconfig_name : ''
+    publicNetworkAccess: 'Enabled'
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
   }
 }
 
@@ -148,6 +161,9 @@ module moduleApplicationInsights './modules/moduleApplicationInsights.bicep' = i
     enablePrivateLink: enablePrivateLink
     privatelinkSubnetName: enablePrivateLink ? privatelinkSubnetName : ''
     virtualNetworkName: enablePrivateLink ? virtualNetworkName : ''
+    virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    publicNetworkAccess: 'Enabled'
+    loganalyticsWorkspace_privatelinkscope_name: enablePrivateLink ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
   }
 }
 
@@ -202,6 +218,8 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
   params: {
     BaseName: BaseName
     BaseShortName: BaseShortName
+    AppName: ''
+    AppShortName: ''
     EnvironmentName: EnvironmentName
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
@@ -218,11 +236,16 @@ module moduleStorageAccount './modules/moduleStorageAccount.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    publicNetworkAccess: 'Enabled'
   }
 }
 
@@ -249,11 +272,12 @@ module moduleFunctionAppHostingPlan './modules/moduleFunctionAppHostingPlan.bice
     //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
     FunctionAppHostingPlanSKUName: FunctionAppHostingPlanSKUName
     FunctionAppHostingPlanTierName: FunctionAppHostingPlanTierName
-    enablePrivateLink: enablePrivateLink
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
   }
 }
 
-module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunctionApp.bicep' = {
+module moduleStorageAccountForFunctionApp './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccountForFunctionApp'
   params: {
     BaseName: BaseName
@@ -274,13 +298,18 @@ module moduleStorageAccountForFunctionApp './modules/moduleStorageAccountForFunc
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     AppName: 'functionapp'
     AppShortName: 'fn'
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    publicNetworkAccess: 'Enabled'  
   }
   dependsOn: [
     moduleStorageAccount
@@ -292,6 +321,8 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
   params: {
     BaseName: BaseName
     BaseShortName: BaseShortName
+    AppName: 'functionapp'
+    AppShortName: 'fn'
     EnvironmentName: EnvironmentName
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
@@ -308,9 +339,11 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     applicationinsights_resourcegroup: enableDiagnostic ? moduleApplicationInsights.outputs.applicationinsights_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
+    keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     storage_name: moduleStorageAccountForFunctionApp.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForFunctionApp.outputs.storage_resourcegroup
     storage_subscriptionId: moduleStorageAccountForFunctionApp.outputs.storage_subscriptionId
@@ -322,12 +355,13 @@ module moduleFunctionApp './modules/moduleFunctionApp.bicep' = {
     enableVNETIntegration: enableVNETIntegration
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
-    vnetintegrationSubnetName: functionAppSubnetName
-    vnetintegrationSubnetAddressPrefix: functionAppSubnetAddressPrefix
-    createSubnet: createFunctionAppSubnet
-    networksecuritygroupName: networksecuritygroupName
-    routetableName: routetableName
+    functionapp_subnet_id: enableVNETIntegration ? resourceId(virtualNetworkResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, functionAppSubnetName) : ''
+    functionapp_subnet_name: enableVNETIntegration ? functionAppSubnetName : ''
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    publicNetworkAccess: 'Enabled'
   }
 } 
 
@@ -352,12 +386,12 @@ module moduleWorkflowHostingPlan './modules/moduleWorkflowHostingPlan.bicep' = {
     appconfig_resourcegroup: enableAppConfig ? appconfig_resourcegroup : ''
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
-    //loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
-    enablePrivateLink: enablePrivateLink
+    loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
   }
 }
 
-module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogicAppStd.bicep' = {
+module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccount.bicep' = {
   name: 'moduleStorageAccountForLogicAppStd'
   params: {
     BaseName: BaseName
@@ -378,13 +412,18 @@ module moduleStorageAccountForLogicAppStd './modules/moduleStorageAccountForLogi
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     StorageSKUName: StorageSKUName
     enablePrivateLink: enablePrivateLink
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
     AppName: 'logicappstd'
     AppShortName: 'las'
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId
+    publicNetworkAccess: 'Enabled'  
   }
   dependsOn: [
     moduleStorageAccount
@@ -397,6 +436,8 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
   params: {
     BaseName: BaseName
     BaseShortName: BaseShortName
+    AppName: 'logicappstd'
+    AppShortName: 'las'
     EnvironmentName: EnvironmentName
     EnvironmentShortName: EnvironmentShortName
     AppLocation: AppLocation
@@ -413,25 +454,30 @@ module moduleLogicAppStandard './modules/moduleLogicAppStandard.bicep' = {
     appconfig_subscriptionId: enableAppConfig ? appconfig_subscriptionId : ''
     enableDiagnostic: enableDiagnostic
     loganalyticsWorkspace_name: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_name : ''
+    loganalyticsWorkspace_resourcegroup: enableDiagnostic ? moduleLogAnalytics.outputs.loganalyticsWorkspace_resourcegroup : ''
     applicationinsights_name: enableDiagnostic ? moduleApplicationInsights.outputs.appinsights_name : ''
     applicationinsights_resourcegroup: enableDiagnostic ? moduleApplicationInsights.outputs.applicationinsights_resourcegroup : ''
     keyvault_name: moduleKeyVault.outputs.keyvault_name
+    keyvault_resourcegroup: moduleKeyVault.outputs.keyvault_resourcegroup
     storage_name: moduleStorageAccountForLogicAppStd.outputs.storage_name
     storage_resourcegroup: moduleStorageAccountForLogicAppStd.outputs.storage_resourcegroup
     storage_subscriptionId: moduleStorageAccountForLogicAppStd.outputs.storage_subscriptionId
     workflowhostingplan_name: moduleWorkflowHostingPlan.outputs.workflowhostingplan_name
     workflowhostingplan_resourcegroup: moduleWorkflowHostingPlan.outputs.workflowhostingplan_resourcegroup
-    workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflow_hostingplan_subscriptionId
+    workflowhostingplan_subscriptionId: moduleWorkflowHostingPlan.outputs.workflowhostingplan_subscriptionId
     enablePrivateLink: enablePrivateLink
     enableVNETIntegration: enableVNETIntegration
     virtualNetworkName: virtualNetworkName
     virtualNetworkResourceGroup: virtualNetworkResourceGroup
+    virtualNetworkSubscriptionId: virtualNetworkSubscriptionId
     privatelinkSubnetName: privatelinkSubnetName
-    vnetintegrationSubnetName: logicAppStdSubnetName
-    vnetintegrationSubnetAddressPrefix: logicAppStdSubnetAddressPrefix
-    createSubnet: createLogicAppStdSubnet
     networksecuritygroupName: networksecuritygroupName
     routetableName: routetableName
+    logicapp_subnet_id: enableVNETIntegration ? resourceId(virtualNetworkResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, logicAppStdSubnetName) : ''
+    logicapp_subnet_name: enableVNETIntegration ? logicAppStdSubnetName : ''
+    privateDNSZoneResourceGroup: privateDNSZoneResourceGroup
+    privateDNSZoneSubscriptionId: privateDNSZoneSubscriptionId  
+    publicNetworkAccess: 'Enabled'
   }
   dependsOn: [
     moduleFunctionApp
