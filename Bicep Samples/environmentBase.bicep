@@ -289,7 +289,7 @@ module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {
   name: 'moduleApiManagementPolicy'
   params: {
     apimanagement_name: moduleApiManagementBase.outputs.apimanagement_name
-    policyString: policyString
+        policyString: policyString
   }
 }
 
