@@ -75,3 +75,16 @@ jobs:
         base_path: "${{ github.workspace }}/artifacts/ARM"
         files: |
           **/*.*
+
+    - name: Publish Artifacts to Octopus
+      uses: OctopusDeploy/push-package-action@v3
+      with: 
+        packages: |
+          artifacts/ARMTemplates.${{ steps.version-generator.outputs.version }}.zip
+          
+    - uses: OctopusDeploy/push-build-information-action@v3
+      name: Push Build Information 🐙
+      with:
+        version: ${{ steps.version-generator.outputs.version }}
+        packages: |
+          ARMTemplates
