@@ -52,3 +52,13 @@ jobs:
       with:
         azcliversion: latest
         inlineScript: 'az bicep build --file "Bicep Samples/environment.bicep"  --outdir $GITHUB_WORKSPACE/artifacts/ARM'
+
+    - name: Package ARM 🐙
+      uses: OctopusDeploy/create-zip-package-action@v3
+      with:
+        package_id: "ARMTemplates"
+        version: "${{ steps.version-generator.outputs.version }}"
+        output_folder: "${{ github.workspace }}/artifacts"
+        base_path: "${{ github.workspace }}/artifacts/ARM"
+        files: |
+          **/*.*
