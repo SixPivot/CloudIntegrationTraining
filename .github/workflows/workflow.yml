@@ -5,6 +5,12 @@ on:
   push:
     branches: 'main'
 
+permissions:
+  id-token: write
+
+env:
+  OCTOPUS_SPACE: Default
+
 # az ad sp create-for-rbac --name ghaCloudIntegrationTraining --role contributor --scopes /subscriptions/xxx/resourceGroups/CloudIntegrationTraining --sdk-auth
 jobs:
   build:
