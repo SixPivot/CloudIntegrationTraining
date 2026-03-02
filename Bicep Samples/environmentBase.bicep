@@ -283,7 +283,7 @@ module moduleApiManagementBase 'modules/moduleApiManagementBase.bicep' = {
   }
 }
 
-var policyString = loadTextContent('./policies/Correlation.xml')
+var policyString = loadTextContent('./Policies/Correlation.xml')
 
 module moduleApiManagementPolicy './modules/moduleApiManagementPolicy.bicep' = {
   name: 'moduleApiManagementPolicy'
