@@ -37,18 +37,18 @@ jobs:
       uses: azure/CLI@v2
       with:
         azcliversion: latest
-        inlineScript: 'az bicep build --file "Bicep Samples/appconfiguration.bicep" --outdir $GITHUB_WORKSPACE/artifacts/ARM'
+        inlineScript: 'az bicep build --file "Bicep Samples/sharedAppConfig.bicep" --outdir $GITHUB_WORKSPACE/artifacts/ARM'
 
       # build Bicep file
     - name: Azure CLI script file
       uses: azure/CLI@v2
       with:
         azcliversion: latest
-        inlineScript: 'az bicep build --file "Bicep Samples/keyvault.bicep"  --outdir $GITHUB_WORKSPACE/artifacts/ARM'
+        inlineScript: 'az bicep build --file "Bicep Samples/environmentBase.bicep"  --outdir $GITHUB_WORKSPACE/artifacts/ARM'
 
       # build Bicep file
     - name: Azure CLI script file
       uses: azure/CLI@v2
       with:
         azcliversion: latest
-        inlineScript: 'az bicep build --file "Bicep Samples/apimanagemenbase.bicep"  --outdir $GITHUB_WORKSPACE/artifacts/ARM'
+        inlineScript: 'az bicep build --file "Bicep Samples/environment.bicep"  --outdir $GITHUB_WORKSPACE/artifacts/ARM'
