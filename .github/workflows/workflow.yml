@@ -18,8 +18,15 @@ jobs:
       # Checkout code
     - uses: actions/checkout@v2
 
-    - name: Set version 
-      run: echo "PACKAGE_VERSION=1.0.$(date +%Y%m%d).$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+    - name: Login to Octopus Deploy 
+      uses: OctopusDeploy/login@v1
+      with: 
+        server: https://biztalkbill.octopus.app
+        service_account_id: 966ed2db-5519-4b1c-aece-2fcf43c46837
+
+    - name: Set Version Number
+      id: version-generator
+      run: echo "version=$(date +'%Y.%m.%d').$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
 
     - name: Create artifacts folder
       run: |
